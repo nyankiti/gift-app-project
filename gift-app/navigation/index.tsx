@@ -58,7 +58,14 @@ export function Route() {
       {user ?
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} >
         <Drawer.Screen name="home" component={BottomTabNavigator} />
-        <Drawer.Screen name='SupportScreen' component={SupportScreen} />
+        <Drawer.Screen name='SupportScreen' component={SupportScreen} 
+          options={{
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: '#009382',
+            }
+          }}
+        />
         <Drawer.Screen name='ChatScreen' component={ChatScreen}
           options={{
             headerShown: true,
