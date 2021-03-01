@@ -15,6 +15,7 @@ export type BottomTabParamList = {
 export type DrawerParamaList = {
   home: undefined;
   SupportScreen: undefined;
+  ChatScreen: undefined;
 }
 
 export type UsersStackParamList = {

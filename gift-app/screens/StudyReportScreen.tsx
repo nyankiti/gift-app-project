@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableHighlight, TextInput } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
@@ -18,26 +18,75 @@ export default function StudyReportScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>この画面で勉強時間管理</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
-    </View>
+    <TouchableHighlight onPress={() => {}} style={styles.button}>
+      <Text style={styles.buttonText}>
+        View Posts
+      </Text>
+    </TouchableHighlight>
+    <TextInput style={styles.title}
+      placeholder=" Title"
+      />
+    <TextInput style={styles.description}
+      placeholder=" Description (optional)"
+      />
+    <TextInput  style={styles.post}
+      placeholder=" Post"
+      multiline = {true}
+      numberOfLines = {4}
+    />
+    <TouchableHighlight style={styles.button} onPress={() => {}} underlayColor='#99d9f4'>
+      <Text style={styles.buttonText}>Post</Text>
+    </TouchableHighlight>
+  </View>
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 20,
+    padding: 20,
+    backgroundColor: '#ffffff',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    padding: 5
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  description: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    padding: 5
   },
-});
+  post : {
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 5,
+    height: 200,
+    padding: 5,
+    fontSize: 17
+  },
+  buttonText: {
+    fontSize: 18,
+    color: 'white',
+    alignSelf: 'center'
+  },
+  button: {
+    height: 36,
+    backgroundColor: '#48BBEC',
+    borderColor: '#48BBEC',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 10,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  }
+})

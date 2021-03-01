@@ -13,6 +13,7 @@ import AuthScreen from '../screens/AuthScreen';
 import LoadingScreen from '../screens/LoadingScreen';
 import DrawerContent from '../screens/DrawerContent';
 import SupportScreen from '../screens/SupportScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 /* navigator */
 import BottomTabNavigator from './BottomTabNavigator';
@@ -58,9 +59,18 @@ export function Route() {
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} >
         <Drawer.Screen name="home" component={BottomTabNavigator} />
         <Drawer.Screen name='SupportScreen' component={SupportScreen} />
+        <Drawer.Screen name='ChatScreen' component={ChatScreen}
+          options={{
+            headerShown: true,
+            headerStyle: {
+              backgroundColor:'#009382',
+            },
+          }}
+        />
       </Drawer.Navigator> 
       : 
-      <AuthNavigator/>}
+      <AuthNavigator/>
+      }
     </NavigationContainer>
   );
 }
