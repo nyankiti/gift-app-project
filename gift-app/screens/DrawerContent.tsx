@@ -60,6 +60,11 @@ export default function DrawerContent(props) {
               label='Support'
               onPress={() => props.navigation.navigate('SupportScreen')}
             />
+            <DrawerItem 
+              icon={({color, size}) => ( <Icon name='chat-outline' color={color} size={size} />)} 
+              label='問い合わせ'
+              onPress={() => props.navigation.navigate('ChatScreen')}
+            />
           </Drawer.Section>
           <Drawer.Section title="Preference">
             <TouchableRipple onPress={() => {toggleTheme()}} >

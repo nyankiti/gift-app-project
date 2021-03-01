@@ -28,6 +28,9 @@ import StudyReportScreen from '../screens/StudyReportScreen';
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList } from '../types';
 import { FontDisplay } from 'expo-font';
 
+
+import DevelopScreen from '../screens/DevelopScreen';
+
 // const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
@@ -51,6 +54,8 @@ export default function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="News"
+        // 開発時のみここをDevelopScreenを表示してデバッグに使う
+        // component={DevelopScreen}
         component={NewsNavigator}
         options={({route}) => ({
           tabBarVisible: getTabBarVisibility(route),
