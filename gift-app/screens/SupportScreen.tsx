@@ -28,7 +28,7 @@ const SupportScreen = ({navigation}) => {
             navigation.navigate('CardListScreen', {title: 'Restaurant'})
           }>
           <View style={styles.categoryIcon}>
-            <Ionicons name="information" size={35} color="#FF6347" />
+            <Ionicons name="information" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>Giftについて</Text>
         </TouchableOpacity>
@@ -38,13 +38,13 @@ const SupportScreen = ({navigation}) => {
             navigation.navigate('CardListScreen', {title: 'Fastfood Center'})
           }>
           <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="information" size={35} color="#FF6347" />
+            <MaterialCommunityIcons name="information" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>Wifi</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="information" size={35} color="#FF6347" />
+            <MaterialCommunityIcons name="information" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>aaaaaaaa</Text>
         </TouchableOpacity>
@@ -52,19 +52,19 @@ const SupportScreen = ({navigation}) => {
       <View style={[styles.categoryContainer, {marginTop: 10}]}>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <Ionicons name="information" size={35} color="#FF6347" />
+            <Ionicons name="information" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>infomation</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <Ionicons name="information" size={35} color="#FF6347" />
+            <Ionicons name="chat" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>ssssssssss</Text>
+          <Text style={styles.categoryBtnTxt}>chat</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="cake" size={35} color="#FF6347" />
+            <MaterialCommunityIcons name="cake" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>It's a piece of cake</Text>
         </TouchableOpacity>

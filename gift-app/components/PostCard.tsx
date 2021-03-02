@@ -61,7 +61,6 @@ const PostCard = ({item, onDelete}) => {
         }
       })
       //なぜかconsole.logには間に合わないがしっかり値はsetできてるっぽい
-      console.log(userData);
   }
 
   useEffect(() => {

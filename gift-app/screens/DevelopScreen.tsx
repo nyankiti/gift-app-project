@@ -1,26 +1,27 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import axios from 'axios';
+import Constants from "expo-constants";
 import xml2js from 'xml2js';
 import moment from 'moment';
 // import oauth from 'axios-oauth-client';
 import { Text, View } from '../components/Themed';
 import ListItem from '../components/ListItem';
 import Loading from '../components/Loading';
-
-
 /* types */
 
 /* lib */
 
+// import * as dotenv from 'dotenv';
+// dotenv.config({ pash: __dirname+'/.env' });
+// require('dotenv').config({path: __dirname+'/.env'})
 
-// OAuth Consumer Secret	PAt91r4sEK4+hGAT9Dr0m+D8sZ0=        'oauth_consumer_key':"nfmuJazszARD7A==",
 
-// const URL = `https://newsapi.org/v2/top-headlines?country=jp&category=business&apiKey=${Constants.manifest.extra.newsApiKey}`;
+
 
 const OAuthInitialURL = 'https://www.hatena.com/oauth/initiate';
 
-const BasicAuthURL = 'https://blog.hatena.ne.jp/nyankiti24/nyankiti24.hatenablog.com/atom/entry/2021022616';
+const BasicAuthURL = Constants.manifest.extra.hatenablog.basic_url;
 
 const HatenaConfig = {
   clientID: '',
@@ -76,7 +77,7 @@ export default function DevelopScreen() {
       //   {auth: {username: 'nyankiti24', password: 'n2z3gsfwue'}},
       //   );
       const res = await axios.get(BasicAuthURL, {
-        auth: {username: 'nyankiti24', password: 'n2z3gsfwue'},
+        auth: {username: Constants.manifest.extra.hatenablog.user_name , password: Constants.manifest.extra.hatenablog.user_password},
         withCredentials: true
       }).then((response)  => {
         const res = response.data.articles

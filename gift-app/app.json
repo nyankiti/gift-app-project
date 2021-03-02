@@ -39,6 +39,13 @@
         "messagingSenderId": "13067451425",
         "appId": "1:13067451425:web:c36a5bbaa8e88022c0f760",
         "measurementId": "G-NMGTP4JM0S"
+      },
+      "hatenablog": {
+        "user_name": "nyankiti24",
+        "user_password": "n2z3gsfwue",
+        "oauth_consumer_secret": "PAt91r4sEK4+hGAT9Dr0m+D8sZ0=",
+        "oauth_customer_secret": "nfmuJazszARD7A==",
+        "basic_url": "https://blog.hatena.ne.jp/nyankiti24/nyankiti24.hatenablog.com/atom/entry/2021022616"
       }
     }
   }
