@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, SafeAreaView, FlatList, Alert, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import Constants from "expo-constants";
 import { Text, View } from '../components/Themed';
 import LoadingScreen from '../screens/LoadingScreen';
 /* componet */
@@ -17,6 +17,8 @@ import { db, storage } from '../src/firebase';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 import Navigation from '../navigation/index copy';
+
+
 
 
 
@@ -74,6 +76,8 @@ const Posts = [
 
 
 export default function NewsScreen({navigation}) {
+
+
   const {user} = useContext(AuthContext);
 
   const [posts, setPosts] = useState(null);
