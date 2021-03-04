@@ -62,7 +62,7 @@ export function Route() {
           options={{
             headerShown: true,
             headerStyle: {
-              backgroundColor: '#009382',
+              backgroundColor: '#EAC799',
             }
           }}
         />
@@ -70,7 +70,7 @@ export function Route() {
           options={{
             headerShown: true,
             headerStyle: {
-              backgroundColor:'#009382',
+              backgroundColor:'#EAC799',
             },
           }}
         />

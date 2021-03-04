@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useContext} from 'react';
+import { StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
-
+import { useFonts } from 'expo-font';
 
 /* componet */
 import { Container, Card, UserInfo, UserImg, UserName, UserInfoText, PostTime, PostText, PostImg, InteractionWrapper, Interaction, InteractionText, Divider} from '../styles/FeedStyles';
@@ -17,6 +18,16 @@ import { db } from '../src/firebase';
 
 const PostCard = ({item, onDelete}) => {
   const {user} = useContext(AuthContext);
+  
+  const [loaded] = useFonts({
+    Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+    ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+  });
+  
+  // 以下のif文を入れるとrendering失敗する 
+  // if (!loaded) {
+  //   return null;
+  // }
 
   // item.id はfieldで自分が設定したidではなく、documentのところで自動的に生成されているidのこと
   // console.log(item.id);
@@ -73,13 +84,14 @@ const PostCard = ({item, onDelete}) => {
       <UserInfo>
         <UserImg  source={{uri: userData.userImg ? userData.userImg || 'https://lh5.googleusercontent.com/-b0PKyNuQv5sAAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' : 'https://lh5.googleusercontent.com/-b0PKyNuQv5sAAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}  />
         <UserInfoText>
-          <UserName>{userData.fname ? userData.fname || 'Test' : 'Test' } {userData.lname ? userData.lname || 'User' : 'User' }</UserName>
+          {/* 原因は不明だが fontFamily={"'ComicSnas, Anzumozi'"} とわたすとうまく動作する*/}
+          <UserName fontFamily={"'ComicSnas, Anzumozi'"} >{userData.fname ? userData.fname || 'Test' : 'Test' } {userData.lname ? userData.lname || 'User' : 'User' }</UserName>
           {/* postTimeはDateクラスのオブジェクトなので色々なメソッドが使える 
           そのオブジェクトをさらにmomentでラップして表示を整えている*/}
-          <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>
+          <PostTime fontFamily={"'ComicSnas, Anzumozi'"} >{moment(item.postTime.toDate()).fromNow()}</PostTime>
         </UserInfoText>
       </UserInfo>
-      <PostText>{item.post}</PostText>
+      <PostText fontFamily={"'ComicSnas, Anzumozi'"} >{item.post}</PostText>
       {/* 投稿に画像が含まれているかどううかで場合分け */}
       {item.postImg != null ?
         <ProgressiveImage
@@ -94,11 +106,11 @@ const PostCard = ({item, onDelete}) => {
       <InteractionWrapper>
         <Interaction active={item.liked} >
           <Icon name={likeIcon} size={25} color={likeIconColor} />
-          <InteractionText active={item.liked} >{likeText}</InteractionText>
+          <InteractionText active={item.liked} fontFamily={"'ComicSnas, Anzumozi'"} >{likeText}</InteractionText>
         </Interaction>
         <Interaction>
           <Icon name='md-chatbubble-outline' size={25} />
-          <InteractionText>{commentText}</InteractionText>
+          <InteractionText fontFamily={"'ComicSnas, Anzumozi'"} >{commentText}</InteractionText>
         </Interaction>
         {user.uid == item.userId ?
         <Interaction onPress={() => onDelete(item.id)} >
@@ -109,5 +121,50 @@ const PostCard = ({item, onDelete}) => {
     </Card>
   );
 }
+
+
+
+// const styles = StyleSheet.create({
+//   userName: {
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//     fontFamily: 'ComicSnas, Anzumozi',
+//   },
+//   PostTime: {
+//     fontSize: 12,
+//     fontFamily: 'ComicSnas, Anzumozi',
+//     color: '#666'
+//   },
+//   PostText: {
+//     fontSize: 14,
+//     fontFamily: 'ComicSnas, Anzumozi',
+//     paddingLeft: 15,
+//     paddingRight: 15,
+//     marginBottom: 15,
+//   }
+// })
+
+
+// export const UserName = styled.Text`
+//     font-size: 14px;
+//     font-weight: bold;
+//     font-family: ${props => props.fontFamily };
+
+    
+// `;
+
+// export const PostTime = styled.Text`
+//     font-size: 12px;
+//     font-family: ${props => props.fontFamily };
+//     color: #666;
+// `;
+
+// export const PostText = styled.Text`
+//     font-size: 14px;
+//     font-family: ${props => props.fontFamily };
+//     padding-left: 15px;
+//     padding-right: 15px;
+//     margin-bottom: 15px;
+// `;
 
 export default PostCard;

@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { Button, StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { getExtension } from '../utils/file';
+import { useFonts } from 'expo-font';
 
 
 /* component */
@@ -34,6 +35,11 @@ export default function AccountInfoScreen({navigation, route}) {
     'phone': '',
     'about': '',
     'city': ''
+  });
+
+  const [loaded] = useFonts({
+    Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+    ComicSnas: require('../assets/fonts/comicsansms3.ttf')
   });
 
 
@@ -160,6 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
+    fontFamily: 'ComicSnas, Anzumozi',
   },
   userImg: {
     height: 150,
@@ -169,12 +176,14 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'ComicSnas, Anzumozi',
     marginTop: 10,
     marginBottom: 10,
   },
   aboutUser: {
     fontSize: 12,
     fontWeight: '600',
+    fontFamily: 'ComicSnas, Anzumozi',
     color: '#666',
     textAlign: 'center',
     marginBottom: 10,
@@ -208,11 +217,13 @@ const styles = StyleSheet.create({
   userInfoTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: 'ComicSnas, Anzumozi',
     marginBottom: 5,
     textAlign: 'center',
   },
   userInfoSubTitle: {
     fontSize: 12,
+    fontFamily: 'ComicSnas, Anzumozi',
     color: '#666',
     textAlign: 'center',
   },
