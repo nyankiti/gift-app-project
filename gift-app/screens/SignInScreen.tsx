@@ -96,7 +96,7 @@ const SignInScreen = ({navigation}) => {
 
   return ( 
     <View style={styles.container}>
-      <StatusBar backgroundColor='#009387' barStyle='light-content' />
+      <StatusBar backgroundColor='#EAC799' barStyle='light-content' />
       <View style={styles.header}>
         <Text style={styles.text_header} >Welcome!</Text>
       </View>
@@ -194,9 +194,9 @@ const SignInScreen = ({navigation}) => {
 
           <TouchableOpacity
             onPress={() => navigation.navigate('SignUpScreen')}
-            style={[styles.signIn, {borderColor:"#009387", borderWidth: 1, marginTop: 15}]}
+            style={[styles.signIn, {borderColor:"#EAC799", borderWidth: 1, marginTop: 15}]}
           >
-            <Text style={[styles.textSign, {color: '#009387'}]}>Sign Up</Text>
+            <Text style={[styles.textSign, {color: '#EAC799'}]}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </Animatable.View>
@@ -207,7 +207,7 @@ const SignInScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    backgroundColor: '#009387'
+    backgroundColor: '#EAC799'
   },
   header: {
       flex: 1,

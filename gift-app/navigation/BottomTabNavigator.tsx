@@ -60,7 +60,7 @@ export default function BottomTabNavigator() {
         options={({route}) => ({
           tabBarVisible: getTabBarVisibility(route),
           tabBarLabel: 'News',
-          tabBarColor: '#009387',
+          tabBarColor: '#EAC799',
           tabBarIcon: ({ color }) => <Icon name="ios-home" color={color} size={26} />,
         })}
       />
@@ -69,7 +69,7 @@ export default function BottomTabNavigator() {
         component={StudyReportNavigator}
         options={{
           tabBarLabel: 'Report',
-          tabBarColor: '#009387',
+          tabBarColor: '#EAC799',
           tabBarIcon: ({ color }) => <Icon name="bar-chart-outline" color={color} size={26} />,
         }}
       />
@@ -78,7 +78,7 @@ export default function BottomTabNavigator() {
         component={UsersNavigator}
         options={{
           tabBarLabel: 'User',
-          tabBarColor: '#009387',
+          tabBarColor: '#EAC799',
           tabBarIcon: ({ color }) => <Icon name="people-outline" color={color} size={26} />,
         }}
       />
@@ -115,7 +115,7 @@ export function NewsNavigator({navigation}) {
   return (
     <NewsStack.Navigator screenOptions={{
       headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#EAC799',
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
@@ -128,13 +128,13 @@ export function NewsNavigator({navigation}) {
         options={{ 
           headerTitle: 'Gift News', 
           headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor='#009382' onPress={() => navigation.openDrawer()}></Icon.Button>),
+            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
           headerRight: () => ( 
             <View style={{marginRight: 10}}>
               <FontAwesome5.Button
                 name="plus"
                 size={22}
-                backgroundColor="#009382"
+                backgroundColor="#EAC799"
                 color="#2e64e5"
                 onPress={() => navigation.navigate('AddPost')}
               />
@@ -148,7 +148,7 @@ export function NewsNavigator({navigation}) {
         options={{ 
           // headerの戻る矢印を下記のように指定してもよい
           // headerLeft: () => (
-          //   <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#009382' onPress={() => navigation.navigate('NewsScreen')}></Icon.Button>),
+          //   <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('NewsScreen')}></Icon.Button>),
         }}
       />
       <NewsStack.Screen
@@ -167,7 +167,7 @@ function StudyReportNavigator({navigation}) {
   return (
     <StudyReportStack.Navigator screenOptions={{
       headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#EAC799',
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
@@ -178,7 +178,7 @@ function StudyReportNavigator({navigation}) {
         name="StudyReportScreen"
         component={StudyReportScreen}
         options={{ headerTitle: 'Study Report', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25} backgroundColor='#009382' onPress={() => navigation.openDrawer()}></Icon.Button>
+        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
         )}}
       />
     </StudyReportStack.Navigator>
@@ -191,7 +191,7 @@ function UsersNavigator({navigation}) {
   return (
     <UsersStack.Navigator screenOptions={{
       headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#EAC799',
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
@@ -202,7 +202,7 @@ function UsersNavigator({navigation}) {
         name="UsersScreen"
         component={UsersScreen}
         options={{ headerTitle: 'Users List', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25}  backgroundColor='#009382' onPress={() => navigation.openDrawer()}></Icon.Button>
+        <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
         )}}
       />
       <UsersStack.Screen
@@ -222,7 +222,7 @@ function AccountInfoNavigator({navigation}) {
   return (
     <AccountInfoStack.Navigator screenOptions={{
       headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#EAC799',
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
@@ -234,7 +234,7 @@ function AccountInfoNavigator({navigation}) {
         component={AccountInfoScreen}
         options={{ 
           headerTitle: 'AccountInfo', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25} backgroundColor='#009382' onPress={() => navigation.openDrawer()}></Icon.Button>
+        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
         )}}
       />
       <AccountInfoStack.Screen

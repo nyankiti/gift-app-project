@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   categoryBtnTxt: {
     alignSelf: 'center',
     marginTop: 5,
-    color: '#009382',
+    color: '#EAC799',
   },
   cardsWrapper: {
     marginTop: 20,
