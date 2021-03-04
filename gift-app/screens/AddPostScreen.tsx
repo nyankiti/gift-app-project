@@ -9,7 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { pickImage } from "../src/image-picker";
 // import storage from '@react-native-firebase/storage';
 import { storage, FirebaseTimestamp, db } from '../src/firebase';
-import { getExtension, formatDate } from '../utils/file';
+import { getExtension, formatDateUntilMinute } from '../utils/file';
 
 /* hookd */
 import useUnmountRef from '../hooks/useUnmountRef';
@@ -57,7 +57,7 @@ const AddPostScreen = () => {
 
     const uploadUri = imageUri;
     const extension = getExtension(uploadUri);
-    const date_for_filename = formatDate();
+    const date_for_filename = formatDateUntilMinute();
     const filename = date_for_filename + "." + extension;
     console.log(filename);
 

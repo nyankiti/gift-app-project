@@ -87,7 +87,7 @@ export default function NewsScreen({navigation}) {
   // データ更新時にfetchPostしてページを更新する
   useEffect(() => {
     fetchPosts();
-    console.log(Constants.manifest.extra.hatenablog.basic_url);
+    console.log(Constants.manifest.extra);
   }, []);
 
   useEffect(() => {

@@ -18,7 +18,7 @@ import {User} from '../types';
 /* lib */
 import { FirebaseTimestamp, db, storage } from '../src/firebase';
 import { pickImage } from "../src/image-picker";
-import { getExtension, formatDate } from '../utils/file'
+import { getExtension, formatDateUntilMinute } from '../utils/file'
 
 /* context */
 import { AuthContext } from '../src/AuthProvider';
@@ -92,7 +92,7 @@ export default function EditProfileScreen() {
 
     const uploadUri = image;
     const extension = getExtension(uploadUri);
-    const date_for_filename = formatDate();
+    const date_for_filename = formatDateUntilMinute();
     const filename = date_for_filename + "." + extension;
     console.log(filename);
 
