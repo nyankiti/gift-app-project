@@ -97,7 +97,6 @@ const AddPostScreen = () => {
 
   const submitPost = async() => {
     const imageUrlOfFireStorage = await uploadImage();
-    console.log(imageUrlOfFireStorage);
 
     db.collection('posts').add({
       userId: user.uid,
@@ -125,7 +124,7 @@ const AddPostScreen = () => {
         { imageUri != null ? <AddImage source={{uri: imageUri}} /> : null }
         <InputField 
           placeholder='Wahts on your mind?'
-          mulitiline
+          multiline={true}
           numberOfLines={4}
           value={post}
           onChangeText={(content) => setPost(content)}

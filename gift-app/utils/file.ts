@@ -9,7 +9,7 @@ export const getExtension = (path: string) => {
 export const formatDateUntilMinute = () => {
   // 変数を同時に複数個定義するときは以下のように書く
   let d = new Date(),
-      month = '' + d.getMonth(),
+      month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
       year = d.getFullYear(),
       hour = d.getHours(),
@@ -25,7 +25,7 @@ export const formatDateUntilMinute = () => {
 
 export const formatDateUntilDay = () => {
   let d = new Date(),
-    month = '' + d.getMonth(),
+    month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
     year = d.getFullYear()
 
@@ -35,4 +35,9 @@ export const formatDateUntilDay = () => {
     day = '0' + day;
 
   return [year, month, day].join('-');
+}
+
+export const formatDate = () => {
+  let d = new Date()
+  return d.getDate();
 }
