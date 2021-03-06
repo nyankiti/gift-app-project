@@ -1,6 +1,6 @@
 import React, {createContext, useState} from 'react';
 // import auth from '@react-native-firebase/auth';
-import * as firebase from 'firebase';
+import firebase from 'firebase/app';
 import { auth, db, FirebaseTimestamp } from '../src/firebase';
 import Constants from "expo-constants";
 

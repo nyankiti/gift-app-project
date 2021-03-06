@@ -9,7 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { pickImage } from "../src/image-picker";
 // import storage from '@react-native-firebase/storage';
 import { storage, FirebaseTimestamp, db } from '../src/firebase';
-import { getExtension, formatDate } from '../utils/file';
+import { getExtension, formatDateUntilMinute } from '../utils/file';
 
 /* hookd */
 import useUnmountRef from '../hooks/useUnmountRef';
@@ -57,7 +57,7 @@ const AddPostScreen = () => {
 
     const uploadUri = imageUri;
     const extension = getExtension(uploadUri);
-    const date_for_filename = formatDate();
+    const date_for_filename = formatDateUntilMinute();
     const filename = date_for_filename + "." + extension;
     console.log(filename);
 
@@ -97,7 +97,6 @@ const AddPostScreen = () => {
 
   const submitPost = async() => {
     const imageUrlOfFireStorage = await uploadImage();
-    console.log(imageUrlOfFireStorage);
 
     db.collection('posts').add({
       userId: user.uid,
@@ -125,7 +124,7 @@ const AddPostScreen = () => {
         { imageUri != null ? <AddImage source={{uri: imageUri}} /> : null }
         <InputField 
           placeholder='Wahts on your mind?'
-          mulitiline
+          multiline={true}
           numberOfLines={4}
           value={post}
           onChangeText={(content) => setPost(content)}

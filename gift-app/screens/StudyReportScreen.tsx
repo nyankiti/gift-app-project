@@ -1,92 +1,368 @@
-import React, {useEffect, useState} from 'react';
-import { StyleSheet, TouchableHighlight, TextInput } from 'react-native';
+import React, {useEffect, useState, useContext} from 'react';
+import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import moment from 'moment';
+import { useFonts } from 'expo-font';
+import { Modal, Portal, Provider } from 'react-native-paper';
+import { FirebaseTimestamp, db } from '../src/firebase';
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
-
-
-/* types */
+/* component */
 
 /* lib */
-
-
+import { formatDateUntilDay, formatDateUntilMinute, formatDate } from '../utils/file';
+import { windowHeight, windowWidth } from '../utils/Dimentions';
+/* context */
+import { AuthContext } from '../src/AuthProvider';
 
 export default function StudyReportScreen() {
+  const {user} = useContext<any>(AuthContext);
+  const [loaded] = useFonts({
+    Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+    ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+  });
+
+  const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
+  const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate]  = useState(formatDate());
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [transferred, setTransferred] = useState(0);
+  const [post, setPost] = useState({
+    dream: '',
+    oneDayGoal: ''
+  });
+
+  const showDreamModal = () => {
+    setDreamModalVisible(true);
+  }
+  const hideDreamModal = () => {
+    setDreamModalVisible(false);
+  }
+  const showGoalModal = () => {
+    setGoalModalVisible(true);
+  }
+  const hideGoalModal = () => {
+    setGoalModalVisible(false);
+  }
+
+  const dreamInputChange = (val: any) => {
+    setPost({
+      ...post,
+      dream: val,
+    })
+  }
+
+  const goalInputChange = (val: any) => {
+    setPost({
+      ...post,
+      oneDayGoal: val,
+    })
+  }
+
+  const pressCalendarDate = async (response: any) => {
+    setSelectedDate(response.day);
+    // 選択されたdateString(0000-00-00)を用いてdbから値を取ってくる
+    console.log(response.dateString);
+
+    try {
+      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(response.dateString);
+      docRef.get().then((doc) => {
+        // 登録されていな場合はundefinedエラーがでるので場合分け
+        if(doc.exists){
+          console.log('Document data: ', doc.data())
+          const fetchedPost: any = doc.data()
+          setPost({
+            ...post,
+            dream: fetchedPost.post.dream,
+            oneDayGoal: fetchedPost.post.oneDayGoal
+          })
+        }else{
+          setPost({
+            ...post,
+            dream: '',
+            oneDayGoal: '',
+          })
+        }
+      })
+    }catch(e){
+      console.log(e);
+    }
+  }
+
+  // 日付が変更されると今日の目標がリセットされる関数
+
+  const submitPost = () => {
+    console.log(post);
+    
+    db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay()).set({
+      post: post,
+      postTime: FirebaseTimestamp.fromDate(new Date()),
+    })
+  }
+
+  const fetchGoals = async () => {
+    try {
+      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
+      docRef.get().then((doc) => {
+        // console.log('Document data: ', doc.data())
+        const fetchedPost: any = doc.data()
+        setPost({
+          ...post,
+          dream: fetchedPost.post.dream,
+          oneDayGoal: fetchedPost.post.oneDayGoal
+        })
+      })
+    }catch(e){
+      console.log(e);
+    }
+  }
+
+
   useEffect(() => {
+    fetchGoals();
   }, []);
 
 
   return (
+    <Provider>
+
     <View style={styles.container}>
-    <TouchableHighlight onPress={() => {}} style={styles.button}>
-      <Text style={styles.buttonText}>
-        View Posts
-      </Text>
-    </TouchableHighlight>
-    <TextInput style={styles.title}
-      placeholder=" Title"
-      />
-    <TextInput style={styles.description}
-      placeholder=" Description (optional)"
-      />
-    <TextInput  style={styles.post}
-      placeholder=" Post"
-      multiline = {true}
-      numberOfLines = {4}
-    />
-    <TouchableHighlight style={styles.button} onPress={() => {}} underlayColor='#99d9f4'>
-      <Text style={styles.buttonText}>Post</Text>
-    </TouchableHighlight>
-  </View>
+      <View style={styles.dream_container}>
+        <View style={{flexDirection: 'column'}}>
+          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: 24, textAlign: 'center'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;夢&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
+          <Image
+              source={require('../assets/images/Gift_logo_20210221.jpg')}
+              style={styles.sliderImage}
+            />
+        </View>
+        <View style={styles.dream_form} >
+          <View>
+            <FontAwesome.Button
+              name="plus"
+              size={22}
+              backgroundColor="#fff"
+              color="#2e64e5"
+              onPress={showDreamModal}
+            />
+          </View>
+          <Text style={styles.dream_text}> {post.dream} </Text>
+        </View>
+      </View>
+
+
+      <View style={styles.purpose_container}>
+        <View style={{flexDirection: 'column'}}>
+          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: 24, textAlign: 'center'}}>今日の目標</Text>
+          <View style={styles.pie}>
+            <Text style={styles.text_in_clock}>{selectedDate}</Text>
+          </View>
+        </View>
+        <View style={styles.purpose_form} >
+          <View>
+            <FontAwesome.Button
+              name="plus"
+              size={22}
+              backgroundColor="#fff"
+              color="#2e64e5"
+              onPress={showGoalModal}
+            />
+          </View>
+          <Text style={styles.purpose_text}>{post.oneDayGoal} </Text>
+        </View>
+      </View>
+
+
+      <View style={styles.calendar_container}>
+        <Calendar 
+          onDayPress={pressCalendarDate}
+          // current={formatDateUntilDay()}
+          renderArrow={(direction: any) => (<FontAwesome name={`arrow-${direction}`} color='#05375a' size={15}/>)}
+          // renderArrow={(right) => (<FontAwesome name='arrow-right' color='#05375a' size={15}/>)}
+          theme={{
+            calendarBackground: '#fff',
+
+            selectedDayBackgroundColor: '#C0D6DF',
+            selectedDayTextColor: '#000000',
+            selectedDotColor: '#EAC799',
+
+            dayTextColor: '#000000',
+            textDisabledColor: '#729DAF',
+            dotColor: '#DBE9EE',
+
+            monthTextColor: '#000000',
+            textMonthFontWeight: 'bold',
+
+            arrowColor: '#000000',
+          }}
+        />
+      </View>
+        <Portal>
+            <Modal visible={dreamModalvisible} onDismiss={hideDreamModal} contentContainerStyle={styles.modal_container} >
+              <View style={styles.input_wrapper}>
+                <TextInput
+                  style={styles.input_wrapper} 
+                  placeholder='あなたの夢は?'
+                  multiline={true}
+                  numberOfLines={4}
+                  value={post.dream}
+                  onChangeText={dreamInputChange}
+                />
+                {uploading ? ( 
+                  <View style={styles.status_wrapper}>
+                    <Text>{ transferred } % Competed!</Text>
+                    <ActivityIndicator size='large' color='#0000ff' />
+                  </View>
+                ): 
+                <TouchableOpacity style={styles.submit_btn} onPress={submitPost}>
+                  <Text style={styles.submit_button_text}>Post</Text>
+                </TouchableOpacity>
+                }
+              </View>
+            </Modal>
+            <Modal visible={goalModalvisible} onDismiss={hideGoalModal} contentContainerStyle={styles.modal_container} >
+              <View style={styles.input_wrapper}>
+                <TextInput
+                  style={styles.input_wrapper} 
+                  placeholder='今日の目標は?'
+                  multiline={true}
+                  numberOfLines={4}
+                  value={post.oneDayGoal}
+                  onChangeText={goalInputChange}
+                />
+                {uploading ? ( 
+                  <View style={styles.status_wrapper}>
+                    <Text>{ transferred } % Competed!</Text>
+                    <ActivityIndicator size='large' color='#0000ff' />
+                  </View>
+                ): 
+                <TouchableOpacity style={styles.submit_btn} onPress={submitPost}>
+                  <Text style={styles.submit_button_text}>Post</Text>
+                </TouchableOpacity>
+                }
+              </View>
+            </Modal>
+        </Portal>
+
+      </View>
+    </Provider>
   );
 }
 
+const calendar_width = windowWidth * 0.90
+const modal_height = windowHeight * 0.7
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
-    marginTop: 20,
     padding: 20,
     backgroundColor: '#ffffff',
+    height: windowHeight,
+    alignItems: 'center',
   },
-  title: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+  dream_container: {
+    flex: 2,
+    flexDirection: 'row',
+    width: calendar_width,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f8ff',
+  },
+  dream_text: {
+    fontFamily: 'ComicSnas, Anzumozi',
+    fontSize: 24,
+    textAlign: 'center',
+    marginLeft: 35,
+  },
+  dream_form: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  purpose_container: {
+    flex: 2,
+    flexDirection: 'row',
+    width: calendar_width,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f8ff',
+    marginTop: 20,
+    // alignSelf: 'center',
+  },
+  purpose_text: {
+    fontFamily: 'ComicSnas, Anzumozi',
+    fontSize: 24,
+    textAlign: 'center',
+    marginLeft: 35,
+  },
+  purpose_form: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  text_in_clock: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  modal_container: {
+    backgroundColor: 'white',
+    padding: 20,
+    height: modal_height,
+  },
+  pie: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    backgroundColor: '#1abc9c'
+  },
+  calendar_container: {
+    flex: 5,
+    marginTop: 40,
+    width: calendar_width,
+    borderBottomWidth: 1,
+    borderTopWidth:1,
+    borderBottomColor: '#f0f8ff',
+    borderTopColor: '#f0f8ff',
+  },
+  sliderImage: {
+    height: 100,
+    width: 100,
+    borderRadius: 12,
+  },
+  // modal
+  input_wrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#2e64e515'
+  },
+  input_field: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 24,
+    textAlign: 'center',
+    width: '90%',
+    marginBottom: 15,
+  },
+  status_wrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  submit_btn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: '#2e64e515',
     borderRadius: 5,
-    marginBottom: 10,
-    padding: 5
+    // padding: '10 25',
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 25,
+    paddingRight: 25,
   },
-  description: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    padding: 5
-  },
-  post : {
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 5,
-    height: 200,
-    padding: 5,
-    fontSize: 17
-  },
-  buttonText: {
+  submit_button_text: {
     fontSize: 18,
-    color: 'white',
-    alignSelf: 'center'
-  },
-  button: {
-    height: 36,
-    backgroundColor: '#48BBEC',
-    borderColor: '#48BBEC',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    alignSelf: 'stretch',
-    justifyContent: 'center'
+    // fontFamily: '',
+    fontWeight: 'bold',
+    color: '#2e64e5',
   }
+
 })
