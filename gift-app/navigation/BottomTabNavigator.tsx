@@ -23,13 +23,19 @@ import NewsScreen from '../screens/NewsScreen';
 import AddPostScreen from '../screens/AddPostScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import StudyReportScreen from '../screens/StudyReportScreen';
+import ChatScreen from '../screens/ChatScreen';
+
+import ChatHomeScreen from '../screens/ChatHomeScreen';
+import RoomScreen from '../screens/RoomScreen';
+import AddRoomScreen from '../screens/AddRoomScreen';
 
 /* types */
-import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList } from '../types';
+import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList } from '../types';
 import { FontDisplay } from 'expo-font';
 
 
 import DevelopScreen from '../screens/DevelopScreen';
+import { IconButton } from 'react-native-paper';
 
 // const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
@@ -73,13 +79,22 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <Icon name="bar-chart-outline" color={color} size={26} />,
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Users"
         component={UsersNavigator}
         options={{
           tabBarLabel: 'User',
           tabBarColor: '#EAC799',
           tabBarIcon: ({ color }) => <Icon name="people-outline" color={color} size={26} />,
+        }}
+      /> */}
+      <BottomTab.Screen
+        name="Chat"
+        component={ChatNavigator}
+        options={{
+          tabBarLabel: 'Chat',
+          tabBarColor: '#EAC799',
+          tabBarIcon: ({ color }) => <Icon name="chatbubble-ellipses-outline" color={color} size={26} />,
         }}
       />
       <BottomTab.Screen
@@ -185,11 +200,49 @@ function StudyReportNavigator({navigation}) {
   );
 }
 
-const UsersStack = createStackNavigator<UsersTabParamList>();
+// const UsersStack = createStackNavigator<UsersTabParamList>();
 
-function UsersNavigator({navigation}) {
+// function UsersNavigator({navigation}: any) {
+//   return (
+//     <UsersStack.Navigator screenOptions={{
+//       headerStyle: {
+//         backgroundColor: '#EAC799',
+//       },
+//       headerTintColor: '#fff',
+//       headerTitleStyle: {
+//         fontWeight: 'bold'
+//       }
+//     }}>
+//       <UsersStack.Screen
+//         name="UsersScreen"
+//         component={UsersScreen}
+//         options={{ headerTitle: 'Users List', headerLeft: () => (
+//         <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+//         )}}
+//       />
+//       <UsersStack.Screen
+//         name="UserDetailScreen"
+//         component={UserDetailScreen}
+//         options={({route}: any) => ({
+//           title: route.params.userName,
+//         })}
+//       />
+//       <UsersStack.Screen
+//         name="ChatScreen"
+//         component={ChatScreen}
+//         options={({route}: any) => ({
+//           title: route.params.item.fname + route.params.item.lname
+//         })}
+//       />
+//     </UsersStack.Navigator>
+//   );
+// }
+
+const ChatStack = createStackNavigator<ChatTabParamList>();
+
+function ChatNavigator({navigation}: any) {
   return (
-    <UsersStack.Navigator screenOptions={{
+    <ChatStack.Navigator screenOptions={{
       headerStyle: {
         backgroundColor: '#EAC799',
       },
@@ -198,27 +251,36 @@ function UsersNavigator({navigation}) {
         fontWeight: 'bold'
       }
     }}>
-      <UsersStack.Screen
-        name="UsersScreen"
-        component={UsersScreen}
-        options={{ headerTitle: 'Users List', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        )}}
+      <ChatStack.Screen
+        name="ChatHomeScreen"
+        component={ChatHomeScreen}
+        options={{ 
+          headerTitle: 'Chat home', 
+          headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()} />),
+          headerRight: () => (
+            <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
+          )
+        }}
       />
-      <UsersStack.Screen
-        name="UserDetailScreen"
-        component={UserDetailScreen}
-        options={({route}) => ({
-          title: route.params.userName,
+      <ChatStack.Screen
+        name="RoomScreen"
+        component={RoomScreen}
+        options={({route}: any) => ({
+          title: route.params.thread.name,
         })}
       />
-    </UsersStack.Navigator>
+      <ChatStack.Screen
+        name="AddRoomScreen"
+        component={AddRoomScreen}
+      />
+    </ChatStack.Navigator>
   );
 }
 
 const AccountInfoStack = createStackNavigator<AccountInfoTabParamList>();
 
-function AccountInfoNavigator({navigation}) {
+function AccountInfoNavigator({navigation}: any) {
   return (
     <AccountInfoStack.Navigator screenOptions={{
       headerStyle: {

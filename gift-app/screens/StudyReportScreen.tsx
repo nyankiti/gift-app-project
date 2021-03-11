@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
@@ -104,13 +104,14 @@ export default function StudyReportScreen() {
     try {
       const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
       docRef.get().then((doc) => {
-        // console.log('Document data: ', doc.data())
-        const fetchedPost: any = doc.data()
-        setPost({
-          ...post,
-          dream: fetchedPost.post.dream,
-          oneDayGoal: fetchedPost.post.oneDayGoal
-        })
+        if(doc.exists){
+          const fetchedPost: any = doc.data()
+          setPost({
+            ...post,
+            dream: fetchedPost.post.dream,
+            oneDayGoal: fetchedPost.post.oneDayGoal
+          })
+        }
       })
     }catch(e){
       console.log(e);
@@ -124,6 +125,8 @@ export default function StudyReportScreen() {
 
 
   return (
+    <ScrollView>
+
     <Provider>
 
     <View style={styles.container}>
@@ -245,6 +248,8 @@ export default function StudyReportScreen() {
 
       </View>
     </Provider>
+    </ScrollView>
+
   );
 }
 

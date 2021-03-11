@@ -59,7 +59,6 @@ const AddPostScreen = () => {
     const extension = getExtension(uploadUri);
     const date_for_filename = formatDateUntilMinute();
     const filename = date_for_filename + "." + extension;
-    console.log(filename);
 
     
     let storagePath = `PostedImages/${date_for_filename}.${extension}`;
