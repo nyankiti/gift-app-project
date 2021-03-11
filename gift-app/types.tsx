@@ -34,7 +34,14 @@ export type StudyReportTabParamList = {
 export type UsersTabParamList = {
   UsersScreen: undefined;
   UserDetailScreen: undefined;
+  ChatScreen: undefined;
 };
+
+export type ChatTabParamList = {
+  ChatHomeScreen: undefined;
+  RoomScreen: undefined;
+  AddRoomScreen: undefined;
+}
 
 export type AccountInfoTabParamList = {
   AccountInfoScreen: undefined;
