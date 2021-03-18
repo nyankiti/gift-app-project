@@ -47,7 +47,7 @@ export default function BottomTabNavigator() {
       ? route.state.routes[route.state.index].name
       : '';
 
-    if( routeName == 'UserDetailScreen' || routeName == 'AddPost' ){
+    if( routeName == 'UserDetailScreen' || routeName == 'AddPost' || routeName == 'RoomScreen' ){
       return false;
     }
     return true;
@@ -55,7 +55,9 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="News"
+      // initialRouteName="News"
+      // テスト用に最初の画面を変える
+      initialRouteName = "StudyReport"
       activeColor="#fff"
     >
       <BottomTab.Screen

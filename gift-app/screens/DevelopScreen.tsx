@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import Constants from "expo-constants";
-import xml2js from 'xml2js';
+import xml2js from 'xml-js';
+var convert = require('xml-js');
 import moment from 'moment';
 // import oauth from 'axios-oauth-client';
 import { Text, View } from '../components/Themed';
@@ -21,7 +22,11 @@ import Loading from '../components/Loading';
 
 const OAuthInitialURL = 'https://www.hatena.com/oauth/initiate';
 
-const BasicAuthURL = Constants.manifest.extra.hatenablog.basic_url;
+// const BasicAuthURL = Constants.manifest.extra.hatenablog.basic_url;
+const BasicAuthURL = "https://blog.hatena.ne.jp/nyankiti24/nyankiti24.hatenablog.com/atom/entry";
+
+const encoded = btoa('nyankiti24:n2z3gsfwue');
+const auht = 'Basic ' + encoded;
 
 const HatenaConfig = {
   clientID: '',
@@ -38,8 +43,8 @@ export default function DevelopScreen() {
   
   useEffect(() => {
     const item = fetchArticles();
-    console.log('ここからコンソールだよ');
     console.log(item);
+    setArticles(item)
   }, []);
 
 
@@ -71,36 +76,66 @@ export default function DevelopScreen() {
   //   setLoading(false);
   // };
 
+  // 20210311------------------------------------------------------------------------------------------
+  // const fetchArticles = async() => {
+  //     // const res = await axios.get('https://qiita.com/api/v2/comments/:comment_id', {
+  //     //   auth: {username: Constants.manifest.extra.hatenablog.user_name , password: Constants.manifest.extra.hatenablog.user_password},
+  //     //   withCredentials: true
+  //     // }
+      
+  //   try{
+  //     const res = await fetch('https://qiita.com/api/v2/', {
+  //       // mode: 'no-cors',
+  //       method: 'GET',
+  //       // credentials: 'include',
+  //       // headers: {
+  //       //   "Authorization": 'Basic '+btoa('nyankiti24:n2z3gsfwue'),
+  //       // },
+  //     }).then((response)  => {
+  //         // const jsonResponse = convert.xml2json(response.);
+  //         console.log(response);
+  //     })
+  //   }catch(error){
+  //     console.log(error);
+  //   }
+  // }
+  // ---axiosではcrosポリシー引っかかる------------------------------------------------------------------------------------
+
   const fetchArticles = async() => {
     try{
-      // const res = await axios.get(BasicAuthURL, 
-      //   {auth: {username: 'nyankiti24', password: 'n2z3gsfwue'}},
-      //   );
-      const res = await axios.get(BasicAuthURL, {
-        auth: {username: Constants.manifest.extra.hatenablog.user_name , password: Constants.manifest.extra.hatenablog.user_password},
-        withCredentials: true
-      }).then((response)  => {
-        const res = response.data.articles
+    const res = await axios.get('https://blog.hatena.ne.jp/nyankiti24/nyankiti24.hatenablog.com/atom/entry', {
+      // headers: {
+      //   'Access-Control-Allow-Origin': '*',
+      //   'Access-Control-Allow-Headers': 'Content-Type',
+      // },
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 19006
+      // },
+      auth: {username: Constants.manifest.extra.hatenablog.user_name , password: Constants.manifest.extra.hatenablog.user_password},
+      // withCredentials: false,
+
       })
-      return res;
     }catch(err){
-      console.error(err);
+      console.log(err);
     }
   }
-  // fetchした状態ではXMLなので扱いやすいjsonに整形するためのメソッド
-  // const extractItemsAndNextUri = async(data) => {
-  //   return new Promise((resolve, reject) => {
-  //     xml2js.parseString(data.toString(), (err, result) => {
-  //       if (err) {
-  //         reject(err);
-  //       } else {
-  //         const entry = result.feed.entry;
-  //         const next_url = result.feed.link[1].$.href;
-  //         resolve({ entry, next_url });
-  //       }
-  //     });
-  //   });
-  // };
+  //     // const res = await fetch('https://blog.hatena.ne.jp/nyankiti24/nyankiti24.hatenablog.com/atom/entry', {
+  //     //   mode: 'no-cors',
+  //     //   method: 'GET',
+  //     //   credentials: 'include',
+  //     //   headers: {
+  //     //     "Authorization": 'Basic'+btoa('nyankiti24:n2z3gsfwue'),
+  //     //   },
+  //     ).then((response)  => {
+  //         // const jsonResponse = convert.xml2json(response.);
+  //         console.log(response);
+  //     })
+  //   }catch(error){
+  //     console.log(error);
+    // }
+  // }
+  // ---------------------------------------------------------------------------------
 
   // 下書きを除く記事を配列に追加する。
   const insertItems = (entry, item_list) => {
@@ -122,6 +157,7 @@ export default function DevelopScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* {articles} */}
       {/* {loading && <Loading />}
       <FlatList
         data={articles}
