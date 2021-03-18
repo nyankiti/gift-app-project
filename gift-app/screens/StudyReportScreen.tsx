@@ -5,10 +5,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import { useFonts } from 'expo-font';
 import { Modal, Portal, Provider } from 'react-native-paper';
+import { RFPercentage } from "react-native-responsive-fontsize";
 import { FirebaseTimestamp, db } from '../src/firebase';
 
 /* component */
-
+import Loading from '../screens/LoadingScreen';
 /* lib */
 import { formatDateUntilDay, formatDateUntilMinute, formatDate } from '../utils/file';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
@@ -21,6 +22,9 @@ export default function StudyReportScreen() {
     Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
     ComicSnas: require('../assets/fonts/comicsansms3.ttf')
   });
+  // if (!loaded) {
+  //   return <Loading />;
+  // }
 
   const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
   const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
@@ -126,13 +130,12 @@ export default function StudyReportScreen() {
 
   return (
     <ScrollView>
-
     <Provider>
 
     <View style={styles.container}>
       <View style={styles.dream_container}>
-        <View style={{flexDirection: 'column'}}>
-          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: 24, textAlign: 'center'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;夢&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
+        <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
+          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3.5), textAlign: 'center'}}>夢</Text>
           <Image
               source={require('../assets/images/Gift_logo_20210221.jpg')}
               style={styles.sliderImage}
@@ -154,10 +157,12 @@ export default function StudyReportScreen() {
 
 
       <View style={styles.purpose_container}>
-        <View style={{flexDirection: 'column'}}>
-          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: 24, textAlign: 'center'}}>今日の目標</Text>
+        <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
+          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3), textAlign: 'center'}}>今日の目標</Text>
           <View style={styles.pie}>
-            <Text style={styles.text_in_clock}>{selectedDate}</Text>
+            <View style={styles.clocl_text_space}>
+              <Text style={styles.text_in_clock}>{selectedDate}</Text>
+            </View>
           </View>
         </View>
         <View style={styles.purpose_form} >
@@ -266,15 +271,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dream_container: {
-    flex: 2,
+    // flex: 2,
     flexDirection: 'row',
     width: calendar_width,
+    height: windowHeight*0.23,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f8ff',
+    borderTopWidth: 1,
+    borderTopColor: '#f0f8ff',
   },
   dream_text: {
     fontFamily: 'ComicSnas, Anzumozi',
-    fontSize: 24,
+    fontSize: RFPercentage(3.2),
     textAlign: 'center',
     marginLeft: 35,
   },
@@ -283,17 +291,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   purpose_container: {
-    flex: 2,
+    // flex: 2,
     flexDirection: 'row',
     width: calendar_width,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f8ff',
-    marginTop: 20,
+    marginTop: windowHeight*0.005,
     // alignSelf: 'center',
   },
   purpose_text: {
     fontFamily: 'ComicSnas, Anzumozi',
-    fontSize: 24,
+    fontSize: RFPercentage(3.2),
     textAlign: 'center',
     marginLeft: 35,
   },
@@ -301,11 +309,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  clocl_text_space: {
+    marginTop: windowWidth*0.06,
+    marginLeft: windowWidth*0.06,
+    height: windowWidth*0.12,
+    width: windowWidth*0.12,
+    borderRadius: 50,
+    backgroundColor: 'white',
+  },
   text_in_clock: {
     textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+    // justifyContent: 'center',
+    paddingTop: windowWidth*0.013,
+    fontSize: RFPercentage(3.8),
   },
   modal_container: {
     backgroundColor: 'white',
@@ -313,23 +329,26 @@ const styles = StyleSheet.create({
     height: modal_height,
   },
   pie: {
-    height: 100,
-    width: 100,
+    // flex: 1,
+    // flexDirection: 'column',
+    height: windowWidth*0.24,
+    width: windowWidth*0.24,
     borderRadius: 50,
-    backgroundColor: '#1abc9c'
+    backgroundColor: '#EAC799',
+    marginBottom: windowHeight*0.02,
   },
   calendar_container: {
-    flex: 5,
-    marginTop: 40,
+    // flex: 5,
+    marginTop: windowHeight*0.04,
     width: calendar_width,
     borderBottomWidth: 1,
-    borderTopWidth:1,
+    // borderTopWidth:1,
     borderBottomColor: '#f0f8ff',
-    borderTopColor: '#f0f8ff',
+    // borderTopColor: '#f0f8ff',
   },
   sliderImage: {
-    height: 100,
-    width: 100,
+    height: windowWidth*0.24,
+    width: windowWidth*0.24,
     borderRadius: 12,
   },
   // modal

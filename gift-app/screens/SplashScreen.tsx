@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, Button, StyleSheet, Dimensions, 
-  Image, TouchableOpacity, Platform, TextInput } from 'react-native';
+  Image, TouchableOpacity, Platform, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
 // react-native moduleがexpoに対応していなくてもexpoが独自のmoduleを用意してくれている可能性がある
 // import LinearGradient from 'react-native-linear-gradient';
+import { RFPercentage } from "react-native-responsive-fontsize";
 import {LinearGradient} from 'expo-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Animatable from 'react-native-animatable';
@@ -11,6 +12,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useFonts } from 'expo-font';
 
 import { AuthContext } from '../src/AuthProvider';
+import { windowWidth, windowHeight } from '../utils/Dimentions';
 
 
 const SplashScreen = ({navigation}) => {
@@ -104,7 +106,7 @@ const SplashScreen = ({navigation}) => {
 
 
   return ( 
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.header_text}>Lines</Text>
       </View>
@@ -115,7 +117,7 @@ const SplashScreen = ({navigation}) => {
       <View style={styles.formArea} >
         
 
-        <Text style={[styles.text_footer, {marginTop: 20}]}></Text>
+        <View style={{marginTop: windowHeight*0.03}}></View>
 
           <View style={styles.action}>
               <FontAwesome 
@@ -149,7 +151,7 @@ const SplashScreen = ({navigation}) => {
             </Animatable.View>
           }
 
-          <Text style={[styles.text_footer, {marginTop: 40}]}></Text>
+          <View style={{marginTop: windowHeight*0.05}}></View>
           <View style={styles.action}>
               <FontAwesome 
                 name='lock'
@@ -209,12 +211,12 @@ const SplashScreen = ({navigation}) => {
           </TouchableOpacity>
         </Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
-const {width} = Dimensions.get("screen");
-const input_width = width * 0.8
+
+const input_width = windowWidth * 0.8
 
 const styles = StyleSheet.create({
   container: {
@@ -222,18 +224,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor:"black", 
     borderWidth: 1,
-    margin: 30,
+    margin: windowWidth*0.03,
   },
   // headerとfooterが2:1となるようにそれぞれchildren要素にもflexを指定
   header: {
     flex: 2,
     justifyContent: 'center',
     // alignItems: 'center'
-    marginLeft: 45
+    marginLeft: windowWidth*0.05,
   },
   header_text: {
-    fontSize: 40,
+    fontSize: RFPercentage(6),
     fontFamily: 'ComicSnas, Anzumozi',
+    marginTop: windowHeight*0.02,
+    marginBottom: windowHeight*0.04
   },
   centerTextArea: {
     flex:2,
@@ -241,9 +245,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   center_text:{
-    fontSize: 30,
+    fontSize: RFPercentage(4.5),
+    fontWeight: 'bold',
+    textAlign: 'center',
     fontFamily: 'ComicSnas, Anzumozi',
-    padding: 15,
+    padding: windowHeight*0.02,
   },
   formArea: {
     flex: 2,
@@ -255,11 +261,11 @@ const styles = StyleSheet.create({
   },
   footer: {
       flex: 1,
-      paddingVertical: 50,
-      paddingHorizontal: 30,
+      paddingVertical: windowHeight*0.03,
+      paddingLeft: windowWidth*0.03,
   },
   footer_text:{
-    fontSize: 15,
+    fontSize: RFPercentage(3),
     fontFamily: 'ComicSnas, Anzumozi',
     padding: 10,
   },
@@ -299,7 +305,7 @@ const styles = StyleSheet.create({
   },
   button: {
       alignItems: 'flex-start',
-      marginTop: 50
+      marginTop: windowHeight*0.08
   },
   signIn: {
       // width: '100%',
@@ -307,10 +313,10 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 10,
-      marginLeft: 20,
+      marginLeft: windowWidth*0.06,
   },
   textSign: {
-      fontSize: 24,
+      fontSize: RFPercentage(4),
       fontWeight: 'bold',
       fontFamily: 'ComicSnas, Anzumozi',
   }
