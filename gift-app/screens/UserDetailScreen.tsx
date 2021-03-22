@@ -11,7 +11,7 @@ import {getUsers} from '../src/firebase';
 
 
 
-export default function UserDetailScreen() {
+const UserDetailScreen: React.FC = () => {
 
 
   useEffect(() => {
@@ -26,6 +26,8 @@ export default function UserDetailScreen() {
     </View>
   );
 }
+
+export default UserDetailScreen;
 
 const styles = StyleSheet.create({
   container: {

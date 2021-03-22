@@ -32,7 +32,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListItem = ({imageUrl, title, author, onPress}) => {
+type Props = {
+  imageUrl: string;
+  title: string;
+  author: string;
+  onPress: () => void;
+}
+
+const ListItem :React.FC<Props> = ({imageUrl, title, author, onPress}) => {
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
       <View style={styles.leftContainer}>

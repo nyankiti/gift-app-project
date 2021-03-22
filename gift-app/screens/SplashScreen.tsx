@@ -14,8 +14,11 @@ import { useFonts } from 'expo-font';
 import { AuthContext } from '../src/AuthProvider';
 import { windowWidth, windowHeight } from '../utils/Dimentions';
 
+type Props = {
+  navigation: any
+}
 
-const SplashScreen = ({navigation}) => {
+const SplashScreen: React.FC<Props> = ({navigation}) => {
 
   const [data, setData] = useState({
     email: '',

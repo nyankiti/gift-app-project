@@ -5,8 +5,12 @@ import { db, FirebaseTimestamp } from '../src/firebase';
 
 const { width, height } = Dimensions.get('screen');
 
+type Props = {
+  title: string;
+  modeValue: ("text" | "outlined" | "contained" | undefined);
+}
 
-const FormButton = ({ title, modeValue, ...rest }) => {
+const FormButton: React.FC<Props> = ({ title, modeValue, ...rest }) => {
   return (
     <Button
       mode={modeValue}

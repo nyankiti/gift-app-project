@@ -1,7 +1,7 @@
 import React from "react";
 import {StyleSheet, SafeAreaView, ActivityIndicator, Text,} from "react-native";
 
-export default function LoadingScreen() {
+const LoadingScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ActivityIndicator size="large" />
@@ -9,6 +9,7 @@ export default function LoadingScreen() {
     </SafeAreaView>
   );
 };
+export default LoadingScreen;
 
 const styles = StyleSheet.create({
   container: {

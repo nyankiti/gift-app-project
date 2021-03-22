@@ -35,7 +35,7 @@ const HatenaConfig = {
   profileFields: ['id', 'name', 'display', 'picture', 'email']
 }
 
-export default function DevelopScreen() {
+const DevelopScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState([]);
 
@@ -177,6 +177,7 @@ export default function DevelopScreen() {
   );
 };
 
+export default DevelopScreen;
 
 const styles = StyleSheet.create({
   container: {

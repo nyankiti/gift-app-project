@@ -8,7 +8,11 @@ import { db, FirebaseTimestamp } from '../src/firebase';
 import { Container, Card, UserInfo, UserInfoText, UserName, UserImg, UserImgWrapper, PostTime, MessageText, TextSection} from '../styles/UsersStyle';
 
 
-export default function HomeScreen({ navigation }: any) {
+type Props = {
+  navigation: any;
+}
+
+const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [threads, setThreads] = useState<any>([]);
   const [loading, setLoading] = useState(true);
 
@@ -91,6 +95,8 @@ export default function HomeScreen({ navigation }: any) {
     </View>
   );
 }
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {

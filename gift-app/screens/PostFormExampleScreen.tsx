@@ -11,7 +11,7 @@ import { Text, View } from '../components/Themed';
 
 
 
-export default function PostFormExampleScreen() {
+const PostFormExampleScreen = () => {
   useEffect(() => {
   }, []);
 
@@ -41,6 +41,7 @@ export default function PostFormExampleScreen() {
   );
 }
 
+export default PostFormExampleScreen;
 
 const styles = StyleSheet.create({
   container: {

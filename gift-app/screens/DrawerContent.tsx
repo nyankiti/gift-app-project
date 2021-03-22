@@ -9,8 +9,10 @@ import { AuthContext } from '../src/AuthProvider';
 
 /* screen */
 
+type Props = {
+}
 
-export default function DrawerContent(props) {
+const DrawerContent: React.FC = (props) => {
   const {user, logout} = useContext(AuthContext);
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
@@ -91,7 +93,7 @@ export default function DrawerContent(props) {
 }
 
 
-
+export default DrawerContent;
 
 
 

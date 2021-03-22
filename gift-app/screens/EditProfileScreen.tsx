@@ -26,7 +26,7 @@ import { AuthContext } from '../src/AuthProvider';
 
 
 
-export default function EditProfileScreen() {
+const EditProfileScreen = () => {
   const {user, logout} = useContext(AuthContext);
   const [image, setImage] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -169,7 +169,6 @@ export default function EditProfileScreen() {
 
 
 
-
   return (
     <View style={styles.container}>
       <BottomSheet 
@@ -291,6 +290,9 @@ export default function EditProfileScreen() {
     </View>
   );
 }
+
+export default EditProfileScreen;
+
 
 const styles = StyleSheet.create({
   container: {

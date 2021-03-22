@@ -7,7 +7,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const SupportScreen = ({navigation}) => {
+type Props = {
+  navigation: any
+}
+
+const SupportScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <ScrollView style={styles.container}>

@@ -11,8 +11,11 @@ import Navigation from '../navigation';
 import { AuthContext } from '../src/AuthProvider';
 
 
+type Props = {
+  navigation: any
+}
 
-const SignInScreen = ({navigation}) => {
+const SignInScreen: React.FC<Props> = ({navigation}) => {
   const [data, setData] = useState({
     email: '',
     password: '',

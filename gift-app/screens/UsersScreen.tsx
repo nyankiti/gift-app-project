@@ -68,7 +68,7 @@ const Messages = [
 ];
 
 
-export default function UserScreen({navigation, route}: Props) {
+const UserScreen: React.FC<Props> = ({navigation, route}) => {
   const [users, setUsers] = useState<any>([]);
   const [threads, setThreads] = useState([])
   const [loading, setLoading] = useState(true)
@@ -178,6 +178,8 @@ export default function UserScreen({navigation, route}: Props) {
     </View>
   );
 }
+
+export default UserScreen;
 
 const styles = StyleSheet.create({
   container: {

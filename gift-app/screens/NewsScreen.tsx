@@ -18,10 +18,12 @@ import { db, storage } from '../src/firebase';
 import { AuthContext } from '../src/AuthProvider';
 import Navigation from '../navigation/index copy';
 
+type Props = {
+  navigation: any
+}
 
 
-
-export default function NewsScreen({navigation}) {
+const NewsScreen: React.FC<Props> = ({navigation}) => {
 
 
   const {user} = useContext(AuthContext);
