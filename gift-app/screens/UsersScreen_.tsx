@@ -69,7 +69,7 @@ type Props = {
 }
 
 
-export default function UserScreen({navigation, route}: Props) {
+const UserScreen: React.FC<Props> = ({navigation, route}) => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
@@ -119,6 +119,8 @@ export default function UserScreen({navigation, route}: Props) {
     </Container>
   );
 }
+
+export default UserScreen;
 
 const styles = StyleSheet.create({
   container: {

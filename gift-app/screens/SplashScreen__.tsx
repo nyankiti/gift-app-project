@@ -6,8 +6,11 @@ import {LinearGradient} from 'expo-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Animatable from 'react-native-animatable';
 
+type Props = {
+  navigation: any
+}
 
-const SplashScreen = ({navigation}) => {
+const SplashScreen: React.FC<Props> = ({navigation}) => {
   return ( 
     <View style={styles.container}>
       <View style={styles.header}>

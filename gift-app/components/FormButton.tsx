@@ -2,7 +2,11 @@ import React from 'react';
 import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {windowHeight, windowWidth} from '../utils/Dimentions';
 
-const FormButton = ({buttonTitle, ...rest}) => {
+type Props = {
+  buttonTitle: boolean
+};
+
+const FormButton :React.FC<Props>= ({buttonTitle, ...rest}) => {
   return (
     <TouchableOpacity style={styles.buttonContainer} {...rest}>
       <Text style={styles.buttonText}>{buttonTitle}</Text>

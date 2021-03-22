@@ -15,7 +15,7 @@ import { AuthContext } from '../src/AuthProvider';
 
 
 
-export default function NewsDetailScreen() {
+const NewsDetailScreen = () => {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,6 +40,8 @@ export default function NewsDetailScreen() {
     </SafeAreaView>
   );
 }
+
+export default NewsDetailScreen;
 
 const styles = StyleSheet.create({
   container: {

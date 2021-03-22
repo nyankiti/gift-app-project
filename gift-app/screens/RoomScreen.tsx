@@ -11,8 +11,11 @@ import { auth } from 'firebase';
 
 const chatsRef = db.collection('chats');
 
+type Props = {
+  route: any
+}
 
-const RoomScreen = ({route}: any) => {
+const RoomScreen: React.FC<Props> = ({route}) => {
   const { user }: any = useContext(AuthContext);
   const { thread }: any = route.params;
   const currentUser = user.toJSON();

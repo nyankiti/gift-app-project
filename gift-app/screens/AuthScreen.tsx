@@ -28,7 +28,7 @@ type Username = {
   name : string,
 }
 
-export default function AccountInfoScreen( {navigation, route}: Props) {
+const AccountInfoScreen: React.FC<Props> = ( {navigation, route}) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -74,6 +74,8 @@ export default function AccountInfoScreen( {navigation, route}: Props) {
     </View>
   );
 }
+
+export default ;
 
 const styles = StyleSheet.create({
   container: {

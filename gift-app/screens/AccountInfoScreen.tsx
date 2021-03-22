@@ -20,8 +20,12 @@ import { pickImage } from "../src/image-picker";
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
+type Props = {
+  navigation: string;
+  route: any;
+}
 
-export default function AccountInfoScreen({navigation, route}) {
+const AccountInfoScreen: React.FC<Props> = ({navigation, route}) => {
   const {user, logout} = useContext(AuthContext);
 
   const [posts, setPosts] = useState([]);
@@ -160,6 +164,8 @@ export default function AccountInfoScreen({navigation, route}) {
     </SafeAreaView>
   );
 }
+
+export default AccountInfoScreen;
 
 const styles = StyleSheet.create({
   container: {

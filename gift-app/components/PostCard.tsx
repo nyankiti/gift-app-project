@@ -12,12 +12,15 @@ import ProgressiveImage from './ProgressiveImage';
 import { AuthContext } from '../src/AuthProvider';
 /* lib */
 import { db } from '../src/firebase';
+import { User } from '../types';
 
+type Props = {
+  item: any;
+  onDelete: () => void;
+}
 
-
-
-const PostCard = ({item, onDelete}) => {
-  const {user} = useContext(AuthContext);
+const PostCard: React.FC<Props> = ({item, onDelete}) => {
+  const { user } = useContext(AuthContext);
   
   const [loaded] = useFonts({
     Anzumozi: require('../assets/fonts/Anzumozi.ttf'),

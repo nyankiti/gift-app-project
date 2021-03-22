@@ -10,9 +10,12 @@ import Navigation from '../navigation';
 
 import { AuthContext } from '../src/AuthProvider';
 
+type Props = {
+  navigation: any
+}
 
 
-const SignUpScreen = ({navigation}) => {
+const SignUpScreen: React.FC<Props> = ({navigation}) => {
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -26,7 +29,7 @@ const SignUpScreen = ({navigation}) => {
 
   const { register } = useContext(AuthContext)
 
-  const textInputChange = (val) => {
+  const textInputChange = (val: string) => {
     if(val.length >= 4){
       setData({
         ...data,
@@ -42,7 +45,7 @@ const SignUpScreen = ({navigation}) => {
     }
   }
 
-  const handlePasswordChange = (val) => {
+  const handlePasswordChange = (val: string) => {
     if(val.trim().length >= 8){
       setData({
         ...data,
@@ -58,7 +61,7 @@ const SignUpScreen = ({navigation}) => {
     }
   }
 
-  const handleConfirmPasswordChange = (val) => {
+  const handleConfirmPasswordChange = (val: string) => {
     setData({
       ...data,
       confirm_password: val,
@@ -79,7 +82,7 @@ const SignUpScreen = ({navigation}) => {
     })
   }
 
-  const handleValidUser = (val) => {
+  const handleValidUser = (val: string) => {
     if (val.trim().length >= 4){
       setData({
         ...data,
@@ -93,7 +96,7 @@ const SignUpScreen = ({navigation}) => {
     }
   }
 
-  const handleValidPassword = (val) => {
+  const handleValidPassword = (val: string) => {
     if (val.trim().length >= 8){
       setData({
         ...data,

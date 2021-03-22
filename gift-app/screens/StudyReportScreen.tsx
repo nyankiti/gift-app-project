@@ -16,7 +16,9 @@ import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
-export default function StudyReportScreen() {
+
+
+const StudyReportScreen = () => {
   const {user} = useContext<any>(AuthContext);
   const [loaded] = useFonts({
     Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
@@ -257,6 +259,8 @@ export default function StudyReportScreen() {
 
   );
 }
+
+export default StudyReportScreen;
 
 const calendar_width = windowWidth * 0.90
 const modal_height = windowHeight * 0.7
