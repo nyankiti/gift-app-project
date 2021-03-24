@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import moment from 'moment';
 import { useFonts } from 'expo-font';
 import { Modal, Portal, Provider } from 'react-native-paper';
@@ -10,13 +11,15 @@ import { FirebaseTimestamp, db } from '../src/firebase';
 
 /* component */
 import Loading from '../screens/LoadingScreen';
+import { FloatingActionButton } from '../components/FloatingActionButton';
 /* lib */
 import { formatDateUntilDay, formatDateUntilMinute, formatDate } from '../utils/file';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
-
+const today = formatDateUntilDay();
+const pattern = /^\d{4}-?\d{2}-?\d{2}$/g;
 
 const StudyReportScreen = () => {
   const {user} = useContext<any>(AuthContext);
@@ -27,16 +30,20 @@ const StudyReportScreen = () => {
   // if (!loaded) {
   //   return <Loading />;
   // }
-
   const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
   const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate]  = useState(formatDate());
+  const [selectedDate, setSelectedDate]  = useState<any>('');
   const [uploading, setUploading] = useState<boolean>(false);
   const [transferred, setTransferred] = useState(0);
   const [post, setPost] = useState({
     dream: '',
-    oneDayGoal: ''
+    oneDayGoal: '',
+    settingDate: '',
+    targetDate: '',
   });
+  // 以下のstateでカレンダー目標の達成日時に指定されている目標を表示する
+  const [settingDateList, setSettingDateList] = useState<any>([]);
+  const [targetDateList, setTargetDateList] = useState<any>([]);
 
   const showDreamModal = () => {
     setDreamModalVisible(true);
@@ -51,22 +58,42 @@ const StudyReportScreen = () => {
     setGoalModalVisible(false);
   }
 
-  const dreamInputChange = (val: any) => {
+  const dreamInputChange = (val: string) => {
     setPost({
       ...post,
       dream: val,
     })
   }
 
-  const goalInputChange = (val: any) => {
+  const goalInputChange = (val: string) => {
     setPost({
       ...post,
       oneDayGoal: val,
     })
   }
 
+  const settingDateChange = (val: string) => {
+    setPost({
+      ...post,
+      settingDate: val
+    })
+    if(val.match(pattern)){
+      setSettingDateList([...settingDateList, val])
+    }
+  }
+
+  const targetDateChange = (val: string) => {
+    setPost({
+      ...post,
+      targetDate: val
+    })
+    if(val.match(pattern)){
+    setTargetDateList([...targetDateList, val])
+    }
+  }
+
   const pressCalendarDate = async (response: any) => {
-    setSelectedDate(response.day);
+    setSelectedDate(response);
     // 選択されたdateString(0000-00-00)を用いてdbから値を取ってくる
     console.log(response.dateString);
 
@@ -98,12 +125,17 @@ const StudyReportScreen = () => {
   // 日付が変更されると今日の目標がリセットされる関数
 
   const submitPost = () => {
-    console.log(post);
-    
-    db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay()).set({
+    // 17文字以上の投稿の場合は自動的に改行文字を入れるようにしたほうが良いかな、、
+    db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString).set({
       post: post,
       postTime: FirebaseTimestamp.fromDate(new Date()),
     })
+    db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid).set({
+      settingDateList: settingDateList,
+      targetDateList: targetDateList,
+      updateTime: FirebaseTimestamp.fromDate(new Date()),
+    })
+    setDreamModalVisible(false);
   }
 
   const fetchGoals = async () => {
@@ -123,10 +155,25 @@ const StudyReportScreen = () => {
       console.log(e);
     }
   }
+  const fetchDateList = async () => {
+    try {
+      const docRef = await db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
+      docRef.get().then((doc) => {
+        if(doc.exists){
+          const fetchedDateLists: any = doc.data()
+          setSettingDateList(fetchedDateLists.settingDateList)
+          setTargetDateList(fetchedDateLists.targetDateList)
+        }
+      })
+    }catch(e){
+      console.log(e);
+    }
+  }
 
 
   useEffect(() => {
     fetchGoals();
+    fetchDateList();
   }, []);
 
 
@@ -144,9 +191,9 @@ const StudyReportScreen = () => {
             />
         </View>
         <View style={styles.dream_form} >
-          <View>
-            <FontAwesome.Button
-              name="plus"
+          <View style={{marginLeft: windowWidth*0.55}}>
+            <FontAwesome5.Button
+              name="pencil-alt"
               size={22}
               backgroundColor="#fff"
               color="#2e64e5"
@@ -163,24 +210,24 @@ const StudyReportScreen = () => {
           <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3), textAlign: 'center'}}>今日の目標</Text>
           <View style={styles.pie}>
             <View style={styles.clocl_text_space}>
-              <Text style={styles.text_in_clock}>{selectedDate}</Text>
+              <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
             </View>
           </View>
         </View>
         <View style={styles.purpose_form} >
-          <View>
-            <FontAwesome.Button
-              name="plus"
+          <View style={{marginLeft: windowWidth*0.55}}>
+            <FontAwesome5.Button
+              name="pencil-alt"
               size={22}
               backgroundColor="#fff"
               color="#2e64e5"
-              onPress={showGoalModal}
+              onPress={showDreamModal}
             />
           </View>
           <Text style={styles.purpose_text}>{post.oneDayGoal} </Text>
         </View>
-      </View>
 
+      </View>
 
       <View style={styles.calendar_container}>
         <Calendar 
@@ -209,7 +256,73 @@ const StudyReportScreen = () => {
         <Portal>
             <Modal visible={dreamModalvisible} onDismiss={hideDreamModal} contentContainerStyle={styles.modal_container} >
               <View style={styles.input_wrapper}>
-                <TextInput
+                <View style={styles.input_header}>
+                  <View>
+                    <FontAwesome.Button
+                      name="times"
+                      size={18}
+                      color="#EAC799"
+                      backgroundColor='#f5f5f5'
+                      onPress={hideDreamModal}
+                    />
+                  </View>
+                  <View>
+                    <Text style={styles.input_header_text}>あなたの夢を作成</Text>
+                  </View>
+                  <TouchableOpacity onPress={submitPost}>
+                    <Text style={styles.input_header_text}>保存</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.input_body}>
+                  <Text style={[styles.input_body_text, {marginTop: 10}]}>大きな夢</Text>
+                  <View style={styles.action}>
+                      <TextInput 
+                        placeholder="大きな夢"
+                        // placeholderTextColor="#EAC799" 
+                        style={styles.textInput}
+                        autoCapitalize='none'
+                        value={post.dream}
+                        onChangeText={dreamInputChange}
+                      />
+                  </View>
+                  <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1}]}>目標</Text>
+                  <View style={styles.action}>
+                      <TextInput 
+                        placeholder="目標"
+                        placeholderTextColor="#EAC799" 
+                        multiline={true}
+                        style={styles.textInput}
+                        autoCapitalize='none'
+                        value={post.oneDayGoal}
+                        onChangeText={goalInputChange}
+                      />
+                  </View>
+                  <Text style={[styles.input_body_text, {marginTop: 10}]}>目標作成日</Text>
+                  <View style={styles.action}>
+                      <TextInput 
+                        placeholder={today}
+                        placeholderTextColor="#EAC799" 
+                        style={styles.textInput}
+                        autoCapitalize='none'
+                        onChangeText={settingDateChange}
+                      />
+                  </View>
+                  <Text style={[styles.input_body_text, {marginTop: 10}]}>目標達成予定日</Text>
+                  <View style={styles.action}>
+                      <TextInput 
+                        placeholder={today}
+                        placeholderTextColor="#EAC799" 
+                        style={styles.textInput}
+                        autoCapitalize='none'
+                        onChangeText={targetDateChange}
+                      />
+                  </View>
+
+                </View>
+
+
+
+                {/* <TextInput
                   style={styles.input_wrapper} 
                   placeholder='あなたの夢は?'
                   multiline={true}
@@ -226,7 +339,7 @@ const StudyReportScreen = () => {
                 <TouchableOpacity style={styles.submit_btn} onPress={submitPost}>
                   <Text style={styles.submit_button_text}>Post</Text>
                 </TouchableOpacity>
-                }
+                } */}
               </View>
             </Modal>
             <Modal visible={goalModalvisible} onDismiss={hideGoalModal} contentContainerStyle={styles.modal_container} >
@@ -252,7 +365,6 @@ const StudyReportScreen = () => {
               </View>
             </Modal>
         </Portal>
-
       </View>
     </Provider>
     </ScrollView>
@@ -263,7 +375,7 @@ const StudyReportScreen = () => {
 export default StudyReportScreen;
 
 const calendar_width = windowWidth * 0.90
-const modal_height = windowHeight * 0.7
+const modal_height = windowHeight * 0.8
 
 const styles = StyleSheet.create({
   container: {
@@ -288,10 +400,9 @@ const styles = StyleSheet.create({
     fontFamily: 'ComicSnas, Anzumozi',
     fontSize: RFPercentage(3.2),
     textAlign: 'center',
-    marginLeft: 35,
   },
   dream_form: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   purpose_container: {
@@ -307,10 +418,9 @@ const styles = StyleSheet.create({
     fontFamily: 'ComicSnas, Anzumozi',
     fontSize: RFPercentage(3.2),
     textAlign: 'center',
-    marginLeft: 35,
   },
   purpose_form: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   clocl_text_space: {
@@ -328,9 +438,10 @@ const styles = StyleSheet.create({
     fontSize: RFPercentage(3.8),
   },
   modal_container: {
-    backgroundColor: 'white',
-    padding: 20,
-    height: modal_height,
+    backgroundColor: '#f5f5f5',
+    // padding: 20,
+    height: '100%',
+    width: '100%',
   },
   pie: {
     // flex: 1,
@@ -355,21 +466,52 @@ const styles = StyleSheet.create({
     width: windowWidth*0.24,
     borderRadius: 12,
   },
-  // modal
+
+  // modal--------------------------------------------------------
   input_wrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: '#2e64e515'
+    backgroundColor: '#f5f5f5',
   },
-  input_field: {
-    justifyContent: 'center',
+  input_header: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#a9a9a9',
+  },
+  input_header_text: {
+    fontFamily: 'ComicSnas, Anzumozi',
+    fontSize: RFPercentage(4),
+    color: '#EAC799'
+  },
+  input_body:{
+    flex: 14,
+    width: '100%',
     alignItems: 'center',
-    fontSize: 24,
-    textAlign: 'center',
-    width: '90%',
-    marginBottom: 15,
+  },
+  input_body_text: {
+    fontFamily: 'ComicSnas, Anzumozi',
+    fontSize: RFPercentage(3.5),
+    color: '#EAC799',
+    alignSelf: 'flex-start',
+    marginLeft: windowWidth*0.1
+  },
+  textInput: {
+    flex: 1,
+    paddingLeft: 10,
+    backgroundColor: 'white',
+    height: windowHeight*0.07,
+    borderWidth: 0.5,
+    borderColor: 'black',
+  },
+  action: {
+    flexDirection: 'row',
+    marginTop: 10,
+    width: windowWidth * 0.9,
   },
   status_wrapper: {
     justifyContent: 'center',

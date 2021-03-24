@@ -194,9 +194,12 @@ function StudyReportNavigator({navigation}) {
       <StudyReportStack.Screen
         name="StudyReportScreen"
         component={StudyReportScreen}
-        options={{ headerTitle: 'Study Report', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        )}}
+        options={{ 
+          headerTitle: 'Study Report', 
+          headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+        )
+      }}
       />
     </StudyReportStack.Navigator>
   );
