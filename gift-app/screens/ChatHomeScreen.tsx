@@ -100,7 +100,8 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f5',
+    // backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
     flex: 1
   },
   listTitle: {

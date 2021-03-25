@@ -154,3 +154,4 @@ const NewsScreen: React.FC<Props> = ({navigation}) => {
   );
 }
 
+export default NewsScreen;

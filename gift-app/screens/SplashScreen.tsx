@@ -36,7 +36,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
     ComicSnas: require('../assets/fonts/comicsansms3.ttf')
   });
 
-  const textInputChange = (val) => {
+  const textInputChange = (val: string) => {
     if(val.trim().length >= 4){
       setData({
         ...data,
@@ -54,7 +54,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
     }
   }
 
-  const handlePasswordChange = (val) => {
+  const handlePasswordChange = (val: string) => {
     if(val.trim().length >= 8){
       setData({
         ...data,
@@ -77,7 +77,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
     })
   }
 
-  const handleValidUser = (val) => {
+  const handleValidUser = (val: string) => {
     if (val.trim().length >= 4){
       setData({
         ...data,
@@ -91,7 +91,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
     }
   }
 
-  const handleValidPassword = (val) => {
+  const handleValidPassword = (val: string) => {
     if (val.trim().length >= 8){
       setData({
         ...data,
