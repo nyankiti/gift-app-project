@@ -93,6 +93,7 @@ const StudyReportScreen = () => {
   }
 
   const pressCalendarDate = async (response: any) => {
+    console.log(targetDateList);
     setSelectedDate(response);
     // 選択されたdateString(0000-00-00)を用いてdbから値を取ってくる
     console.log(response.dateString);
@@ -120,6 +121,17 @@ const StudyReportScreen = () => {
     }catch(e){
       console.log(e);
     }
+  }
+
+  const renderMarkedDates = () => {
+    var ary = targetDateList
+    ary = ary.filter((v: number) => v)
+    var result = {}
+    ary.forEach((item: any) => {
+      result[item] = {marked: true, dotColor: 'skyblue'}
+    })
+    console.log(result)
+    return result
   }
 
   // 日付が変更されると今日の目標がリセットされる関数
@@ -231,6 +243,10 @@ const StudyReportScreen = () => {
 
       <View style={styles.calendar_container}>
         <Calendar 
+          // markedDates={{
+          //   '2021-03-24': {marked: true, dotColor: 'skyblue'}
+          // }}
+          markedDates={renderMarkedDates()}
           onDayPress={pressCalendarDate}
           // current={formatDateUntilDay()}
           renderArrow={(direction: any) => (<FontAwesome name={`arrow-${direction}`} color='#05375a' size={15}/>)}
