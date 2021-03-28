@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import moment from 'moment';
 import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { FirebaseTimestamp, db } from '../src/firebase';
@@ -23,19 +24,35 @@ const pattern = /^\d{4}-?\d{2}-?\d{2}$/g;
 
 const StudyReportScreen = () => {
   const {user} = useContext<any>(AuthContext);
-  const [loaded] = useFonts({
-    Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-    ComicSnas: require('../assets/fonts/comicsansms3.ttf')
-  });
-  // if (!loaded) {
-  //   return <Loading />;
-  // }
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+  // const [loaded] = useFonts({
+  //   Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+  //   ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+  // });
+
+  const loadFonts = async() => {
+    // if(!fontLoaded){
+      await Font.loadAsync({
+        'Anzumozi': require('../assets/fonts/Anzumozi.ttf'),
+        'ComicSnas': require('../assets/fonts/comicsansms3.ttf')
+      })
+      setFontLoaded(false)
+    // }
+  }
+
+
   const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
   const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
   const [selectedDate, setSelectedDate]  = useState<any>('');
   const [uploading, setUploading] = useState<boolean>(false);
   const [transferred, setTransferred] = useState(0);
   const [post, setPost] = useState({
+    dream: '',
+    oneDayGoal: '',
+    settingDate: '',
+    targetDate: '',
+  });
+  const [postToAlert, setPostToAlert] = useState({
     dream: '',
     oneDayGoal: '',
     settingDate: '',
@@ -121,6 +138,40 @@ const StudyReportScreen = () => {
     }catch(e){
       console.log(e);
     }
+    if(targetDateList.includes(response.dateString)){
+      fetchMarkedDatesDream(response.dateString)
+    }
+  }
+
+  const fetchMarkedDatesDream = async(dateString: string) => {
+    // markされた日を選択した場合は達成予定の目標を取りに行く
+      console.log('aaa')
+      try {
+        const docRef = await db.collection('users').doc(user.uid).collection('goals');
+        // docRef.where("post.dream","==","海に行く").get().then((doc) => {
+        docRef.where("post.targetDate","==",dateString).get().then((doc) => {
+          // 登録されていな場合はundefinedエラーがでるので場合分け
+          // whereクエリを投げ理場合はquerysnapshotの扱いが少し違う（複数ドキュメントが取れず前提となっている?）ので注意
+          if(doc.docs[0]){
+            console.log('取れました ', doc.docs[0].data());
+            const fetchedPost: any = doc.docs[0].data();
+            setPostToAlert({
+              ...post,
+              dream: fetchedPost.post.dream,
+              oneDayGoal: fetchedPost.post.oneDayGoal
+            })
+          }else{
+            console.log('取れていません');
+            setPostToAlert({
+              ...post,
+              dream: '',
+              oneDayGoal: '',
+            })
+          }
+        })
+      }catch(e){
+        console.log(e);
+      }
   }
 
   const renderMarkedDates = () => {
@@ -130,7 +181,6 @@ const StudyReportScreen = () => {
     ary.forEach((item: any) => {
       result[item] = {marked: true, dotColor: 'skyblue'}
     })
-    console.log(result)
     return result
   }
 
@@ -184,16 +234,21 @@ const StudyReportScreen = () => {
 
 
   useEffect(() => {
+    loadFonts();
     fetchGoals();
     fetchDateList();
   }, []);
 
+  if (fontLoaded) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView>
     <Provider>
 
     <View style={styles.container}>
+      <Text>{postToAlert.dream}</Text>
       <View style={styles.dream_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3.5), textAlign: 'center'}}>夢</Text>
@@ -219,7 +274,7 @@ const StudyReportScreen = () => {
 
       <View style={styles.purpose_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
-          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3), textAlign: 'center'}}>今日の目標</Text>
+          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
           <View style={styles.pie}>
             <View style={styles.clocl_text_space}>
               <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>

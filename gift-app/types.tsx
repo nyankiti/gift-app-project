@@ -10,6 +10,8 @@ export type BottomTabParamList = {
   StudyReport: undefined;
   Users: undefined;
   AccountInfo: undefined;
+  Chat: undefined;
+  Support: undefined;
 };
 
 export type DrawerParamaList = {
@@ -47,6 +49,9 @@ export type AccountInfoTabParamList = {
   AccountInfoScreen: undefined;
   EditProfileScreen: undefined;
 };
+export type SupportTabParamList = {
+  SupportScreen: undefined;
+}
 
 
 // --------------------------------------------------

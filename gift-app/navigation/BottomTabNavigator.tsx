@@ -24,13 +24,13 @@ import AddPostScreen from '../screens/AddPostScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import StudyReportScreen from '../screens/StudyReportScreen';
 import ChatScreen from '../screens/ChatScreen';
-
 import ChatHomeScreen from '../screens/ChatHomeScreen';
 import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
+import SupportScreen from '../screens/SupportScreen';
 
 /* types */
-import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList } from '../types';
+import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
 import { FontDisplay } from 'expo-font';
 
 
@@ -99,7 +99,7 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <Icon name="chatbubble-ellipses-outline" color={color} size={26} />,
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="AccountInfo"
         component={AccountInfoNavigator}
         options={({route}) => ({
@@ -108,6 +108,17 @@ export default function BottomTabNavigator() {
           tabBarLabel: 'Info',
           tabBarColor: 'red',
           tabBarIcon: ({ color }) => <Icon name="settings-outline" color={color} size={26} />,
+        })}
+      /> */}
+      <BottomTab.Screen
+        name="Support"
+        component={SupportNavigator}
+        options={({route}) => ({
+          // stackの遷移先のscreenのみtabBarを隠したいので、routeを渡して条件分岐して表示を切り替える
+          tabBarVisible: getTabBarVisibility(route),
+          tabBarLabel: 'Support',
+          tabBarColor: '#EAC799',
+          tabBarIcon: ({ color }) => <Icon name="information-circle-outline" color={color} size={26} />,
         })}
       />
     </BottomTab.Navigator>
@@ -314,5 +325,30 @@ function AccountInfoNavigator({navigation}: any) {
         }}
       />
     </AccountInfoStack.Navigator>
+  );
+}
+
+const SupportStack = createStackNavigator<SupportTabParamList>();
+
+function SupportNavigator({navigation}: any) {
+  return (
+    <SupportStack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: '#EAC799',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold'
+      }
+    }}>
+      <SupportStack.Screen
+        name="SupportScreen"
+        component={SupportScreen}
+        options={{ 
+          headerTitle: 'SupportInfo', headerLeft: () => (
+        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+        )}}
+      />
+    </SupportStack.Navigator>
   );
 }
