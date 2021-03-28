@@ -7,6 +7,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { windowHeight, windowWidth } from '../utils/Dimentions';
+
+
 type Props = {
   navigation: any
 }
@@ -18,7 +21,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
       <View style={styles.sliderContainer}>
           <View style={styles.slide}>
             <Image
-              source={require('../assets/images/Gift_logo_20210221.jpg')}
+              source={require('../assets/images/gift_heart_outline.png')}
               resizeMode="cover"
               style={styles.sliderImage}
             />
@@ -70,7 +73,27 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
           <View style={styles.categoryIcon}>
             <MaterialCommunityIcons name="cake" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>It's a piece of cake</Text>
+          <Text style={styles.categoryBtnTxt}>cake</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={[styles.categoryContainer, {marginTop: 10}]}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+          <View style={styles.categoryIcon}>
+            <Ionicons name="information" size={35} />
+          </View>
+          <Text style={styles.categoryBtnTxt}>hahaha</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+          <View style={styles.categoryIcon}>
+            <Ionicons name="chat" size={35} />
+          </View>
+          <Text style={styles.categoryBtnTxt}>hihihi</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+          <View style={styles.categoryIcon}>
+            <MaterialCommunityIcons name="apple" size={35} />
+          </View>
+          <Text style={styles.categoryBtnTxt}>apple</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -85,16 +108,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   sliderContainer: {
-    height: 200,
+    height: windowHeight*0.2,
     width: '90%',
-    marginTop: 10,
+    marginTop: 20,
     justifyContent: 'center',
     alignSelf: 'center',
     borderRadius: 8,
   },
+  wrapper: {
 
-  wrapper: {},
-
+  },
   slide: {
     flex: 1,
     justifyContent: 'center',
@@ -103,7 +126,7 @@ const styles = StyleSheet.create({
   },
   sliderImage: {
     height: '100%',
-    width: '100%',
+    width: '50%',
     alignSelf: 'center',
     borderRadius: 8,
   },
@@ -121,19 +144,19 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   categoryIcon: {
-    borderWidth: 0,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    width: 70,
-    height: 70,
-    backgroundColor: '#f0fff0'  /* '#FF6347' */,
-    borderRadius: 50,
+    width: windowWidth*0.14,
+    height: windowWidth*0.14,
+    backgroundColor: '#EAC799',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black'
   },
   categoryBtnTxt: {
     alignSelf: 'center',
     marginTop: 5,
-    color: '#EAC799',
   },
   cardsWrapper: {
     marginTop: 20,
