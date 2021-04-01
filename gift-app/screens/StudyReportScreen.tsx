@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import Svg, { Circle, Line, Marker, Polygon, Defs, Text as SVGText } from 'react-native-svg';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -18,9 +19,12 @@ import { formatDateUntilDay, formatDateUntilMinute, formatDate } from '../utils/
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
+import { exists } from 'node:fs';
 
 const today = formatDateUntilDay();
 const pattern = /^\d{4}-?\d{2}-?\d{2}$/g;
+const SVGWidth = windowWidth*0.24;
+let goalDocRef: any;
 
 const StudyReportScreen = () => {
   const {user} = useContext<any>(AuthContext);
@@ -43,7 +47,7 @@ const StudyReportScreen = () => {
 
   const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
   const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate]  = useState<any>('');
+  const [selectedDate, setSelectedDate]  = useState<any>(formatDate());
   const [uploading, setUploading] = useState<boolean>(false);
   const [transferred, setTransferred] = useState(0);
   const [post, setPost] = useState({
@@ -51,8 +55,15 @@ const StudyReportScreen = () => {
     oneDayGoal: '',
     settingDate: '',
     targetDate: '',
+    targetHours: '',
+    ToDo: {
+      one: '',
+      two: '',
+      three: '',
+      four: '',
+    },
   });
-  const [postToAlert, setPostToAlert] = useState({
+  const [postToAlert, setPostToAlert] = useState<any>({
     dream: '',
     oneDayGoal: '',
     settingDate: '',
@@ -89,6 +100,49 @@ const StudyReportScreen = () => {
     })
   }
 
+  const targetHoursChange = (val: string) => {
+    setPost({
+      ...post,
+      targetHours: val,
+    })
+  }
+  const ToDoOneChange = (val: string) => {
+    setPost({
+      ...post,
+      ToDo: {
+        ...post.ToDo,
+        one: val
+      }
+    })
+  }
+  const ToDoTwoChange = (val: string) => {
+    setPost({
+      ...post,
+      ToDo: {
+        ...post.ToDo,
+        two: val
+      }
+    })
+  }
+  const ToDoThreeChange = (val: string) => {
+    setPost({
+      ...post,
+      ToDo: {
+        ...post.ToDo,
+        three: val
+      }
+    })
+  }
+  const ToDoFourChange = (val: string) => {
+    setPost({
+      ...post,
+      ToDo: {
+        ...post.ToDo,
+        four: val
+      }
+    })
+  }
+
   const settingDateChange = (val: string) => {
     setPost({
       ...post,
@@ -109,9 +163,16 @@ const StudyReportScreen = () => {
     }
   }
 
+  const calcClockRotation = () => {
+    let result = Number(post.targetHours)
+    return result * 30
+  }
+
   const pressCalendarDate = async (response: any) => {
-    console.log(targetDateList);
+    console.log(formatDate());
     setSelectedDate(response);
+    // 上画面にでてくる目標をリセットする
+    setPostToAlert('');
     // 選択されたdateString(0000-00-00)を用いてdbから値を取ってくる
     console.log(response.dateString);
 
@@ -138,6 +199,7 @@ const StudyReportScreen = () => {
     }catch(e){
       console.log(e);
     }
+    // 選択した日が目標設定日に該当する場合はその目標のデータも取得する
     if(targetDateList.includes(response.dateString)){
       fetchMarkedDatesDream(response.dateString)
     }
@@ -174,6 +236,10 @@ const StudyReportScreen = () => {
       }
   }
 
+  const renderPieChart = () => {
+    return "50, 50"
+  }
+
   const renderMarkedDates = () => {
     var ary = targetDateList
     ary = ary.filter((v: number) => v)
@@ -186,18 +252,31 @@ const StudyReportScreen = () => {
 
   // 日付が変更されると今日の目標がリセットされる関数
 
-  const submitPost = () => {
+  const submitPost = async() => {
+    console.log(selectedDate);
     // 17文字以上の投稿の場合は自動的に改行文字を入れるようにしたほうが良いかな、、
-    db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString).set({
-      post: post,
-      postTime: FirebaseTimestamp.fromDate(new Date()),
-    })
-    db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid).set({
-      settingDateList: settingDateList,
-      targetDateList: targetDateList,
-      updateTime: FirebaseTimestamp.fromDate(new Date()),
-    })
-    setDreamModalVisible(false);
+    try{
+      // 日付が選択されているか、初期状態かによってselectedDayが値を持つかどうか変わるので条件分岐する
+      if(selectedDate.dateString){
+        goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString);
+      }else{
+        goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
+      }
+      goalDocRef.set({
+        post: post,
+        postTime: FirebaseTimestamp.fromDate(new Date()),
+      });
+      const ReservedDateDocRef = await db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
+      ReservedDateDocRef.set({
+        settingDateList: settingDateList,
+        targetDateList: targetDateList,
+        updateTime: FirebaseTimestamp.fromDate(new Date()),
+      })
+      setDreamModalVisible(false);
+      setGoalModalVisible(false);
+    }catch (e){
+      console.log(e);
+    }
   }
 
   const fetchGoals = async () => {
@@ -248,7 +327,7 @@ const StudyReportScreen = () => {
     <Provider>
 
     <View style={styles.container}>
-      <Text>{postToAlert.dream}</Text>
+      {postToAlert.dream ? <Text>目標設定日：{postToAlert.dream}</Text> : <Text></Text>}
       <View style={styles.dream_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3.5), textAlign: 'center'}}>夢</Text>
@@ -275,11 +354,26 @@ const StudyReportScreen = () => {
       <View style={styles.purpose_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
-          <View style={styles.pie}>
+          {/* <View style={styles.pie}>
             <View style={styles.clocl_text_space}>
               <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
             </View>
-          </View>
+          </View> */}
+          <Svg height={SVGWidth} width={SVGWidth} >
+            <Defs>
+              <Marker id="arrow" viewBox="0 -5 10 10" orient="auto">
+                <Polygon  points="0,-5 5,0 0,5" fill="black" stroke="none" />
+              </Marker>
+            </Defs>
+
+            <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.22} fill='white' stroke="#EAC799" strokeWidth={windowWidth*0.1} strokeDashoffset="25" strokeDasharray="" />
+            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="4" markerEnd="url(#arrow)" /> 
+            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="4" transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} markerEnd="url(#arrow)" />
+            <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.26} fill='white' /> 
+            <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
+              {selectedDate.day ? selectedDate.day : formatDate()}
+            </SVGText>
+          </Svg>
         </View>
         <View style={styles.purpose_form} >
           <View style={{marginLeft: windowWidth*0.55}}>
@@ -288,7 +382,7 @@ const StudyReportScreen = () => {
               size={22}
               backgroundColor="#fff"
               color="#2e64e5"
-              onPress={showDreamModal}
+              onPress={showGoalModal}
             />
           </View>
           <Text style={styles.purpose_text}>{post.oneDayGoal} </Text>
@@ -388,51 +482,76 @@ const StudyReportScreen = () => {
                         onChangeText={targetDateChange}
                       />
                   </View>
-
                 </View>
-
-
-
-                {/* <TextInput
-                  style={styles.input_wrapper} 
-                  placeholder='あなたの夢は?'
-                  multiline={true}
-                  numberOfLines={4}
-                  value={post.dream}
-                  onChangeText={dreamInputChange}
-                />
-                {uploading ? ( 
-                  <View style={styles.status_wrapper}>
-                    <Text>{ transferred } % Competed!</Text>
-                    <ActivityIndicator size='large' color='#0000ff' />
-                  </View>
-                ): 
-                <TouchableOpacity style={styles.submit_btn} onPress={submitPost}>
-                  <Text style={styles.submit_button_text}>Post</Text>
-                </TouchableOpacity>
-                } */}
               </View>
             </Modal>
             <Modal visible={goalModalvisible} onDismiss={hideGoalModal} contentContainerStyle={styles.modal_container} >
               <View style={styles.input_wrapper}>
-                <TextInput
-                  style={styles.input_wrapper} 
-                  placeholder='今日の目標は?'
-                  multiline={true}
-                  numberOfLines={4}
-                  value={post.oneDayGoal}
-                  onChangeText={goalInputChange}
-                />
-                {uploading ? ( 
-                  <View style={styles.status_wrapper}>
-                    <Text>{ transferred } % Competed!</Text>
-                    <ActivityIndicator size='large' color='#0000ff' />
+                <View style={styles.input_header}>
+                  <View>
+                    <FontAwesome.Button
+                      name="times"
+                      size={20}
+                      color="#EAC799"
+                      backgroundColor='#f5f5f5'
+                      onPress={hideGoalModal}
+                    />
                   </View>
-                ): 
-                <TouchableOpacity style={styles.submit_btn} onPress={submitPost}>
-                  <Text style={styles.submit_button_text}>Post</Text>
-                </TouchableOpacity>
-                }
+                  <View>
+                    <Text style={styles.input_header_text}>To Do</Text>
+                  </View>
+                  <TouchableOpacity onPress={submitPost}>
+                    <Text style={styles.input_header_text}>保存</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.input_body}>
+                  <Text style={[styles.input_body_text, {marginTop: 10}]}>時間単位</Text>
+                  <View style={styles.action}>
+                      <TextInput 
+                        placeholder="3時間/日"
+                        placeholderTextColor="#EAC799" 
+                        style={styles.textInput}
+                        autoCapitalize='none'
+                        value={post.targetHours}
+                        onChangeText={targetHoursChange}
+                      />
+                  </View>
+                  <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1}]}>To Do List</Text>
+                  <View style={styles.consecutive_input_box}>
+                      <TextInput 
+                        placeholder="・"
+                        placeholderTextColor="#EAC799" 
+                        style={[styles.consecutive_input_text, {borderTopWidth: 0.5 , borderTopColor: 'black'}]}
+                        autoCapitalize='none'
+                        value={post.ToDo.one}
+                        onChangeText={ToDoOneChange}
+                      />
+                      <TextInput 
+                        placeholder="・"
+                        placeholderTextColor="#EAC799" 
+                        style={styles.consecutive_input_text}
+                        autoCapitalize='none'
+                        value={post.ToDo.two}
+                        onChangeText={ToDoTwoChange}
+                      />
+                      <TextInput 
+                        placeholder="・"
+                        placeholderTextColor="#EAC799" 
+                        style={styles.consecutive_input_text}
+                        autoCapitalize='none'
+                        value={post.ToDo.three}
+                        onChangeText={ToDoThreeChange}
+                      />
+                      <TextInput 
+                        placeholder="・"
+                        placeholderTextColor="#EAC799" 
+                        style={[styles.consecutive_input_text, {borderBottomWidth: 0.5 , borderBottomColor: 'black'}]}
+                        autoCapitalize='none'
+                        value={post.ToDo.four}
+                        onChangeText={ToDoFourChange}
+                      />
+                  </View>
+                </View>
               </View>
             </Modal>
         </Portal>
@@ -604,6 +723,21 @@ const styles = StyleSheet.create({
     // fontFamily: '',
     fontWeight: 'bold',
     color: '#2e64e5',
+  }, 
+  consecutive_input_box: {
+    flexDirection: 'column',
+    marginTop: 10,
+    width: windowWidth * 0.9,
+  },
+  consecutive_input_text: {
+    // flex: 1,
+    paddingLeft: 10,
+    backgroundColor: 'white',
+    height: windowHeight*0.07,
+    borderLeftWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderLeftColor: 'black',
+    borderRightColor: 'black',
   }
 
 })

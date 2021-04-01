@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
 
 import Swiper from 'react-native-swiper';
@@ -6,8 +6,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
+/* context */
+import { AuthContext } from '../src/AuthProvider';
 
 
 type Props = {
@@ -15,6 +17,55 @@ type Props = {
 }
 
 const SupportScreen: React.FC<Props> = ({navigation}) => {
+  const {user} = useContext(AuthContext);
+  const [userData, setUserData] = useState({
+    'userImg': '',
+    'fname': '',
+    'lname': '',
+    'email': '',
+    'phone': '',
+    'about': '',
+    'city': ''
+  });
+
+
+  const getUser = async() => {
+    await db.collection('users').doc(user.uid).get()
+      .then(async(documentSnapshot) => {
+        if(documentSnapshot.exists){
+          setUserData(documentSnapshot.data());
+        }
+      })
+  }
+
+  const handleChatButtonPress = async() => {
+    const threadDocRef = await db.collection('threads').doc(user.uid);
+    // console.log((await threadDocRef.get()).data);
+
+    threadDocRef.set({
+        name: userData.fname + userData.lname,
+        createdBy: userData.fname + userData.lname,
+        latestMessage: {
+          text: `giftについて質問してみよう`,
+          createdAt: new Date().getTime(),
+        }
+      }
+    )
+    // 始めていメッセージルームを作成した場合はシステムメッセージを入れておく
+    if((await threadDocRef.collection('messages').get()).empty){
+      threadDocRef.collection('messages').add({
+        text: `giftについて質問してみよう`,
+        createdAt: new Date().getTime(),
+        system: true
+    })
+    }
+
+    navigation.navigate('Chat');
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -39,6 +90,12 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
           </View>
           <Text style={styles.categoryBtnTxt}>Giftについて</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryBtn} onPress={handleChatButtonPress}>
+          <View style={styles.categoryIcon}>
+            <Ionicons name="chatbubbles" size={35} />
+          </View>
+          <Text style={styles.categoryBtnTxt}>chat</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.categoryBtn}
           onPress={() =>
@@ -48,12 +105,6 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
             <MaterialCommunityIcons name="information" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>Wifi</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
-          <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="information" size={35} />
-          </View>
-          <Text style={styles.categoryBtnTxt}>aaaaaaaa</Text>
         </TouchableOpacity>
       </View>
       <View style={[styles.categoryContainer, {marginTop: 10}]}>
@@ -65,27 +116,27 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <Ionicons name="chat" size={35} />
-          </View>
-          <Text style={styles.categoryBtnTxt}>chat</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
-          <View style={styles.categoryIcon}>
             <MaterialCommunityIcons name="cake" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>cake</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+          <View style={styles.categoryIcon}>
+            <MaterialCommunityIcons name="bell-circle" size={35} />
+          </View>
+          <Text style={styles.categoryBtnTxt}>aaaa</Text>
         </TouchableOpacity>
       </View>
       <View style={[styles.categoryContainer, {marginTop: 10}]}>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <Ionicons name="information" size={35} />
+            <Ionicons name="fitness" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>hahaha</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
           <View style={styles.categoryIcon}>
-            <Ionicons name="chat" size={35} />
+            <Ionicons name="flask" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>hihihi</Text>
         </TouchableOpacity>
