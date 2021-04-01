@@ -63,7 +63,7 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name="News"
         // 開発時のみここをDevelopScreenを表示してデバッグに使う
-        // component={DevelopScreen}
+        // component={TabTwoScreen}
         component={NewsNavigator}
         options={({route}) => ({
           tabBarVisible: getTabBarVisibility(route),

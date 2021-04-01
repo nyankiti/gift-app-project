@@ -28,7 +28,7 @@ export default function AddRoomScreen({ navigation }: any) {
 
   const handleButtonPress = () => {
     if (roomName.length > 0) {
-      db.collection('THREADS').add({
+      db.collection('threads').add({
           name: roomName,
           latestMessage: {
             text: `You have joined the room ${roomName}.`,
@@ -37,7 +37,7 @@ export default function AddRoomScreen({ navigation }: any) {
           }
         )
       .then(docRef => {
-        docRef.collection('MESSAGES').add({
+        docRef.collection('messages').add({
           text: `You have joined the room ${roomName}.`,
           createdAt: new Date().getTime(),
           system: true

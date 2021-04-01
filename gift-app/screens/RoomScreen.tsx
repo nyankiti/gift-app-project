@@ -24,8 +24,8 @@ const RoomScreen: React.FC<Props> = ({route}) => {
   const [userImg, setUserImg] = useState<string>();
 
   useEffect(() => {
-    const messagesListener = db.collection('THREADS').doc(thread._id)
-    .collection('MESSAGES').orderBy('createdAt', 'desc').onSnapshot(querySnapshot => {
+    const messagesListener = db.collection('threads').doc(thread._id)
+    .collection('messages').orderBy('createdAt', 'desc').onSnapshot(querySnapshot => {
       const messages = querySnapshot.docs.map(doc => {
         const firebaseData = doc.data();
 
@@ -72,7 +72,7 @@ const RoomScreen: React.FC<Props> = ({route}) => {
   const handleSend = async(messages: any) => {
     const text = messages[0].text;
 
-    db.collection('THREADS').doc(thread._id).collection('MESSAGES').add({
+    db.collection('threads').doc(thread._id).collection('messages').add({
       text,
       createdAt: new Date().getTime(),
       user: {
@@ -82,7 +82,7 @@ const RoomScreen: React.FC<Props> = ({route}) => {
       }
     });
 
-    await db.collection('THREADS').doc(thread._id).set(
+    await db.collection('threads').doc(thread._id).set(
       {
         latestMessage: {
           text: text,

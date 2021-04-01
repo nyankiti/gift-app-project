@@ -21,7 +21,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
    */
   useEffect(() => {
     const unsubscribe = db
-      .collection('THREADS')
+      .collection('threads')
       .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {
