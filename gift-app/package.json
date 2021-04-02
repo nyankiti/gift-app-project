@@ -16,6 +16,7 @@
     "@material-ui/core": "4.11.3",
     "@material-ui/icons": "4.11.2",
     "@popmotion/popcorn": "0.4.4",
+    "@react-native-community/datetimepicker": "3.0.4",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-firebase/app": "10.8.0",
     "@react-native-firebase/auth": "10.8.0",
@@ -29,6 +30,7 @@
     "@react-navigation/stack": "~5.12.8",
     "@use-expo/font": "2.0.0",
     "axios": "0.21.1",
+    "axios-oauth-1.0a": "0.2.1",
     "axios-oauth-client": "1.4.0",
     "d3-shape": "2.1.0",
     "dotenv": "8.2.0",
@@ -50,6 +52,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-action-button": "2.8.5",
     "react-native-animatable": "1.3.3",
+    "react-native-base64": "0.2.1",
     "react-native-calendars": "1.1254.0",
     "react-native-dotenv": "2.5.3",
     "react-native-fetch-blob": "0.10.8",
@@ -69,6 +72,7 @@
     "react-native-swiper": "1.6.0",
     "react-native-vector-icons": "8.0.0",
     "react-native-web": "~0.13.12",
+    "react-native-webview": "11.0.0",
     "reanimated-bottom-sheet": "1.0.0-alpha.22",
     "styled-components": "5.2.1",
     "xml-js": "1.6.11"
@@ -81,5 +85,10 @@
     "jest-expo": "~40.0.0",
     "typescript": "~4.0.0"
   },
-  "private": true
+  "private": true,
+  "proxy": {
+    "*": {
+      "target": "157.230.85.89:8080"
+    }
+  }
 }

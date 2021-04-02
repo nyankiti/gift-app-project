@@ -28,6 +28,7 @@ export type NewsTabParamList = {
   NewsScreen: undefined;
   AddPost: undefined;
   NewsDetail: undefined;
+  Develop: undefined;
 };
 
 export type StudyReportTabParamList = {
