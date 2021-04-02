@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button } from 'react-native';
 import Svg, { Circle, Line, Marker, Polygon, Defs, Text as SVGText } from 'react-native-svg';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -27,6 +28,31 @@ const SVGWidth = windowWidth*0.24;
 let goalDocRef: any;
 
 const StudyReportScreen = () => {
+// dateTimePicker testZone-----------------------------------------------------------------
+  const [test_date, setDate] = useState(new Date(1598051730000));
+  const [test_mode, setMode] = useState('date');
+  const [test_show, setShow] = useState(false);
+
+  const test_onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || test_date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+// ----------------------------------------------------------------------------------------
+
   const {user} = useContext<any>(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   // const [loaded] = useFonts({
@@ -37,8 +63,8 @@ const StudyReportScreen = () => {
   const loadFonts = async() => {
     // if(!fontLoaded){
       await Font.loadAsync({
-        'Anzumozi': require('../assets/fonts/Anzumozi.ttf'),
-        'ComicSnas': require('../assets/fonts/comicsansms3.ttf')
+        Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+        ComicSnas: require('../assets/fonts/comicsansms3.ttf')
       })
       setFontLoaded(false)
     // }
@@ -330,7 +356,7 @@ const StudyReportScreen = () => {
       {postToAlert.dream ? <Text>目標設定日：{postToAlert.dream}</Text> : <Text></Text>}
       <View style={styles.dream_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
-          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(3.5), textAlign: 'center'}}>夢</Text>
+          <Text style={{fontFamily: 'Anzumozi',fontSize: RFPercentage(3.5), textAlign: 'center'}}>夢</Text>
           <Image
               source={require('../assets/images/Gift_logo_20210221.jpg')}
               style={styles.sliderImage}
@@ -353,7 +379,7 @@ const StudyReportScreen = () => {
 
       <View style={styles.purpose_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
-          <Text style={{fontFamily: 'ComicSnas, Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
+          <Text style={{fontFamily: 'Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
           {/* <View style={styles.pie}>
             <View style={styles.clocl_text_space}>
               <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
@@ -498,7 +524,7 @@ const StudyReportScreen = () => {
                     />
                   </View>
                   <View>
-                    <Text style={styles.input_header_text}>To Do</Text>
+                    <Text style={[styles.input_header_text, {fontFamily: 'ComicSnas'}]}>To Do</Text>
                   </View>
                   <TouchableOpacity onPress={submitPost}>
                     <Text style={styles.input_header_text}>保存</Text>
@@ -516,7 +542,7 @@ const StudyReportScreen = () => {
                         onChangeText={targetHoursChange}
                       />
                   </View>
-                  <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1}]}>To Do List</Text>
+                  <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1, fontFamily: 'ComicSnas'}]}>To Do List</Text>
                   <View style={styles.consecutive_input_box}>
                       <TextInput 
                         placeholder="・"
@@ -550,6 +576,24 @@ const StudyReportScreen = () => {
                         value={post.ToDo.four}
                         onChangeText={ToDoFourChange}
                       />
+                  </View>
+                  <View>
+                    <View>
+                      <Button onPress={showDatepicker} title="Show date picker!" />
+                    </View>
+                    <View>
+                      <Button onPress={showTimepicker} title="Show time picker!" />
+                    </View>
+                    {test_show && (
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={test_date}
+                        mode={test_mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={test_onChange}
+                      />
+                    )}
                   </View>
                 </View>
               </View>
@@ -587,7 +631,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#f0f8ff',
   },
   dream_text: {
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'Anzumozi',
     fontSize: RFPercentage(3.2),
     textAlign: 'center',
   },
@@ -605,7 +649,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
   },
   purpose_text: {
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'Anzumozi',
     fontSize: RFPercentage(3.2),
     textAlign: 'center',
   },
@@ -674,7 +718,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#a9a9a9',
   },
   input_header_text: {
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'Anzumozi',
     fontSize: RFPercentage(4),
     color: '#EAC799'
   },
@@ -684,7 +728,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input_body_text: {
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'Anzumozi',
     fontSize: RFPercentage(3.5),
     color: '#EAC799',
     alignSelf: 'flex-start',

@@ -63,7 +63,7 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name="News"
         // 開発時のみここをDevelopScreenを表示してデバッグに使う
-        // component={TabTwoScreen}
+        // component={DevelopScreen}
         component={NewsNavigator}
         options={({route}) => ({
           tabBarVisible: getTabBarVisibility(route),
@@ -150,6 +150,26 @@ export function NewsNavigator({navigation}) {
         fontWeight: 'bold'
       }
     }}>
+      <NewsStack.Screen
+        name="Develop"
+        component={DevelopScreen}
+        options={{ 
+          headerTitle: 'Gift News', 
+          headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
+          headerRight: () => ( 
+            <View style={{marginRight: 10}}>
+              <FontAwesome5.Button
+                name="plus"
+                size={22}
+                backgroundColor="#EAC799"
+                color="#2e64e5"
+                onPress={() => navigation.navigate('AddPost')}
+              />
+            </View>
+          )
+        }}
+      />
       <NewsStack.Screen
         name="NewsScreen"
         component={NewsScreen}
