@@ -7,7 +7,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import * as Font from 'expo-font';
+import Loading from '../screens/LoadingScreen';
 import Colors from '../constants/Colors';
 
 import useColorScheme from '../hooks/useColorScheme';
@@ -28,6 +29,7 @@ import ChatHomeScreen from '../screens/ChatHomeScreen';
 import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
+import ArticleScreen from '../screens/ArticleScreen';
 
 /* types */
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
@@ -41,7 +43,17 @@ import { IconButton } from 'react-native-paper';
 const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
+  const [fontLoaded, setFontLoaded] = React.useState<boolean>(true);
+
   // bottomTabBarを表示させないScreenの設定
+  const loadFonts = async() => {
+    await Font.loadAsync({
+      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+      ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
+    })
+    setFontLoaded(false);
+  }
+
   const getTabBarVisibility = (route) => {
     const routeName = route.state
       ? route.state.routes[route.state.index].name
@@ -52,6 +64,14 @@ export default function BottomTabNavigator() {
     }
     return true;
   };
+
+  React.useEffect(() => {
+    loadFonts();
+  }, [])
+
+  if (fontLoaded) {
+    return <Loading />;
+  }
 
   return (
     <BottomTab.Navigator
@@ -139,7 +159,7 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 const NewsStack = createStackNavigator<NewsTabParamList>();
 
-export function NewsNavigator({navigation}) {
+export function NewsNavigator({navigation}: any) {
   return (
     <NewsStack.Navigator screenOptions={{
       headerStyle: {
@@ -147,7 +167,8 @@ export function NewsNavigator({navigation}) {
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'normal',
+        fontFamily: 'ComicSnas_bd',
       }
     }}>
       <NewsStack.Screen
@@ -169,6 +190,24 @@ export function NewsNavigator({navigation}) {
             </View>
           )
         }}
+      />
+      <NewsStack.Screen
+        name="Article"
+        component={ArticleScreen}
+        options={({route}: any) => ({ 
+          title: route.params.article.title, 
+          headerRight: () => ( 
+            <View style={{marginRight: 10}}>
+              <FontAwesome5.Button
+                name="plus"
+                size={22}
+                backgroundColor="#EAC799"
+                color="#2e64e5"
+                onPress={() => navigation.navigate('AddPost')}
+              />
+            </View>
+          )
+        })}
       />
       <NewsStack.Screen
         name="NewsScreen"
@@ -219,7 +258,8 @@ function StudyReportNavigator({navigation}) {
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'normal',
+        fontFamily: 'ComicSnas_bd',
       }
     }}>
       <StudyReportStack.Screen
@@ -246,7 +286,7 @@ function StudyReportNavigator({navigation}) {
 //       },
 //       headerTintColor: '#fff',
 //       headerTitleStyle: {
-//         fontWeight: 'bold'
+//         fontWeight: 'normal'
 //       }
 //     }}>
 //       <UsersStack.Screen
@@ -284,7 +324,8 @@ function ChatNavigator({navigation}: any) {
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'normal',
+        fontFamily: 'ComicSnas_bd',
       }
     }}>
       <ChatStack.Screen
@@ -324,7 +365,8 @@ function AccountInfoNavigator({navigation}: any) {
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'normal',
+        fontFamily: 'ComicSnas_bd',
       }
     }}>
       <AccountInfoStack.Screen
@@ -358,7 +400,8 @@ function SupportNavigator({navigation}: any) {
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'normal',
+        fontFamily: 'ComicSnas_bd',
       }
     }}>
       <SupportStack.Screen

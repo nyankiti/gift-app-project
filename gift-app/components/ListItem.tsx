@@ -1,5 +1,51 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { RFPercentage } from "react-native-responsive-fontsize";
+import * as Font from 'expo-font';
+import Loading from '../screens/LoadingScreen';
+
+
+
+
+type Props = {
+  imageUrl: string;
+  title: string;
+  author: string;
+  onPress: () => void;
+}
+
+const ListItem :React.FC<Props> = ({imageUrl, title, author, onPress}) => {
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+  const loadFonts = async() => {
+    await Font.loadAsync({
+      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+      ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+    })
+    setFontLoaded(false)
+  }
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
+  if (fontLoaded) {
+    return <Loading />;
+  }
+
+
+  return (
+    <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
+      <View style={styles.leftContainer}>
+        {!!imageUrl && <Image style={styles.image} source={{uri: imageUrl}} />}
+      </View>
+      <View style={styles.rightContainer}>
+        <Text numberOfLines={3} style={styles.text}>
+          {title}
+        </Text>
+        <Text style={styles.subText}>{author}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -20,10 +66,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    fontSize: 16,
+    fontSize: RFPercentage(4),
+    fontFamily: 'Anzumozi',
   },
   subText: {
-    fontSize: 12,
+    fontSize: RFPercentage(2),
+    fontFamily: 'Anzumozi',
     color: 'gray',
   },
   image: {
@@ -32,27 +80,5 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = {
-  imageUrl: string;
-  title: string;
-  author: string;
-  onPress: () => void;
-}
-
-const ListItem :React.FC<Props> = ({imageUrl, title, author, onPress}) => {
-  return (
-    <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
-      <View style={styles.leftContainer}>
-        {!!imageUrl && <Image style={styles.image} source={{uri: imageUrl}} />}
-      </View>
-      <View style={styles.rightContainer}>
-        <Text numberOfLines={3} style={styles.text}>
-          {title}
-        </Text>
-        <Text style={styles.subText}>{author}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
 
 export default ListItem;

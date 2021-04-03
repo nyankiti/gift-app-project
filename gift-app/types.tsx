@@ -29,6 +29,7 @@ export type NewsTabParamList = {
   AddPost: undefined;
   NewsDetail: undefined;
   Develop: undefined;
+  Article: undefined;
 };
 
 export type StudyReportTabParamList = {

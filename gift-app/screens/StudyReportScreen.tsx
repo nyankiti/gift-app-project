@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button } from 'react-native';
-import Svg, { Circle, Line, Marker, Polygon, Defs, Text as SVGText } from 'react-native-svg';
+import Svg, { Circle, Line, Marker, Polygon, Defs, Path, Text as SVGText } from 'react-native-svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -61,13 +61,11 @@ const StudyReportScreen = () => {
   // });
 
   const loadFonts = async() => {
-    // if(!fontLoaded){
       await Font.loadAsync({
         Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
         ComicSnas: require('../assets/fonts/comicsansms3.ttf')
       })
       setFontLoaded(false)
-    // }
   }
 
 
@@ -381,7 +379,7 @@ const StudyReportScreen = () => {
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
           {/* <View style={styles.pie}>
-            <View style={styles.clocl_text_space}>
+            <View style={styles.clock_text_space}>
               <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
             </View>
           </View> */}
@@ -393,12 +391,16 @@ const StudyReportScreen = () => {
             </Defs>
 
             <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.22} fill='white' stroke="#EAC799" strokeWidth={windowWidth*0.1} strokeDashoffset="25" strokeDasharray="" />
-            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="4" markerEnd="url(#arrow)" /> 
-            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="4" transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} markerEnd="url(#arrow)" />
+            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" fill='black' stroke="black" strokeWidth="6" markerEnd="url(#arrow)" /> 
+            {/* <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="6" transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} markerEnd="url(#arrow)" fill='black' /> */}
             <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.26} fill='white' /> 
-            <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
+            {/* <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
               {selectedDate.day ? selectedDate.day : formatDate()}
-            </SVGText>
+            </SVGText> */}
+            <View style={styles.clock_text_space}>
+              <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
+            </View>
+            {/* <Path d="M5 0 L0 10 L10 10 Z" fill='black' x={SVGWidth*0.445} transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} ></Path> */}
           </Svg>
         </View>
         <View style={styles.purpose_form} >
@@ -657,7 +659,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  clocl_text_space: {
+  clock_text_space: {
     marginTop: windowWidth*0.06,
     marginLeft: windowWidth*0.06,
     height: windowWidth*0.12,
