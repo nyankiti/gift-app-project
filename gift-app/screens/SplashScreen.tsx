@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, Dimensions, 
   Image, TouchableOpacity, Platform, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
 // react-native moduleがexpoに対応していなくてもexpoが独自のmoduleを用意してくれている可能性がある
@@ -10,7 +10,9 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 
+import Loading from '../screens/LoadingScreen';
 import { AuthContext } from '../src/AuthProvider';
 import { windowWidth, windowHeight } from '../utils/Dimentions';
 
@@ -19,7 +21,7 @@ type Props = {
 }
 
 const SplashScreen: React.FC<Props> = ({navigation}) => {
-
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -31,10 +33,19 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
 
   const { login } = useContext(AuthContext)
 
-  const [loaded] = useFonts({
-    Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-    ComicSnas: require('../assets/fonts/comicsansms3.ttf')
-  });
+  // const [loaded] = useFonts({
+  //   Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+  //   ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+  // });
+
+  const loadFonts = async() => {
+      await Font.loadAsync({
+        Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+        ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
+        ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
+      })
+      setFontLoaded(false)
+  }
 
   const textInputChange = (val: string) => {
     if(val.trim().length >= 4){
@@ -105,7 +116,13 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
     }
   }
 
+  useEffect(() => {
+    loadFonts();
+  })
 
+  if (fontLoaded) {
+    return <Loading />;
+  }
 
 
   return ( 
@@ -208,11 +225,10 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footer_text}>Don't have an account?
+        <Text style={styles.footer_text}>Don't have an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')} >
-            <Text style={[styles.footer_text, {fontWeight: 'bold'}]}>Sign up</Text>
+            <Text style={[styles.footer_text, {fontFamily: 'ComicSnas_bd'}]}>Sign up</Text>
           </TouchableOpacity>
-        </Text>
       </View>
     </ScrollView>
   );
@@ -238,7 +254,7 @@ const styles = StyleSheet.create({
   },
   header_text: {
     fontSize: RFPercentage(6),
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'ComicSnas',
     marginTop: windowHeight*0.02,
     marginBottom: windowHeight*0.04
   },
@@ -247,11 +263,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  // fontFamilyとfontWeight: 'bold'は同時に指定できないのでfontFamilyで直接太い文字を指定する
   center_text:{
     fontSize: RFPercentage(4.5),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'ComicSnas_bd',
+    // fontFamily: 'serif',
     padding: windowHeight*0.02,
   },
   formArea: {
@@ -264,17 +282,19 @@ const styles = StyleSheet.create({
   },
   footer: {
       flex: 1,
+      flexDirection: 'row',
       paddingVertical: windowHeight*0.03,
       paddingLeft: windowWidth*0.03,
   },
   footer_text:{
     fontSize: RFPercentage(3),
-    fontFamily: 'ComicSnas, Anzumozi',
+    fontFamily: 'ComicSnas',
     padding: 10,
   },
   text_header: {
     color: '#fff',
     fontWeight: 'bold',
+    fontFamily: 'ComicSnas',
     fontSize: 30
   },
   text_footer: {
@@ -320,8 +340,8 @@ const styles = StyleSheet.create({
   },
   textSign: {
       fontSize: RFPercentage(4),
-      fontWeight: 'bold',
-      fontFamily: 'ComicSnas, Anzumozi',
+      // fontWeight: 'bold',
+      fontFamily: 'ComicSnas_bd',
   }
 
 

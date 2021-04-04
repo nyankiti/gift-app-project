@@ -4,12 +4,16 @@ import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, ScrollView 
 import Swiper from 'react-native-swiper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as Font from 'expo-font';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
+
+import Loading from '../screens/LoadingScreen';
+
 
 
 type Props = {
@@ -18,6 +22,7 @@ type Props = {
 
 const SupportScreen: React.FC<Props> = ({navigation}) => {
   const {user} = useContext(AuthContext);
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [userData, setUserData] = useState({
     'userImg': '',
     'fname': '',
@@ -27,6 +32,14 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
     'about': '',
     'city': ''
   });
+  
+  const loadFonts = async() => {
+    await Font.loadAsync({
+      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+      ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+    })
+    setFontLoaded(false)
+  }
 
 
   const getUser = async() => {
@@ -64,8 +77,13 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
   }
 
   useEffect(() => {
+    loadFonts();
     getUser();
   }, []);
+
+  if (fontLoaded) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -208,6 +226,7 @@ const styles = StyleSheet.create({
   categoryBtnTxt: {
     alignSelf: 'center',
     marginTop: 5,
+    fontFamily: 'ComicSnas',
   },
   cardsWrapper: {
     marginTop: 20,

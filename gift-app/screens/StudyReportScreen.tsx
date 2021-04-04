@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button } from 'react-native';
-import Svg, { Circle, Line, Marker, Polygon, Defs, Text as SVGText } from 'react-native-svg';
+import Svg, { Circle, Line, Marker, Polygon, Defs, Path, Text as SVGText } from 'react-native-svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -16,7 +16,7 @@ import { FirebaseTimestamp, db } from '../src/firebase';
 import Loading from '../screens/LoadingScreen';
 import { FloatingActionButton } from '../components/FloatingActionButton';
 /* lib */
-import { formatDateUntilDay, formatDateUntilMinute, formatDate } from '../utils/file';
+import { formatDateUntilDay, formatDateUntilMinute, formatDate, formatDateUntilDayFromDateObject } from '../utils/file';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
@@ -29,19 +29,16 @@ let goalDocRef: any;
 
 const StudyReportScreen = () => {
 // dateTimePicker testZone-----------------------------------------------------------------
-  const [test_date, setDate] = useState(new Date(1598051730000));
-  const [test_mode, setMode] = useState('date');
-  const [test_show, setShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [datePickerMode, setDatePickerMode] = useState('date');
+  const [targetHoursShow, setTargetHoursShow] = useState(false);
+  const [settingDateCalendarShow, setSettingDateCalendarShow] = useState(false);
+  const [targetDateCalendarShow, setTargetDateCalendarShow] = useState(false);
 
-  const test_onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || test_date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-  };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
+  const showMode = (currentMode: string) => {
+    setTargetHoursShow(true);
+    setDatePickerMode(currentMode);
   };
 
   const showDatepicker = () => {
@@ -51,6 +48,14 @@ const StudyReportScreen = () => {
   const showTimepicker = () => {
     showMode('time');
   };
+  const showTargetDatePicker = () => {
+    setTargetDateCalendarShow(true);
+    setDatePickerMode('date');
+  }
+  const showSettingDatePicker = () => {
+    setSettingDateCalendarShow(true);
+    setDatePickerMode('date');
+  }
 // ----------------------------------------------------------------------------------------
 
   const {user} = useContext<any>(AuthContext);
@@ -61,13 +66,11 @@ const StudyReportScreen = () => {
   // });
 
   const loadFonts = async() => {
-    // if(!fontLoaded){
       await Font.loadAsync({
         Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
         ComicSnas: require('../assets/fonts/comicsansms3.ttf')
       })
       setFontLoaded(false)
-    // }
   }
 
 
@@ -126,11 +129,16 @@ const StudyReportScreen = () => {
     })
   }
 
-  const targetHoursChange = (val: string) => {
-    setPost({
-      ...post,
-      targetHours: val,
-    })
+  const targetHoursChange = (event, selectedDate) => {
+    if(selectedDate){
+      setTargetHoursShow(Platform.OS === 'ios');
+      console.log('start');
+      setPost({
+        ...post,
+        targetHours: selectedDate.getHours().toString(),
+      });
+      console.log(selectedDate.getHours());
+    }
   }
   const ToDoOneChange = (val: string) => {
     setPost({
@@ -169,30 +177,38 @@ const StudyReportScreen = () => {
     })
   }
 
-  const settingDateChange = (val: string) => {
-    setPost({
-      ...post,
-      settingDate: val
-    })
-    if(val.match(pattern)){
-      setSettingDateList([...settingDateList, val])
+  const settingDateChange = (event, selectedDate) => {
+    if(selectedDate){
+      const currentDate = formatDateUntilDayFromDateObject(selectedDate || date);
+      setSettingDateCalendarShow(Platform.OS === 'ios');
+      console.log(currentDate);
+      setPost({
+        ...post,
+      settingDate: currentDate
+      })
+      if(currentDate.match(pattern)){
+        setSettingDateList([...settingDateList, currentDate])
+      }
     }
+
   }
 
-  const targetDateChange = (val: string) => {
-    setPost({
-      ...post,
-      targetDate: val
-    })
-    if(val.match(pattern)){
-    setTargetDateList([...targetDateList, val])
+  const targetDateChange = (event, selectedDate) => {
+    if(selectedDate){
+      const currentDate = formatDateUntilDayFromDateObject(selectedDate || date);
+      setTargetDateCalendarShow(Platform.OS === 'ios');
+      console.log(currentDate);
+      setPost({
+        ...post,
+        targetDate: currentDate
+      })
+      if(currentDate.match(pattern)){
+      setTargetDateList([...targetDateList, currentDate])
+      }
     }
+
   }
 
-  const calcClockRotation = () => {
-    let result = Number(post.targetHours)
-    return result * 30
-  }
 
   const pressCalendarDate = async (response: any) => {
     console.log(formatDate());
@@ -381,7 +397,7 @@ const StudyReportScreen = () => {
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
           {/* <View style={styles.pie}>
-            <View style={styles.clocl_text_space}>
+            <View style={styles.clock_text_space}>
               <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
             </View>
           </View> */}
@@ -393,12 +409,16 @@ const StudyReportScreen = () => {
             </Defs>
 
             <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.22} fill='white' stroke="#EAC799" strokeWidth={windowWidth*0.1} strokeDashoffset="25" strokeDasharray="" />
-            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="4" markerEnd="url(#arrow)" /> 
-            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="4" transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} markerEnd="url(#arrow)" />
+            <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" fill='black' stroke="black" strokeWidth="6" markerEnd="url(#arrow)" /> 
+            {/* <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" stroke="black" strokeWidth="6" transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} markerEnd="url(#arrow)" fill='black' /> */}
             <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.26} fill='white' /> 
-            <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
+            {/* <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
               {selectedDate.day ? selectedDate.day : formatDate()}
-            </SVGText>
+            </SVGText> */}
+            <View style={styles.clock_text_space}>
+              <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
+            </View>
+            {/* <Path d="M5 0 L0 10 L10 10 Z" fill='black' x={SVGWidth*0.445} transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`} ></Path> */}
           </Svg>
         </View>
         <View style={styles.purpose_form} >
@@ -490,25 +510,51 @@ const StudyReportScreen = () => {
                   </View>
                   <Text style={[styles.input_body_text, {marginTop: 10}]}>目標作成日</Text>
                   <View style={styles.action}>
+                    <TouchableOpacity style={styles.textInput} onPress={showSettingDatePicker}>
                       <TextInput 
                         placeholder={today}
+                        value={post.settingDate}
                         placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
+                        // style={styles.textInput}
                         autoCapitalize='none'
-                        onChangeText={settingDateChange}
+                        editable={false}
+                        // onChangeText={settingDateChange}
                       />
+                    </TouchableOpacity>
                   </View>
                   <Text style={[styles.input_body_text, {marginTop: 10}]}>目標達成予定日</Text>
                   <View style={styles.action}>
-                      <TextInput 
-                        placeholder={today}
-                        placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
-                        autoCapitalize='none'
-                        onChangeText={targetDateChange}
-                      />
+                      <TouchableOpacity style={styles.textInput} onPress={showTargetDatePicker}>                      
+                        <TextInput 
+                          placeholder={today}
+                          value={post.targetDate}
+                          placeholderTextColor="#EAC799" 
+                          // style={styles.textInput}
+                          autoCapitalize='none'
+                          editable={false}
+                          // onChangeText={targetDateChange}
+                        />
+                    </TouchableOpacity>
                   </View>
                 </View>
+                {settingDateCalendarShow && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={datePickerMode}
+                    display="default"
+                    onChange={settingDateChange}
+                  />
+                )}
+                {targetDateCalendarShow && ( 
+                  <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={datePickerMode}
+                  display="default"
+                  onChange={targetDateChange}
+                />
+                )}
               </View>
             </Modal>
             <Modal visible={goalModalvisible} onDismiss={hideGoalModal} contentContainerStyle={styles.modal_container} >
@@ -533,14 +579,16 @@ const StudyReportScreen = () => {
                 <View style={styles.input_body}>
                   <Text style={[styles.input_body_text, {marginTop: 10}]}>時間単位</Text>
                   <View style={styles.action}>
+                    <TouchableOpacity style={styles.textInput} onPress={showTimepicker}>
                       <TextInput 
+                        value={post.targetHours}
                         placeholder="3時間/日"
                         placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
+                        // style={styles.textInput}
                         autoCapitalize='none'
-                        value={post.targetHours}
-                        onChangeText={targetHoursChange}
-                      />
+                        editable={false}
+                        />
+                      </TouchableOpacity>
                   </View>
                   <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1, fontFamily: 'ComicSnas'}]}>To Do List</Text>
                   <View style={styles.consecutive_input_box}>
@@ -577,24 +625,22 @@ const StudyReportScreen = () => {
                         onChangeText={ToDoFourChange}
                       />
                   </View>
+                  {/* ---------------------------------------------------------- */}
                   <View>
-                    <View>
-                      <Button onPress={showDatepicker} title="Show date picker!" />
-                    </View>
-                    <View>
-                      <Button onPress={showTimepicker} title="Show time picker!" />
-                    </View>
-                    {test_show && (
+                    {targetHoursShow && (
                       <DateTimePicker
                         testID="dateTimePicker"
-                        value={test_date}
-                        mode={test_mode}
-                        is24Hour={true}
+                        value={date}
+                        mode={datePickerMode}
                         display="default"
-                        onChange={test_onChange}
+                        is24Hour={false}
+                        onChange={targetHoursChange}
+                        dateFormat="dayofweek day month"
                       />
                     )}
+
                   </View>
+                  {/* ------------------------------------------------------------- */}
                 </View>
               </View>
             </Modal>
@@ -657,7 +703,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  clocl_text_space: {
+  clock_text_space: {
     marginTop: windowWidth*0.06,
     marginLeft: windowWidth*0.06,
     height: windowWidth*0.12,

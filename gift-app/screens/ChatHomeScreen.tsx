@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity, Text,TouchableHighlight } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import Loading from '../components/Loading';
+import * as Font from 'expo-font';
 import { db, FirebaseTimestamp } from '../src/firebase';
+import { RFPercentage } from "react-native-responsive-fontsize";
+
 
 import { Container, Card, UserInfo, UserInfoText, UserName, UserImg, UserImgWrapper, PostTime, MessageText, TextSection} from '../styles/UsersStyle';
 
@@ -12,9 +15,19 @@ type Props = {
   navigation: any;
 }
 
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
+const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
   const [threads, setThreads] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+
+  const loadFonts = async() => {
+    await Font.loadAsync({
+      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+      ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
+      ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
+    })
+    setFontLoaded(false)
+  }
 
   /**
    * Fetch threads from Firestore
@@ -49,6 +62,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
      */
     return () => unsubscribe();
   }, []);
+  useEffect(() => {
+    loadFonts();
+  })
 
   const handleButtonPress = ({item}) => {
     console.log(item);
@@ -79,15 +95,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               descriptionStyle={styles.listDescription}
               descriptionNumberOfLines={1}
             /> */}
-            <UserInfo>
-              <TextSection>
-                <UserInfoText>
-                  <UserName>{item.name}</UserName>
-                  <PostTime>{}</PostTime>
-                </UserInfoText>
-                <MessageText>{item.latestMessage.text}</MessageText>
-              </TextSection>
-            </UserInfo>
+            <View style={styles.user_info}>
+              <View style={styles.text_section}>
+                <View style={styles.user_info_text}>
+                  <Text style={styles.user_name}>{item.name}</Text>
+                  <Text style={styles.post_time} >{}</Text>
+                </View>
+                <Text style={styles.message_text}>{item.latestMessage.text}</Text>
+              </View>
+            </View>
 
           </TouchableOpacity>
         )}
@@ -96,7 +112,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   );
 }
 
-export default HomeScreen;
+export default ChatHomeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -105,9 +121,43 @@ const styles = StyleSheet.create({
     flex: 1
   },
   listTitle: {
-    fontSize: 22
+    fontSize: RFPercentage(4),
+    fontFamily: 'Anzumozi',
   },
   listDescription: {
-    fontSize: 16
+    fontSize: RFPercentage(3)
+  },
+  user_info: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  text_section: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: 15,
+    paddingLeft: 0,
+    marginLeft: 10,
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
+  },
+  user_info_text: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  user_name: {
+    fontSize: RFPercentage(3.6),
+    fontFamily: 'Anzumozi',
+  },
+  post_time: {
+    fontSize: RFPercentage(2),
+    color: '#666',
+    fontFamily: 'Anzumozi',
+  }, 
+  message_text:  {
+    fontSize: RFPercentage(3),
+    color: '#333333',
+    fontFamily: 'Anzumozi'
   }
 });
