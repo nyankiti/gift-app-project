@@ -41,3 +41,16 @@ export const formatDate = () => {
   let d = new Date()
   return d.getDate();
 }
+
+export const formatDateUntilDayFromDateObject = (object: any) => {
+    let month = '' + (object.getMonth() + 1),
+    day = '' + object.getDate(),
+    year = object.getFullYear()
+
+  if (month.length < 2) 
+    month = '0' + month;
+  if (day.length < 2) 
+    day = '0' + day;
+
+  return [year, month, day].join('-');
+}

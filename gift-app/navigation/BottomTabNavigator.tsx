@@ -30,6 +30,7 @@ import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
 import ArticleScreen from '../screens/ArticleScreen';
+import OAuthTestScreen from '../screens/OAuthTestScreen';
 
 /* types */
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
@@ -174,6 +175,7 @@ export function NewsNavigator({navigation}: any) {
       <NewsStack.Screen
         name="Develop"
         component={DevelopScreen}
+        // component={OAuthTestScreen}
         options={{ 
           headerTitle: 'Gift News', 
           headerLeft: () => (

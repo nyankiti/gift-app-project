@@ -16,7 +16,7 @@ import { FirebaseTimestamp, db } from '../src/firebase';
 import Loading from '../screens/LoadingScreen';
 import { FloatingActionButton } from '../components/FloatingActionButton';
 /* lib */
-import { formatDateUntilDay, formatDateUntilMinute, formatDate } from '../utils/file';
+import { formatDateUntilDay, formatDateUntilMinute, formatDate, formatDateUntilDayFromDateObject } from '../utils/file';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
@@ -29,19 +29,16 @@ let goalDocRef: any;
 
 const StudyReportScreen = () => {
 // dateTimePicker testZone-----------------------------------------------------------------
-  const [test_date, setDate] = useState(new Date(1598051730000));
-  const [test_mode, setMode] = useState('date');
-  const [test_show, setShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [datePickerMode, setDatePickerMode] = useState('date');
+  const [targetHoursShow, setTargetHoursShow] = useState(false);
+  const [settingDateCalendarShow, setSettingDateCalendarShow] = useState(false);
+  const [targetDateCalendarShow, setTargetDateCalendarShow] = useState(false);
 
-  const test_onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || test_date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-  };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
+  const showMode = (currentMode: string) => {
+    setTargetHoursShow(true);
+    setDatePickerMode(currentMode);
   };
 
   const showDatepicker = () => {
@@ -51,6 +48,14 @@ const StudyReportScreen = () => {
   const showTimepicker = () => {
     showMode('time');
   };
+  const showTargetDatePicker = () => {
+    setTargetDateCalendarShow(true);
+    setDatePickerMode('date');
+  }
+  const showSettingDatePicker = () => {
+    setSettingDateCalendarShow(true);
+    setDatePickerMode('date');
+  }
 // ----------------------------------------------------------------------------------------
 
   const {user} = useContext<any>(AuthContext);
@@ -124,11 +129,16 @@ const StudyReportScreen = () => {
     })
   }
 
-  const targetHoursChange = (val: string) => {
-    setPost({
-      ...post,
-      targetHours: val,
-    })
+  const targetHoursChange = (event, selectedDate) => {
+    if(selectedDate){
+      setTargetHoursShow(Platform.OS === 'ios');
+      console.log('start');
+      setPost({
+        ...post,
+        targetHours: selectedDate.getHours().toString(),
+      });
+      console.log(selectedDate.getHours());
+    }
   }
   const ToDoOneChange = (val: string) => {
     setPost({
@@ -167,30 +177,38 @@ const StudyReportScreen = () => {
     })
   }
 
-  const settingDateChange = (val: string) => {
-    setPost({
-      ...post,
-      settingDate: val
-    })
-    if(val.match(pattern)){
-      setSettingDateList([...settingDateList, val])
+  const settingDateChange = (event, selectedDate) => {
+    if(selectedDate){
+      const currentDate = formatDateUntilDayFromDateObject(selectedDate || date);
+      setSettingDateCalendarShow(Platform.OS === 'ios');
+      console.log(currentDate);
+      setPost({
+        ...post,
+      settingDate: currentDate
+      })
+      if(currentDate.match(pattern)){
+        setSettingDateList([...settingDateList, currentDate])
+      }
     }
+
   }
 
-  const targetDateChange = (val: string) => {
-    setPost({
-      ...post,
-      targetDate: val
-    })
-    if(val.match(pattern)){
-    setTargetDateList([...targetDateList, val])
+  const targetDateChange = (event, selectedDate) => {
+    if(selectedDate){
+      const currentDate = formatDateUntilDayFromDateObject(selectedDate || date);
+      setTargetDateCalendarShow(Platform.OS === 'ios');
+      console.log(currentDate);
+      setPost({
+        ...post,
+        targetDate: currentDate
+      })
+      if(currentDate.match(pattern)){
+      setTargetDateList([...targetDateList, currentDate])
+      }
     }
+
   }
 
-  const calcClockRotation = () => {
-    let result = Number(post.targetHours)
-    return result * 30
-  }
 
   const pressCalendarDate = async (response: any) => {
     console.log(formatDate());
@@ -492,25 +510,51 @@ const StudyReportScreen = () => {
                   </View>
                   <Text style={[styles.input_body_text, {marginTop: 10}]}>目標作成日</Text>
                   <View style={styles.action}>
+                    <TouchableOpacity style={styles.textInput} onPress={showSettingDatePicker}>
                       <TextInput 
                         placeholder={today}
+                        value={post.settingDate}
                         placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
+                        // style={styles.textInput}
                         autoCapitalize='none'
-                        onChangeText={settingDateChange}
+                        editable={false}
+                        // onChangeText={settingDateChange}
                       />
+                    </TouchableOpacity>
                   </View>
                   <Text style={[styles.input_body_text, {marginTop: 10}]}>目標達成予定日</Text>
                   <View style={styles.action}>
-                      <TextInput 
-                        placeholder={today}
-                        placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
-                        autoCapitalize='none'
-                        onChangeText={targetDateChange}
-                      />
+                      <TouchableOpacity style={styles.textInput} onPress={showTargetDatePicker}>                      
+                        <TextInput 
+                          placeholder={today}
+                          value={post.targetDate}
+                          placeholderTextColor="#EAC799" 
+                          // style={styles.textInput}
+                          autoCapitalize='none'
+                          editable={false}
+                          // onChangeText={targetDateChange}
+                        />
+                    </TouchableOpacity>
                   </View>
                 </View>
+                {settingDateCalendarShow && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={datePickerMode}
+                    display="default"
+                    onChange={settingDateChange}
+                  />
+                )}
+                {targetDateCalendarShow && ( 
+                  <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={datePickerMode}
+                  display="default"
+                  onChange={targetDateChange}
+                />
+                )}
               </View>
             </Modal>
             <Modal visible={goalModalvisible} onDismiss={hideGoalModal} contentContainerStyle={styles.modal_container} >
@@ -535,14 +579,16 @@ const StudyReportScreen = () => {
                 <View style={styles.input_body}>
                   <Text style={[styles.input_body_text, {marginTop: 10}]}>時間単位</Text>
                   <View style={styles.action}>
+                    <TouchableOpacity style={styles.textInput} onPress={showTimepicker}>
                       <TextInput 
+                        value={post.targetHours}
                         placeholder="3時間/日"
                         placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
+                        // style={styles.textInput}
                         autoCapitalize='none'
-                        value={post.targetHours}
-                        onChangeText={targetHoursChange}
-                      />
+                        editable={false}
+                        />
+                      </TouchableOpacity>
                   </View>
                   <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1, fontFamily: 'ComicSnas'}]}>To Do List</Text>
                   <View style={styles.consecutive_input_box}>
@@ -579,24 +625,22 @@ const StudyReportScreen = () => {
                         onChangeText={ToDoFourChange}
                       />
                   </View>
+                  {/* ---------------------------------------------------------- */}
                   <View>
-                    <View>
-                      <Button onPress={showDatepicker} title="Show date picker!" />
-                    </View>
-                    <View>
-                      <Button onPress={showTimepicker} title="Show time picker!" />
-                    </View>
-                    {test_show && (
+                    {targetHoursShow && (
                       <DateTimePicker
                         testID="dateTimePicker"
-                        value={test_date}
-                        mode={test_mode}
-                        is24Hour={true}
+                        value={date}
+                        mode={datePickerMode}
                         display="default"
-                        onChange={test_onChange}
+                        is24Hour={false}
+                        onChange={targetHoursChange}
+                        dateFormat="dayofweek day month"
                       />
                     )}
+
                   </View>
+                  {/* ------------------------------------------------------------- */}
                 </View>
               </View>
             </Modal>

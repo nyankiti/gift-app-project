@@ -22,6 +22,8 @@ import Loading from '../components/Loading';
 
 
 const OAuthInitialURL = 'https://www.hatena.com/oauth/initiate';
+const key = 'nfmuJazszARD7A==';
+const secret = '	PAt91r4sEK4+hGAT9Dr0m+D8sZ0=';
 
 // const BasicAuthURL = Constants.manifest.extra.hatenablog.basic_url;
 const BasicAuthURL = "https://blog.hatena.ne.jp/nyankiti24/nyankiti24.hatenablog.com/atom/entry";
@@ -36,7 +38,7 @@ const HatenaConfig = {
   profileFields: ['id', 'name', 'display', 'picture', 'email']
 }
 
-const DevelopScreen: React.FC = ({navigation}) => {
+const OAuthTestScreen: React.FC = ({navigation}) => {
   let item_list: any = [];
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState([{
@@ -46,6 +48,70 @@ const DevelopScreen: React.FC = ({navigation}) => {
     html: '',
   }]);
 
+  // const fetchToken = async() => {
+  //   console.log('start');
+
+  //   const value = {
+  //     oauth_consumer_key:key,
+  //     oauth_signature:secret,
+  //     oauth_signature_method:'HMAC-SHA1'
+  //   }
+  //   let headers = new Headers();
+  //   // headers.set('Authorization', value);
+  //   headers.set('Authorization', `OAuth realm='',oauth_consumer_key=${key},oauth_signature=${secret},oauth_signature_method='HMAC-SHA1'`);
+  //   headers.set('Content-Type', 'application/x-www-form-urlencoded')
+
+  //   const res = await fetch( 'https://www.hatena.com/oauth/initiate', {
+  //     method: "post",
+  //     headers: headers
+  //   }).then((response) => {
+  //     console.log('response', response);
+  //   }).catch((err) => {
+  //     console.log('something went wrong', err);
+  //   })
+  //   console.log(res);
+  //   console.log('end');
+
+    // fetch(OAuthInitialURL, {
+    //   method: 'POST',
+    //   body: 'grant_type=client_credentials&client_id=' + key + '&client_secret=' + secret,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //   },
+    // }).then((res) => {
+    //   console.log(res);
+    //   // return res.json();
+    // // }).then((data) => {
+    //   // console.log('token', data);
+    // }).catch((err) => {
+    //   console.log('something went wrong', err);
+    // })
+  // }
+  const fetchToken = async() => {
+    console.log('start');
+    const options = {
+      method: 'GET',
+      url: BasicAuthURL,
+      headers: {'content-type': 'application/x-www-form-urlencoded'},
+      // data: {
+      //   oauth_consumer_key: key,
+      //   oauth_signature: secret,
+      //   oauth_signature_method: 'HMAC-SHA1'
+      // }
+      Authorization: {
+        // oauth_consumer_key: key,
+        // oauth_signature: secret,
+        // oauth_signature_method: 'HMAC-SHA1'
+      }
+    };
+    await axios.request(options)
+      .then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
+      })
+    console.log('end');
+  }
 
   const fetchArticles = async() => {
 
@@ -96,7 +162,8 @@ const DevelopScreen: React.FC = ({navigation}) => {
   };
 
   useEffect(() => {
-    fetchArticles();
+    // fetchArticles();
+    fetchToken();
   }, []);
   
 
@@ -123,7 +190,7 @@ const DevelopScreen: React.FC = ({navigation}) => {
   );
 };
 
-export default DevelopScreen;
+export default OAuthTestScreen;
 
 const styles = StyleSheet.create({
   container: {

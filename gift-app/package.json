@@ -30,7 +30,6 @@
     "@react-navigation/stack": "~5.12.8",
     "@use-expo/font": "2.0.0",
     "axios": "0.21.1",
-    "axios-oauth-1.0a": "0.2.1",
     "axios-oauth-client": "1.4.0",
     "d3-shape": "2.1.0",
     "dotenv": "8.2.0",

@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Loading from '../components/Loading';
 import HTML from 'react-native-render-html'; 
+import { windowHeight, windowWidth } from '../utils/Dimentions';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,10 +20,14 @@ const ArticleScreen = ({route}) => {
     console.log(article.html)
   }, [])
 
+  const renderHTML = () => {
+    // fontSize: 150% を修正するコードをここに
+    let html = article.html
+  }
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* <WebView
         source={{uri: article.href}}
         startInLoadingState={true}
@@ -31,14 +36,16 @@ const ArticleScreen = ({route}) => {
         }}
       /> */}
       <HTML
-        html={ article.html }
+        // html={ article.html }
+        source={{html: article.html}}
+        contentWidth={windowWidth*0.9}
         baseFontStyle={{
-          fontSize: 14,
-          lineHeight: 22,
-          textAlign: 'justify',
+          // fontSize: 14,
+          // lineHeight: 22,
+          // textAlign: 'justify',
         }}
       />
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 export default ArticleScreen;
