@@ -1,9 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Loading from '../components/Loading';
-import HTML from 'react-native-render-html'; 
+import HTML from 'react-native-render-html';
+var DomParser = require('react-native-html-parser').DOMParser;
 import { windowHeight, windowWidth } from '../utils/Dimentions';
+import * as Font from 'expo-font';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,21 +17,40 @@ const styles = StyleSheet.create({
 const ArticleScreen = ({route}) => {
   // const {route} = props;
   const {article} = route.params;
-
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+  const loadFonts = async() => {
+    await Font.loadAsync({
+      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+      ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+    })
+    setFontLoaded(false)
+  }
   useEffect(() => {
-    console.log(article.html)
-  }, [])
+    loadFonts();
+    console.log(article.html);
+    // extractImageSrc(article.html);
+  }, []);
+
+
+  const extractImageSrc = (html) => {
+    const doc = new DomParser().parseFromString(html, 'text/html')
+    console.log(doc);
+  }
+
 
   const renderHTML = () => {
     // fontSize: 150% を修正するコードをここに
     let html = article.html
   }
 
+  if (fontLoaded) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView style={styles.container}>
       {/* <WebView
-        source={{uri: article.href}}
+        source={{html: article.html}}
         startInLoadingState={true}
         renderLoading={() => {
           return <Loading />;
@@ -40,9 +61,10 @@ const ArticleScreen = ({route}) => {
         source={{html: article.html}}
         contentWidth={windowWidth*0.9}
         baseFontStyle={{
-          // fontSize: 14,
+          fontSize: 20,
+          fontFamily: 'Anzumozi',
           // lineHeight: 22,
-          // textAlign: 'justify',
+          textAlign: 'justify',
         }}
       />
     </ScrollView>
