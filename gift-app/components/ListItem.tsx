@@ -49,7 +49,7 @@ const ListItem :React.FC<Props> = ({imageUrl, title, author, onPress}) => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    height: 100,
+    // height: 100,
     width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
@@ -75,8 +75,9 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   image: {
-    width: 95,
-    height: 95,
+    width: 100,
+    height: 100,
+    borderRadius: 10,
   },
 });
 
