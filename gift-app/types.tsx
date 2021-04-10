@@ -26,10 +26,10 @@ export type UsersStackParamList = {
 
 export type NewsTabParamList = {
   NewsScreen: undefined;
-  AddPost: undefined;
-  NewsDetail: undefined;
-  Develop: undefined;
-  Article: undefined;
+  AddPostScreen: undefined;
+  NewsDetailScreen: undefined;
+  NewsExampleScreen: undefined;
+  ArticleScreen: undefined;
 };
 
 export type StudyReportTabParamList = {

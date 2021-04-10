@@ -1,12 +1,9 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button } from 'react-native';
-import Svg, { Circle, Line, Marker, Polygon, Defs, Path, Use, G, Text as SVGText } from 'react-native-svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import moment from 'moment';
-import { useFonts } from 'expo-font';
 import * as Font from 'expo-font';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -15,6 +12,9 @@ import { FirebaseTimestamp, db } from '../src/firebase';
 /* component */
 import Loading from '../screens/LoadingScreen';
 import { FloatingActionButton } from '../components/FloatingActionButton';
+import StudyClock from '../components/StudyClock';
+import FirstModal from '../components/FirstModal';
+import SecondModal from '../components/SecondModal';
 /* lib */
 import { formatDateUntilDay, formatDateUntilMinute, formatDate, formatDateUntilDayFromDateObject } from '../utils/file';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
@@ -41,9 +41,6 @@ const StudyReportScreen = () => {
     setDatePickerMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
 
   const showTimepicker = () => {
     showMode('time');
@@ -60,15 +57,12 @@ const StudyReportScreen = () => {
 
   const {user} = useContext<any>(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
-  // const [loaded] = useFonts({
-  //   Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-  //   ComicSnas: require('../assets/fonts/comicsansms3.ttf')
-  // });
 
   const loadFonts = async() => {
       await Font.loadAsync({
         Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-        ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+        ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
+        ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
       })
       setFontLoaded(false)
   }
@@ -230,16 +224,20 @@ const StudyReportScreen = () => {
         if(doc.exists){
           console.log('Document data: ', doc.data())
           const fetchedPost: any = doc.data()
-          setPost({
-            ...post,
-            dream: fetchedPost.post.dream,
-            oneDayGoal: fetchedPost.post.oneDayGoal
-          })
+          setPost(fetchedPost.post)
         }else{
           setPost({
-            ...post,
             dream: '',
             oneDayGoal: '',
+            settingDate: '',
+            targetDate: '',
+            targetHours: '',
+            ToDo: {
+              one: '',
+              two: '',
+              three: '',
+              four: '',
+            },
           })
         }
       })
@@ -281,10 +279,6 @@ const StudyReportScreen = () => {
       }catch(e){
         console.log(e);
       }
-  }
-
-  const renderPieChart = () => {
-    return "50, 50"
   }
 
   const renderMarkedDates = () => {
@@ -332,11 +326,8 @@ const StudyReportScreen = () => {
       docRef.get().then((doc) => {
         if(doc.exists){
           const fetchedPost: any = doc.data()
-          setPost({
-            ...post,
-            dream: fetchedPost.post.dream,
-            oneDayGoal: fetchedPost.post.oneDayGoal
-          })
+          setPost(fetchedPost.post)
+          setSelectedDate(formatDate());
         }
       })
     }catch(e){
@@ -374,14 +365,17 @@ const StudyReportScreen = () => {
     <Provider>
 
     <View style={styles.container}>
-      {postToAlert.dream ? <Text>目標設定日：{postToAlert.dream}</Text> : <Text></Text>}
+      {postToAlert.dream ? <Text>目標設定日：{postToAlert.dream}</Text> : null}
       <View style={styles.dream_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'Anzumozi',fontSize: RFPercentage(3.5), textAlign: 'center'}}>夢</Text>
-          <Image
+          {/* <Image
               source={require('../assets/images/Gift_logo_20210221.jpg')}
               style={styles.sliderImage}
-            />
+            /> */}
+          <View style={styles.dream_logo}>
+            <Text style={styles.text_in_dream_logo}>dream</Text>
+          </View>
         </View>
         <View style={styles.dream_form} >
           <View style={{marginLeft: windowWidth*0.55}}>
@@ -401,37 +395,7 @@ const StudyReportScreen = () => {
       <View style={styles.purpose_container}>
         <View style={{flexDirection: 'column', width: windowWidth*0.24}}>
           <Text style={{fontFamily: 'Anzumozi',fontSize: RFPercentage(2.6), textAlign: 'center'}}>今日の目標</Text>
-          {/* <View style={styles.pie}>
-            <View style={styles.clock_text_space}>
-              <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
-            </View>
-          </View> */}
-          <Svg height={SVGWidth} width={SVGWidth} >
-
-
-
-            <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.22} fill='white' stroke="#EAC799" strokeWidth={windowWidth*0.1} strokeDashoffset="25" strokeDasharray="" />
-
-            <G id='arrow' transform={`rotate(${calcClockRotation()}, ${SVGWidth/2}, ${SVGWidth/2})`}>
-              <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" fill='black' stroke="black" strokeWidth="6" markerEnd="url(#arrow)" /> 
-              <Polygon id='arrow' points="-10,0 10,0 0,-10" x={SVGWidth/2} y ={SVGWidth/2-35} fill="black" stroke="none" />            
-            </G>
-
-            <G id='fixedArrow'>
-              <Line id="secondHandLine" x1={SVGWidth/2} y1={SVGWidth/2} x2={SVGWidth/2} y2="10" fill='black' stroke="black" strokeWidth="6" markerEnd="url(#arrow)" /> 
-              <Polygon id='arrow' points="-10,0 10,0 0,-10" x={SVGWidth/2} y ={SVGWidth/2-35} fill="black" stroke="none" />            
-            </G>
-            
-
-            
-            <Circle cx={SVGWidth/2} cy={SVGWidth/2} r={SVGWidth*0.26} fill='white' /> 
-            {/* <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
-              {selectedDate.day ? selectedDate.day : formatDate()}
-            </SVGText> */}
-            <View style={styles.clock_text_space}>
-              <Text style={styles.text_in_clock}>{selectedDate.day ? selectedDate.day : formatDate()}</Text>
-            </View>
-          </Svg>
+          <StudyClock SVGWidth={SVGWidth} calcClockRotation={calcClockRotation} text_in_clock={selectedDate.day ? selectedDate.day : formatDate()} />
         </View>
         <View style={styles.purpose_form} >
           <View style={{marginLeft: windowWidth*0.55}}>
@@ -477,185 +441,27 @@ const StudyReportScreen = () => {
         />
       </View>
         <Portal>
-            <Modal visible={dreamModalvisible} onDismiss={hideDreamModal} contentContainerStyle={styles.modal_container} >
-              <View style={styles.input_wrapper}>
-                <View style={styles.input_header}>
-                  <View>
-                    <FontAwesome.Button
-                      name="times"
-                      size={18}
-                      color="#EAC799"
-                      backgroundColor='#f5f5f5'
-                      onPress={hideDreamModal}
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.input_header_text}>あなたの夢を作成</Text>
-                  </View>
-                  <TouchableOpacity onPress={submitPost}>
-                    <Text style={styles.input_header_text}>保存</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.input_body}>
-                  <Text style={[styles.input_body_text, {marginTop: 10}]}>大きな夢</Text>
-                  <View style={styles.action}>
-                      <TextInput 
-                        placeholder="大きな夢"
-                        // placeholderTextColor="#EAC799" 
-                        style={styles.textInput}
-                        autoCapitalize='none'
-                        value={post.dream}
-                        onChangeText={dreamInputChange}
-                      />
-                  </View>
-                  <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1}]}>目標</Text>
-                  <View style={styles.action}>
-                      <TextInput 
-                        placeholder="目標"
-                        placeholderTextColor="#EAC799" 
-                        multiline={true}
-                        style={styles.textInput}
-                        autoCapitalize='none'
-                        value={post.oneDayGoal}
-                        onChangeText={goalInputChange}
-                      />
-                  </View>
-                  <Text style={[styles.input_body_text, {marginTop: 10}]}>目標作成日</Text>
-                  <View style={styles.action}>
-                    <TouchableOpacity style={styles.textInput} onPress={showSettingDatePicker}>
-                      <TextInput 
-                        placeholder={today}
-                        value={post.settingDate}
-                        placeholderTextColor="#EAC799" 
-                        // style={styles.textInput}
-                        autoCapitalize='none'
-                        editable={false}
-                        // onChangeText={settingDateChange}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={[styles.input_body_text, {marginTop: 10}]}>目標達成予定日</Text>
-                  <View style={styles.action}>
-                      <TouchableOpacity style={styles.textInput} onPress={showTargetDatePicker}>                      
-                        <TextInput 
-                          placeholder={today}
-                          value={post.targetDate}
-                          placeholderTextColor="#EAC799" 
-                          // style={styles.textInput}
-                          autoCapitalize='none'
-                          editable={false}
-                          // onChangeText={targetDateChange}
-                        />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                {settingDateCalendarShow && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={datePickerMode}
-                    display="default"
-                    onChange={settingDateChange}
-                  />
-                )}
-                {targetDateCalendarShow && ( 
-                  <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={datePickerMode}
-                  display="default"
-                  onChange={targetDateChange}
-                />
-                )}
-              </View>
-            </Modal>
-            <Modal visible={goalModalvisible} onDismiss={hideGoalModal} contentContainerStyle={styles.modal_container} >
-              <View style={styles.input_wrapper}>
-                <View style={styles.input_header}>
-                  <View>
-                    <FontAwesome.Button
-                      name="times"
-                      size={20}
-                      color="#EAC799"
-                      backgroundColor='#f5f5f5'
-                      onPress={hideGoalModal}
-                    />
-                  </View>
-                  <View>
-                    <Text style={[styles.input_header_text, {fontFamily: 'ComicSnas'}]}>To Do</Text>
-                  </View>
-                  <TouchableOpacity onPress={submitPost}>
-                    <Text style={styles.input_header_text}>保存</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.input_body}>
-                  <Text style={[styles.input_body_text, {marginTop: 10}]}>時間単位</Text>
-                  <View style={styles.action}>
-                    <TouchableOpacity style={styles.textInput} onPress={showTimepicker}>
-                      <TextInput 
-                        value={post.targetHours}
-                        placeholder="3時間/日"
-                        placeholderTextColor="#EAC799" 
-                        // style={styles.textInput}
-                        autoCapitalize='none'
-                        editable={false}
-                        />
-                      </TouchableOpacity>
-                  </View>
-                  <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1, fontFamily: 'ComicSnas'}]}>To Do List</Text>
-                  <View style={styles.consecutive_input_box}>
-                      <TextInput 
-                        placeholder="・"
-                        placeholderTextColor="#EAC799" 
-                        style={[styles.consecutive_input_text, {borderTopWidth: 0.5 , borderTopColor: 'black'}]}
-                        autoCapitalize='none'
-                        value={post.ToDo.one}
-                        onChangeText={ToDoOneChange}
-                      />
-                      <TextInput 
-                        placeholder="・"
-                        placeholderTextColor="#EAC799" 
-                        style={styles.consecutive_input_text}
-                        autoCapitalize='none'
-                        value={post.ToDo.two}
-                        onChangeText={ToDoTwoChange}
-                      />
-                      <TextInput 
-                        placeholder="・"
-                        placeholderTextColor="#EAC799" 
-                        style={styles.consecutive_input_text}
-                        autoCapitalize='none'
-                        value={post.ToDo.three}
-                        onChangeText={ToDoThreeChange}
-                      />
-                      <TextInput 
-                        placeholder="・"
-                        placeholderTextColor="#EAC799" 
-                        style={[styles.consecutive_input_text, {borderBottomWidth: 0.5 , borderBottomColor: 'black'}]}
-                        autoCapitalize='none'
-                        value={post.ToDo.four}
-                        onChangeText={ToDoFourChange}
-                      />
-                  </View>
-                  {/* ---------------------------------------------------------- */}
-                  <View>
-                    {targetHoursShow && (
-                      <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode={datePickerMode}
-                        display="default"
-                        is24Hour={false}
-                        onChange={targetHoursChange}
-                        dateFormat="dayofweek day month"
-                      />
-                    )}
-
-                  </View>
-                  {/* ------------------------------------------------------------- */}
-                </View>
-              </View>
-            </Modal>
+          <FirstModal 
+            post={post} 
+            visible={dreamModalvisible}
+            setVisible={setDreamModalVisible}
+            submitPost={submitPost} 
+            dreamInputChange={dreamInputChange} 
+            goalInputChange={goalInputChange} 
+            settingDateChange={settingDateChange} 
+            targetDateChange={targetDateChange} 
+          />
+          <SecondModal 
+            post={post} 
+            visible={goalModalvisible}
+            setVisible={setGoalModalVisible}
+            submitPost={submitPost} 
+            targetHoursChange={targetHoursChange} 
+            ToDoOneChange={ToDoOneChange} 
+            ToDoTwoChange={ToDoTwoChange} 
+            ToDoThreeChange={ToDoThreeChange} 
+            ToDoFourChange={ToDoFourChange}
+          />
         </Portal>
       </View>
     </Provider>
@@ -675,18 +481,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: '#ffffff',
-    height: windowHeight,
+    // height: windowHeight,
     alignItems: 'center',
   },
   dream_container: {
     // flex: 2,
     flexDirection: 'row',
     width: calendar_width,
-    height: windowHeight*0.23,
+    // height: windowHeight*0.23,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f8ff',
     borderTopWidth: 1,
     borderTopColor: '#f0f8ff',
+    paddingBottom: 10,
+    paddingTop: 10,
   },
   dream_text: {
     fontFamily: 'Anzumozi',
@@ -704,6 +512,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f8ff',
     marginTop: windowHeight*0.005,
+    paddingBottom: 10,
+    paddingTop: 10,
     // alignSelf: 'center',
   },
   purpose_text: {
@@ -715,34 +525,28 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  clock_text_space: {
-    marginTop: windowWidth*0.06,
-    marginLeft: windowWidth*0.06,
-    height: windowWidth*0.12,
-    width: windowWidth*0.12,
-    borderRadius: 50,
-    backgroundColor: 'white',
-  },
-  text_in_clock: {
-    textAlign: 'center',
-    // justifyContent: 'center',
-    paddingTop: windowWidth*0.013,
-    fontSize: RFPercentage(3.8),
-  },
   modal_container: {
     backgroundColor: '#f5f5f5',
     // padding: 20,
     height: '100%',
     width: '100%',
   },
-  pie: {
+  dream_logo: {
     // flex: 1,
     // flexDirection: 'column',
-    height: windowWidth*0.24,
-    width: windowWidth*0.24,
-    borderRadius: 50,
+    height: SVGWidth*0.9,
+    width: SVGWidth*0.9,
+    marginLeft: 4,
+    borderRadius: 15,
     backgroundColor: '#EAC799',
-    marginBottom: windowHeight*0.02,
+    // marginBottom: windowHeight*0.02,
+  },
+  text_in_dream_logo: {
+    textAlign: 'center',
+    fontFamily: 'ComicSnas_bd',
+    paddingTop: windowWidth*0.04,
+    fontSize: RFPercentage(4),
+    // verticalAlign: 'middle',
   },
   calendar_container: {
     // flex: 5,
