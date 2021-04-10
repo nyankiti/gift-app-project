@@ -3,42 +3,33 @@ import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Font from 'expo-font';
 import Loading from '../screens/LoadingScreen';
-import Colors from '../constants/Colors';
 
 import useColorScheme from '../hooks/useColorScheme';
 /* Screen */
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
 
-import UsersScreen from '../screens/UsersScreen';
-import UserDetailScreen from '../screens/UserDetailScreen';
 import AccountInfoScreen from '../screens/AccountInfoScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
-import NewsScreen from '../screens/NewsScreen';
+import NewsExampleScreen from '../screens/NewsExampleScreen';
 import AddPostScreen from '../screens/AddPostScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import StudyReportScreen from '../screens/StudyReportScreen';
-import ChatScreen from '../screens/ChatScreen';
 import ChatHomeScreen from '../screens/ChatHomeScreen';
 import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
 import ArticleScreen from '../screens/ArticleScreen';
 import OAuthTestScreen from '../screens/OAuthTestScreen';
+import NewsScreen from '../screens/NewsScreen';
 
 /* types */
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
-import { FontDisplay } from 'expo-font';
 
 
-import DevelopScreen from '../screens/DevelopScreen';
-import { IconButton } from 'react-native-paper';
 
 // const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
@@ -76,9 +67,9 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      // initialRouteName="News"
+      initialRouteName="News"
       // テスト用に最初の画面を変える
-      initialRouteName = "StudyReport"
+      // initialRouteName = "StudyReport"
       activeColor="#fff"
     >
       <BottomTab.Screen
@@ -102,15 +93,6 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <Icon name="bar-chart-outline" color={color} size={26} />,
         }}
       />
-      {/* <BottomTab.Screen
-        name="Users"
-        component={UsersNavigator}
-        options={{
-          tabBarLabel: 'User',
-          tabBarColor: '#EAC799',
-          tabBarIcon: ({ color }) => <Icon name="people-outline" color={color} size={26} />,
-        }}
-      /> */}
       <BottomTab.Screen
         name="Chat"
         component={ChatNavigator}
@@ -170,31 +152,32 @@ export function NewsNavigator({navigation}: any) {
       headerTitleStyle: {
         fontWeight: 'normal',
         fontFamily: 'ComicSnas_bd',
+        alignSelf: 'center',
       }
     }}>
       <NewsStack.Screen
-        name="Develop"
-        component={DevelopScreen}
+        name="NewsScreen"
+        component={NewsScreen}
         // component={OAuthTestScreen}
         options={{ 
           headerTitle: 'Gift News', 
-          headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
-          headerRight: () => ( 
-            <View style={{marginRight: 10}}>
-              <FontAwesome5.Button
-                name="plus"
-                size={22}
-                backgroundColor="#EAC799"
-                color="#2e64e5"
-                onPress={() => navigation.navigate('AddPost')}
-              />
-            </View>
-          )
+          // headerLeft: () => (
+          //   <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
+          // headerRight: () => ( 
+          //   <View style={{marginRight: 10}}>
+          //     <FontAwesome5.Button
+          //       name="plus"
+          //       size={22}
+          //       backgroundColor="#EAC799"
+          //       color="#2e64e5"
+          //       // onPress={() => navigation.navigate('AddPost')}
+          //     />
+          //   </View>
+          // )
         }}
       />
       <NewsStack.Screen
-        name="Article"
+        name="ArticleScreen"
         component={ArticleScreen}
         options={({route}: any) => ({ 
           title: route.params.article.title, 
@@ -205,46 +188,11 @@ export function NewsNavigator({navigation}: any) {
                 size={22}
                 backgroundColor="#EAC799"
                 color="#2e64e5"
-                onPress={() => navigation.navigate('AddPost')}
+                // onPress={() => navigation.navigate('AddPost')}
               />
             </View>
           )
         })}
-      />
-      <NewsStack.Screen
-        name="NewsScreen"
-        component={NewsScreen}
-        options={{ 
-          headerTitle: 'Gift News', 
-          headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
-          headerRight: () => ( 
-            <View style={{marginRight: 10}}>
-              <FontAwesome5.Button
-                name="plus"
-                size={22}
-                backgroundColor="#EAC799"
-                color="#2e64e5"
-                onPress={() => navigation.navigate('AddPost')}
-              />
-            </View>
-          )
-        }}
-      />
-      <NewsStack.Screen 
-        name="AddPost"
-        component={AddPostScreen}
-        options={{ 
-          // headerの戻る矢印を下記のように指定してもよい
-          // headerLeft: () => (
-          //   <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('NewsScreen')}></Icon.Button>),
-        }}
-      />
-      <NewsStack.Screen
-        name="NewsDetail"
-        component={NewsDetailScreen}
-        // stackの遷移先ではDrawerを開くボタンを表示しない
-        options={{ headerTitle: 'Gift News', headerLeft: () => (<> </>)}}
       />
     </NewsStack.Navigator>
   );
@@ -262,6 +210,7 @@ function StudyReportNavigator({navigation}) {
       headerTitleStyle: {
         fontWeight: 'normal',
         fontFamily: 'ComicSnas_bd',
+        alignSelf: 'center',
       }
     }}>
       <StudyReportStack.Screen
@@ -269,52 +218,14 @@ function StudyReportNavigator({navigation}) {
         component={StudyReportScreen}
         options={{ 
           headerTitle: 'Study Report', 
-          headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        )
+          // headerLeft: () => (
+          //   <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+        // )
       }}
       />
     </StudyReportStack.Navigator>
   );
 }
-
-// const UsersStack = createStackNavigator<UsersTabParamList>();
-
-// function UsersNavigator({navigation}: any) {
-//   return (
-//     <UsersStack.Navigator screenOptions={{
-//       headerStyle: {
-//         backgroundColor: '#EAC799',
-//       },
-//       headerTintColor: '#fff',
-//       headerTitleStyle: {
-//         fontWeight: 'normal'
-//       }
-//     }}>
-//       <UsersStack.Screen
-//         name="UsersScreen"
-//         component={UsersScreen}
-//         options={{ headerTitle: 'Users List', headerLeft: () => (
-//         <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-//         )}}
-//       />
-//       <UsersStack.Screen
-//         name="UserDetailScreen"
-//         component={UserDetailScreen}
-//         options={({route}: any) => ({
-//           title: route.params.userName,
-//         })}
-//       />
-//       <UsersStack.Screen
-//         name="ChatScreen"
-//         component={ChatScreen}
-//         options={({route}: any) => ({
-//           title: route.params.item.fname + route.params.item.lname
-//         })}
-//       />
-//     </UsersStack.Navigator>
-//   );
-// }
 
 const ChatStack = createStackNavigator<ChatTabParamList>();
 
@@ -328,6 +239,7 @@ function ChatNavigator({navigation}: any) {
       headerTitleStyle: {
         fontWeight: 'normal',
         fontFamily: 'ComicSnas_bd',
+        alignSelf: 'center',
       }
     }}>
       <ChatStack.Screen
@@ -335,8 +247,8 @@ function ChatNavigator({navigation}: any) {
         component={ChatHomeScreen}
         options={{ 
           headerTitle: 'Chat home', 
-          headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()} />),
+          // headerLeft: () => (
+          //   <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()} />),
           headerRight: () => (
             <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
           )
@@ -369,6 +281,7 @@ function AccountInfoNavigator({navigation}: any) {
       headerTitleStyle: {
         fontWeight: 'normal',
         fontFamily: 'ComicSnas_bd',
+        alignSelf: 'center',
       }
     }}>
       <AccountInfoStack.Screen
@@ -404,15 +317,18 @@ function SupportNavigator({navigation}: any) {
       headerTitleStyle: {
         fontWeight: 'normal',
         fontFamily: 'ComicSnas_bd',
+        alignSelf: 'center',
       }
     }}>
       <SupportStack.Screen
         name="SupportScreen"
         component={SupportScreen}
         options={{ 
-          headerTitle: 'SupportInfo', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        )}}
+          headerTitle: 'SupportInfo', 
+        //   headerLeft: () => (
+        // <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+        // )
+        }}
       />
     </SupportStack.Navigator>
   );

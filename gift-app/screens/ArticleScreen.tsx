@@ -7,12 +7,7 @@ var DomParser = require('react-native-html-parser').DOMParser;
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import * as Font from 'expo-font';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
+
 
 const ArticleScreen = ({route}) => {
   // const {route} = props;
@@ -21,7 +16,8 @@ const ArticleScreen = ({route}) => {
   const loadFonts = async() => {
     await Font.loadAsync({
       Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+      ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
+      ComicSnas_bd: require('../assets/fonts/comicbd.ttf'),
     })
     setFontLoaded(false)
   }
@@ -66,8 +62,17 @@ const ArticleScreen = ({route}) => {
           // lineHeight: 22,
           textAlign: 'justify',
         }}
+        tagsStyles={{strong: {fontSize: 25, fontFamily: 'ComicSnas_bd'}}}
+        // ignoredTags={['span']}
       />
     </ScrollView>
   );
 };
 export default ArticleScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+});

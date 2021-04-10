@@ -13,7 +13,7 @@ import AuthScreen from '../screens/AuthScreen';
 import LoadingScreen from '../screens/LoadingScreen';
 import DrawerContent from '../screens/DrawerContent';
 import SupportScreen from '../screens/SupportScreen';
-import ChatScreen from '../screens/ChatScreen';
+import ChatHomeScreen from '../screens/ChatHomeScreen';
 
 /* navigator */
 import BottomTabNavigator from './BottomTabNavigator';
@@ -66,7 +66,7 @@ export function Route() {
             }
           }}
         />
-        <Drawer.Screen name='ChatScreen' component={ChatScreen}
+        <Drawer.Screen name='ChatScreen' component={ChatHomeScreen}
           options={{
             headerShown: true,
             headerStyle: {
