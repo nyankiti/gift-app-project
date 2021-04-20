@@ -108,7 +108,6 @@ const NewsScreen: React.FC = ({navigation}) => {
       fetchArticles(`https://blog.hatena.ne.jp/seiproject/seiproject.hateblo.jp/atom/entry?page=${GiftBlogPageList[0]}`);
   }, []);
   
-
   return (
     <View style={styles.container}>
       {loading && <Loading />}
