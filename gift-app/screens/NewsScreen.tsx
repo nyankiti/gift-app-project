@@ -109,6 +109,7 @@ const NewsScreen: React.FC = ({navigation}) => {
   }, []);
   
 
+  
   return (
     <View style={styles.container}>
       {loading && <Loading />}
