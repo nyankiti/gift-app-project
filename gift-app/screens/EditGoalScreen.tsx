@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext} from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, Platform, InteractionManager } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, TextInput, Platform, InteractionManager, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useIsFocused } from '@react-navigation/native'
 import { Modal } from 'react-native-paper';
@@ -262,7 +262,7 @@ const EditGoalScreen: React.FC = ({route, navigation}) => {
                 />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={submitPost}>
+          <TouchableOpacity onPress={submitPost} style={styles.buttonLabel}>
             <Text style={styles.input_header_text}>保存</Text>
           </TouchableOpacity>
         {/* -------------------------------------------------------------- */}
@@ -356,4 +356,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: windowWidth * 0.9,
   },
+  buttonLabel: {
+    marginTop: 20,
+    borderWidth: 2,
+    borderColor: 'gray',
+    padding: 3,
+  },
+  buttonContainer: {
+    width: windowWidth * 0.5,
+    height: windowHeight *0.06,
+  }, 
 });

@@ -140,11 +140,11 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
           </View>
           <Text style={styles.categoryBtnTxt}>infomation2</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('GiftInfoScreen')}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('EditProfileScreen')}}>
           <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="bell-circle" size={35} />
+            <MaterialCommunityIcons name="account" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>infomation3</Text>
+          <Text style={styles.categoryBtnTxt}>edit profile</Text>
         </TouchableOpacity>
       </View>
       <View style={[styles.categoryContainer, {marginTop: 10}]}>

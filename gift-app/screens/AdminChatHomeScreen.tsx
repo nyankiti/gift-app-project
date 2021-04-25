@@ -71,7 +71,7 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('RoomScreen', { thread: item })
   }
 
-  if (loading) {
+  if (fontLoaded) {
     return <Loading />;
   }
 

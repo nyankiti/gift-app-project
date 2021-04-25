@@ -56,6 +56,7 @@ export type AccountInfoTabParamList = {
 export type SupportTabParamList = {
   SupportScreen: undefined;
   GiftInfoScreen: undefined;
+  EditProfileScreen: undefined;
 }
 
 

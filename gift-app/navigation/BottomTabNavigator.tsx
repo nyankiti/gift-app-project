@@ -369,6 +369,15 @@ function SupportNavigator({navigation}: any) {
           headerTitle: 'SupportInfo', 
           headerRight: () => (<></>)}}
       />
+      <SupportStack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{ 
+          headerTitle: 'Edit Profile',
+          headerBackTitleVisible: false,
+          headerTitleAlign: 'center',
+        }}
+      />
     </SupportStack.Navigator>
   );
 }

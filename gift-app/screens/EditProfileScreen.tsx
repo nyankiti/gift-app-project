@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, ImageBackground, TextInput, StyleSheet, A
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import * as Font from 'expo-font';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FormButton from '../components/FormButton';
@@ -11,6 +12,10 @@ import FormButton from '../components/FormButton';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 import ImagePicker from 'react-native-image-crop-picker';
+
+/* conponent */
+import Loading from '../components/Loading';
+
 
 /* types */
 import {User} from '../types';
@@ -27,9 +32,10 @@ import { AuthContext } from '../src/AuthProvider';
 
 
 const EditProfileScreen = () => {
-  const {user, logout} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const [image, setImage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [transferred, setTransferred] = useState(0);
   const [userData, setUserData] = useState({
     'userImg': '',
@@ -44,6 +50,15 @@ const EditProfileScreen = () => {
 
   const bs = useRef();
   const fall = new Animated.Value(1);
+
+  const loadFonts = async() => {
+    await Font.loadAsync({
+      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+      // ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
+      ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
+    })
+    setFontLoaded(false)
+  }
 
 
   const getUser = async() => {
@@ -73,7 +88,6 @@ const EditProfileScreen = () => {
       city: userData.city,
       userImg: imgUrl,
     }).then(() => {
-      console.log('User Updated!');
       Alert.alert(
         'Profile Update!',
         'Your profile has been updated successfully'
@@ -140,6 +154,9 @@ const EditProfileScreen = () => {
   useEffect(() => {
     getUser();
   }, []);
+  useEffect(() => {
+    loadFonts();
+  })
 
   const renderInner = () => (
     <View style={styles.panel}>
@@ -167,7 +184,9 @@ const EditProfileScreen = () => {
     </View>
   );
 
-
+  if (fontLoaded) {
+    return <Loading />;
+  }
 
   return (
     <View style={styles.container}>
@@ -222,7 +241,7 @@ const EditProfileScreen = () => {
                 </ImageBackground>
               </View>
             </TouchableOpacity>
-            <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
+            <Text style={{marginTop: 10, fontSize: 18, fontFamily: 'ComicSnas_bd'}}>
               {userData ? userData.fname : ''} {userData ? userData.lname : ''}
             </Text>
           </View>
@@ -340,6 +359,7 @@ const styles = StyleSheet.create({
   },
   panelTitle: {
     fontSize: 27,
+    fontFamily: 'Anzumozi',
     height: 35,
   },
   panelSubtitle: {
@@ -380,5 +400,7 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? 0 : -12,
     paddingLeft: 10,
     color: '#05375a',
+    fontSize: 18,
+    fontFamily: 'Anzumozi',
   },
 });
