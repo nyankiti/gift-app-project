@@ -34,6 +34,7 @@ export type NewsTabParamList = {
 
 export type StudyReportTabParamList = {
   StudyReportScreen: undefined;
+  EditGoalScreen: undefined;
 };
 export type UsersTabParamList = {
   UsersScreen: undefined;

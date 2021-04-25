@@ -1,11 +1,17 @@
 import React from "react";
 import {StyleSheet, SafeAreaView, ActivityIndicator, Text,} from "react-native";
 
-const LoadingScreen = () => {
+
+
+type Props = {
+  message: string;
+}
+
+const LoadingScreen: React.FC<Props> = ({message}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ActivityIndicator size="large" />
-      <Text style={styles.text}>ログイン中...</Text>
+      <Text style={styles.text}>{message}...</Text>
     </SafeAreaView>
   );
 };

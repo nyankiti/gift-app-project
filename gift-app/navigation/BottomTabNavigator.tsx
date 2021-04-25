@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -18,6 +18,7 @@ import NewsExampleScreen from '../screens/NewsExampleScreen';
 import AddPostScreen from '../screens/AddPostScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import StudyReportScreen from '../screens/StudyReportScreen';
+import EditGoalScreen from '../screens/EditGoalScreen';
 import ChatHomeScreen from '../screens/ChatHomeScreen';
 import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
@@ -222,6 +223,16 @@ function StudyReportNavigator({navigation}) {
           //   <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
         // )
       }}
+      />
+      <StudyReportStack.Screen
+        name="EditGoalScreen"
+        component={EditGoalScreen}
+        options={{ 
+          headerTitle: 'Edit Your Dream', 
+          headerRight: () => (
+            <></>
+          )
+        }}
       />
     </StudyReportStack.Navigator>
   );
