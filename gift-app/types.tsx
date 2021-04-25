@@ -44,6 +44,7 @@ export type UsersTabParamList = {
 
 export type ChatTabParamList = {
   ChatHomeScreen: undefined;
+  AdminChatHomeScreen: undefined;
   RoomScreen: undefined;
   AddRoomScreen: undefined;
 }
@@ -54,6 +55,7 @@ export type AccountInfoTabParamList = {
 };
 export type SupportTabParamList = {
   SupportScreen: undefined;
+  GiftInfoScreen: undefined;
 }
 
 

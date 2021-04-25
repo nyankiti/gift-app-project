@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -19,16 +19,20 @@ import AddPostScreen from '../screens/AddPostScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import StudyReportScreen from '../screens/StudyReportScreen';
 import EditGoalScreen from '../screens/EditGoalScreen';
+import AdminChatHomeScreen from '../screens/AdminChatHomeScreen';
 import ChatHomeScreen from '../screens/ChatHomeScreen';
 import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
+import GiftInfoScreen from '../screens/GiftInfoScreen';
 import ArticleScreen from '../screens/ArticleScreen';
 import OAuthTestScreen from '../screens/OAuthTestScreen';
 import NewsScreen from '../screens/NewsScreen';
 
 /* types */
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
+import { AuthContext } from '../src/AuthProvider';
+import { userInfo } from 'node:os';
 
 
 
@@ -241,6 +245,8 @@ function StudyReportNavigator({navigation}) {
 const ChatStack = createStackNavigator<ChatTabParamList>();
 
 function ChatNavigator({navigation}: any) {
+  const {user} = useContext<any>(AuthContext);
+
   return (
     <ChatStack.Navigator screenOptions={{
       headerStyle: {
@@ -253,28 +259,43 @@ function ChatNavigator({navigation}: any) {
         alignSelf: 'center',
       }
     }}>
+      {user.uid == 'd1SJQ07DeUWVUQ74tNizyrjKR4x1' || user.uid == 'zHBbV8enFlR3AEi9D0DbgzamHB63' ?
       <ChatStack.Screen
-        name="ChatHomeScreen"
-        component={ChatHomeScreen}
-        options={{ 
-          headerTitle: 'Chat home', 
-          // headerLeft: () => (
-          //   <Icon.Button name="ios-menu" size={25}  backgroundColor='#EAC799' onPress={() => navigation.openDrawer()} />),
-          headerRight: () => (
-            <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
+      name="AdminChatHomeScreen"
+      component={AdminChatHomeScreen}
+      options={{ 
+        headerTitle: 'Admin Chat home', 
+        headerLeft: () => (<></>),
+        headerRight: () => (
+          <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
           )
         }}
       />
+      : 
+      <ChatStack.Screen
+      name="ChatHomeScreen"
+      component={ChatHomeScreen}
+      options={{ 
+        headerTitle: 'Chat home', 
+        headerLeft: () => (<></>),
+        headerRight: () => (
+          <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
+          )
+        }}
+      />      
+      }
       <ChatStack.Screen
         name="RoomScreen"
         component={RoomScreen}
         options={({route}: any) => ({
           title: route.params.thread.name,
+          headerRight: () => (<></>),
         })}
       />
       <ChatStack.Screen
         name="AddRoomScreen"
         component={AddRoomScreen}
+        options={{ headerRight: () => (<></>)}}
       />
     </ChatStack.Navigator>
   );
@@ -340,6 +361,13 @@ function SupportNavigator({navigation}: any) {
         // <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
         // )
         }}
+      />
+      <SupportStack.Screen
+        name="GiftInfoScreen"
+        component={GiftInfoScreen}
+        options={{ 
+          headerTitle: 'SupportInfo', 
+          headerRight: () => (<></>)}}
       />
     </SupportStack.Navigator>
   );
