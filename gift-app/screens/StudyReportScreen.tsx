@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button } from 'react-native';
+import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button, InteractionManager } from 'react-native';
+import { useIsFocused } from '@react-navigation/native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -22,41 +23,15 @@ import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { AuthContext } from '../src/AuthProvider';
 import { exists } from 'node:fs';
 
-const today = formatDateUntilDay();
-const pattern = /^\d{4}-?\d{2}-?\d{2}$/g;
+
 const SVGWidth = windowWidth*0.24;
 let goalDocRef: any;
 
-const StudyReportScreen = () => {
-// dateTimePicker testZone-----------------------------------------------------------------
-  const [date, setDate] = useState(new Date());
-  const [datePickerMode, setDatePickerMode] = useState('date');
-  const [targetHoursShow, setTargetHoursShow] = useState(false);
-  const [settingDateCalendarShow, setSettingDateCalendarShow] = useState(false);
-  const [targetDateCalendarShow, setTargetDateCalendarShow] = useState(false);
-
-
-  const showMode = (currentMode: string) => {
-    setTargetHoursShow(true);
-    setDatePickerMode(currentMode);
-  };
-
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-  const showTargetDatePicker = () => {
-    setTargetDateCalendarShow(true);
-    setDatePickerMode('date');
-  }
-  const showSettingDatePicker = () => {
-    setSettingDateCalendarShow(true);
-    setDatePickerMode('date');
-  }
-// ----------------------------------------------------------------------------------------
-
+const StudyReportScreen = ({navigation, route}) => {
   const {user} = useContext<any>(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+  const isFocused = useIsFocused()
+
 
   const loadFonts = async() => {
       await Font.loadAsync({
@@ -67,12 +42,10 @@ const StudyReportScreen = () => {
       setFontLoaded(false)
   }
 
-
   const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
   const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
   const [selectedDate, setSelectedDate]  = useState<any>(formatDate());
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [transferred, setTransferred] = useState(0);
+  const [selectedDateString, setSelectedDateString] = useState<string>(formatDateUntilDay());
   const [post, setPost] = useState({
     dream: '',
     oneDayGoal: '',
@@ -97,16 +70,11 @@ const StudyReportScreen = () => {
   const [targetDateList, setTargetDateList] = useState<any>([]);
 
   const showDreamModal = () => {
-    setDreamModalVisible(true);
-  }
-  const hideDreamModal = () => {
-    setDreamModalVisible(false);
+    navigation.navigate('EditGoalScreen', {post: post, selectedDate: selectedDate, dateString: selectedDateString});
+    console.log('aa');
   }
   const showGoalModal = () => {
-    setGoalModalVisible(true);
-  }
-  const hideGoalModal = () => {
-    setGoalModalVisible(false);
+    navigation.navigate('EditGoalScreen', {post: post, selectedDate: selectedDate, dateString: selectedDateString});
   }
 
   const dreamInputChange = (val: string) => {
@@ -121,18 +89,6 @@ const StudyReportScreen = () => {
       ...post,
       oneDayGoal: val,
     })
-  }
-
-  const targetHoursChange = (event, selectedDate) => {
-    if(selectedDate){
-      setTargetHoursShow(Platform.OS === 'ios');
-      console.log('start');
-      setPost({
-        ...post,
-        targetHours: selectedDate.getHours().toString(),
-      });
-      console.log(selectedDate.getHours());
-    }
   }
   const ToDoOneChange = (val: string) => {
     setPost({
@@ -171,37 +127,7 @@ const StudyReportScreen = () => {
     })
   }
 
-  const settingDateChange = (event, selectedDate) => {
-    if(selectedDate){
-      const currentDate = formatDateUntilDayFromDateObject(selectedDate || date);
-      setSettingDateCalendarShow(Platform.OS === 'ios');
-      console.log(currentDate);
-      setPost({
-        ...post,
-      settingDate: currentDate
-      })
-      if(currentDate.match(pattern)){
-        setSettingDateList([...settingDateList, currentDate])
-      }
-    }
 
-  }
-
-  const targetDateChange = (event, selectedDate) => {
-    if(selectedDate){
-      const currentDate = formatDateUntilDayFromDateObject(selectedDate || date);
-      setTargetDateCalendarShow(Platform.OS === 'ios');
-      console.log(currentDate);
-      setPost({
-        ...post,
-        targetDate: currentDate
-      })
-      if(currentDate.match(pattern)){
-      setTargetDateList([...targetDateList, currentDate])
-      }
-    }
-
-  }
 
   const calcClockRotation = () => {
     let result = Number(post.targetHours)
@@ -212,6 +138,7 @@ const StudyReportScreen = () => {
   const pressCalendarDate = async (response: any) => {
     console.log(formatDate());
     setSelectedDate(response);
+    setSelectedDateString(response.dateString);
     // 上画面にでてくる目標をリセットする
     setPostToAlert('');
     // 選択されたdateString(0000-00-00)を用いてdbから値を取ってくる
@@ -288,46 +215,62 @@ const StudyReportScreen = () => {
     ary.forEach((item: any) => {
       result[item] = {marked: true, dotColor: 'skyblue'}
     })
+    console.log(result);
     return result
   }
 
   // 日付が変更されると今日の目標がリセットされる関数
 
-  const submitPost = async() => {
-    console.log(selectedDate);
-    // 17文字以上の投稿の場合は自動的に改行文字を入れるようにしたほうが良いかな、、
-    try{
-      // 日付が選択されているか、初期状態かによってselectedDayが値を持つかどうか変わるので条件分岐する
-      if(selectedDate.dateString){
-        goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString);
-      }else{
-        goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
-      }
-      goalDocRef.set({
-        post: post,
-        postTime: FirebaseTimestamp.fromDate(new Date()),
-      });
-      const ReservedDateDocRef = await db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
-      ReservedDateDocRef.set({
-        settingDateList: settingDateList,
-        targetDateList: targetDateList,
-        updateTime: FirebaseTimestamp.fromDate(new Date()),
-      })
-      setDreamModalVisible(false);
-      setGoalModalVisible(false);
-    }catch (e){
-      console.log(e);
-    }
-  }
+  // const submitPost = async() => {
+  //   console.log(selectedDate);
+  //   // 17文字以上の投稿の場合は自動的に改行文字を入れるようにしたほうが良いかな、、
+  //   try{
+  //     // 日付が選択されているか、初期状態かによってselectedDayが値を持つかどうか変わるので条件分岐する
+  //     if(selectedDate.dateString){
+  //       goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString);
+  //     }else{
+  //       goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
+  //     }
+  //     goalDocRef.set({
+  //       post: post,
+  //       postTime: FirebaseTimestamp.fromDate(new Date()),
+  //     });
+  //     const ReservedDateDocRef = await db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
+  //     ReservedDateDocRef.set({
+  //       settingDateList: settingDateList,
+  //       targetDateList: targetDateList,
+  //       updateTime: FirebaseTimestamp.fromDate(new Date()),
+  //     })
+  //     setDreamModalVisible(false);
+  //     setGoalModalVisible(false);
+  //   }catch (e){
+  //     console.log(e);
+  //   }
+  // }
 
-  const fetchGoals = async () => {
+  const initialFetchGoals = async () => {
     try {
-      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
+      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDateString);
       docRef.get().then((doc) => {
         if(doc.exists){
           const fetchedPost: any = doc.data()
           setPost(fetchedPost.post)
           setSelectedDate(formatDate());
+        }
+      })
+    }catch(e){
+      console.log(e);
+    }
+  }
+  const fetchGoals = async () => {
+    try {
+      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDateString);
+      docRef.get().then((doc) => {
+        if(doc.exists){
+          const fetchedPost: any = doc.data()
+          setPost(fetchedPost.post)
+          // EditGoalScreenからの遷移時に日付の値を渡す
+          setSelectedDate(route.params.selectedDate);
         }
       })
     }catch(e){
@@ -352,17 +295,21 @@ const StudyReportScreen = () => {
 
   useEffect(() => {
     loadFonts();
-    fetchGoals();
+    initialFetchGoals();
     fetchDateList();
   }, []);
 
+
+  useEffect(() => {
+    fetchGoals();
+  }, [isFocused])
+
   if (fontLoaded) {
-    return <Loading />;
+    return <Loading message='読込中'/>;
   }
 
   return (
     <ScrollView>
-    <Provider>
 
     <View style={styles.container}>
       {postToAlert.dream ? <Text>目標設定日：{postToAlert.dream}</Text> : null}
@@ -415,7 +362,7 @@ const StudyReportScreen = () => {
       <View style={styles.calendar_container}>
         <Calendar 
           // markedDates={{
-          //   '2021-03-24': {marked: true, dotColor: 'skyblue'}
+          //   '2021-04-24': {marked: true, dotColor: 'skyblue'}
           // }}
           markedDates={renderMarkedDates()}
           onDayPress={pressCalendarDate}
@@ -440,31 +387,7 @@ const StudyReportScreen = () => {
           }}
         />
       </View>
-        <Portal>
-          <FirstModal 
-            post={post} 
-            visible={dreamModalvisible}
-            setVisible={setDreamModalVisible}
-            submitPost={submitPost} 
-            dreamInputChange={dreamInputChange} 
-            goalInputChange={goalInputChange} 
-            settingDateChange={settingDateChange} 
-            targetDateChange={targetDateChange} 
-          />
-          <SecondModal 
-            post={post} 
-            visible={goalModalvisible}
-            setVisible={setGoalModalVisible}
-            submitPost={submitPost} 
-            targetHoursChange={targetHoursChange} 
-            ToDoOneChange={ToDoOneChange} 
-            ToDoTwoChange={ToDoTwoChange} 
-            ToDoThreeChange={ToDoThreeChange} 
-            ToDoFourChange={ToDoFourChange}
-          />
-        </Portal>
       </View>
-    </Provider>
     </ScrollView>
 
   );

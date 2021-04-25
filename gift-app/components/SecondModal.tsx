@@ -125,7 +125,7 @@ const SecondModal: React.FC<Props> = ({post, visible, setVisible, submitPost, ta
                 autoCapitalize='none'
                 editable={false}
                 />
-              </TouchableOpacity>
+            </TouchableOpacity>
           </View>
           <Text style={[styles.input_body_text, {marginTop: windowHeight*0.1, fontFamily: 'ComicSnas'}]}>To Do List</Text>
           <View style={styles.consecutive_input_box}>

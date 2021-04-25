@@ -121,7 +121,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
   })
 
   if (fontLoaded) {
-    return <Loading />;
+    return <Loading message='読込中' />;
   }
 
 
