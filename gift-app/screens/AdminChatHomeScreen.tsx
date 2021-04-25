@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Text,TouchableHighlight } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
@@ -6,7 +6,6 @@ import Loading from '../components/Loading';
 import * as Font from 'expo-font';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { AuthContext } from '../src/AuthProvider';
 
 
 import { Container, Card, UserInfo, UserInfoText, UserName, UserImg, UserImgWrapper, PostTime, MessageText, TextSection} from '../styles/UsersStyle';
@@ -17,7 +16,6 @@ type Props = {
 }
 
 const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
-  const {user} = useContext(AuthContext);
   const [threads, setThreads] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
@@ -36,23 +34,20 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
    */
   useEffect(() => {
     const unsubscribe = db
-      .collection('threads').where('creatersId', 'in', [user.uid, 'open'])
+      .collection('threads')
       .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {
-          console.log(documentSnapshot.id);
-          // if(user.uid == documentSnapshot.id){
-            return {
-              // ここの_id(documentSnapshot.id)がチャットルームのidとなり、チャット画面に受け渡されるので要チェック
-              _id: documentSnapshot.id,
-              // give defaults
-              name: '',
-              latestMessage: {
-                text: "",
-              },
-              ...documentSnapshot.data()
-            };
-          // }
+          return {
+            // ここの_id(documentSnapshot.id)がチャットルームのidとなり、チャット画面に受け渡されるので要チェック
+            _id: documentSnapshot.id,
+            // give defaults
+            name: '',
+            latestMessage: {
+              text: "",
+            },
+            ...documentSnapshot.data()
+          };
         });
 
         setThreads(threads);
@@ -67,7 +62,6 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
      */
     return () => unsubscribe();
   }, []);
-
   useEffect(() => {
     loadFonts();
   })
@@ -104,7 +98,7 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.user_info}>
               <View style={styles.text_section}>
                 <View style={styles.user_info_text}>
-                  <Text style={styles.user_name}>{item.name}</Text>
+                  <Text style={styles.user_name}>{item.createdBy}</Text>
                   <Text style={styles.post_time} >{}</Text>
                 </View>
                 <Text style={styles.message_text}>{item.latestMessage.text}</Text>

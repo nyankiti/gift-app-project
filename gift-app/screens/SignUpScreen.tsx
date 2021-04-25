@@ -247,7 +247,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('SignInScreen')}
+            onPress={() => navigation.navigate('SplashScreen')}
             // goBackメソッドでも同じ動作を実現できる
             // onPress={() => navigation.goBack()}
             style={[styles.signIn, {borderColor:"#EAC799", borderWidth: 1, marginTop: 15}]}

@@ -21,7 +21,7 @@ type Props = {
 }
 
 const SupportScreen: React.FC<Props> = ({navigation}) => {
-  const {user} = useContext(AuthContext);
+  const {user, logout} = useContext(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [userData, setUserData] = useState({
     'userImg': '',
@@ -56,8 +56,12 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
     // console.log((await threadDocRef.get()).data);
 
     threadDocRef.set({
-        name: userData.fname + userData.lname,
+      // このnameはチャットルームの名前
+        // name: userData.fname + userData.lname,
+        name: 'Gift管理者へ問い合わせ',
         createdBy: userData.fname + userData.lname,
+        creatersId: user.uid,
+        openChat: false,
         latestMessage: {
           text: `giftについて質問してみよう`,
           createdAt: new Date().getTime(),
@@ -116,9 +120,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.categoryBtn}
-          onPress={() =>
-            navigation.navigate('CardListScreen', {title: 'Fastfood Center'})
-          }>
+          onPress={() => {navigation.navigate('GiftInfoScreen')}}>
           <View style={styles.categoryIcon}>
             <MaterialCommunityIcons name="information" size={35} />
           </View>
@@ -126,43 +128,43 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <View style={[styles.categoryContainer, {marginTop: 10}]}>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('GiftInfoScreen')}}>
           <View style={styles.categoryIcon}>
             <Ionicons name="information" size={35} />
           </View>
           <Text style={styles.categoryBtnTxt}>infomation</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('GiftInfoScreen')}}>
           <View style={styles.categoryIcon}>
             <MaterialCommunityIcons name="cake" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>cake</Text>
+          <Text style={styles.categoryBtnTxt}>infomation2</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('EditProfileScreen')}}>
           <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="bell-circle" size={35} />
+            <MaterialCommunityIcons name="account" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>aaaa</Text>
+          <Text style={styles.categoryBtnTxt}>edit profile</Text>
         </TouchableOpacity>
       </View>
       <View style={[styles.categoryContainer, {marginTop: 10}]}>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('GiftInfoScreen')}}>
           <View style={styles.categoryIcon}>
             <Ionicons name="fitness" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>hahaha</Text>
+          <Text style={styles.categoryBtnTxt}>infomation4</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {navigation.navigate('GiftInfoScreen')}}>
           <View style={styles.categoryIcon}>
             <Ionicons name="flask" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>hihihi</Text>
+          <Text style={styles.categoryBtnTxt}>infomation5</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.categoryBtn} onPress={() => {logout()}}>
           <View style={styles.categoryIcon}>
-            <MaterialCommunityIcons name="apple" size={35} />
+            <MaterialCommunityIcons name="exit-to-app" size={35} />
           </View>
-          <Text style={styles.categoryBtnTxt}>apple</Text>
+          <Text style={styles.categoryBtnTxt}>logout</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

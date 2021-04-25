@@ -41,9 +41,6 @@ const StudyReportScreen = ({navigation, route}) => {
       })
       setFontLoaded(false)
   }
-
-  const [dreamModalvisible, setDreamModalVisible] = useState<boolean>(false);
-  const [goalModalvisible, setGoalModalVisible] = useState<boolean>(false);
   const [selectedDate, setSelectedDate]  = useState<any>(formatDate());
   const [selectedDateString, setSelectedDateString] = useState<string>(formatDateUntilDay());
   const [post, setPost] = useState({
@@ -69,63 +66,46 @@ const StudyReportScreen = ({navigation, route}) => {
   const [settingDateList, setSettingDateList] = useState<any>([]);
   const [targetDateList, setTargetDateList] = useState<any>([]);
 
-  const showDreamModal = () => {
-    navigation.navigate('EditGoalScreen', {post: post, selectedDate: selectedDate, dateString: selectedDateString});
-    console.log('aa');
-  }
-  const showGoalModal = () => {
+  const pressEditPencil = () => {
     navigation.navigate('EditGoalScreen', {post: post, selectedDate: selectedDate, dateString: selectedDateString});
   }
 
-  const dreamInputChange = (val: string) => {
-    setPost({
-      ...post,
-      dream: val,
-    })
-  }
-
-  const goalInputChange = (val: string) => {
-    setPost({
-      ...post,
-      oneDayGoal: val,
-    })
-  }
-  const ToDoOneChange = (val: string) => {
-    setPost({
-      ...post,
-      ToDo: {
-        ...post.ToDo,
-        one: val
-      }
-    })
-  }
-  const ToDoTwoChange = (val: string) => {
-    setPost({
-      ...post,
-      ToDo: {
-        ...post.ToDo,
-        two: val
-      }
-    })
-  }
-  const ToDoThreeChange = (val: string) => {
-    setPost({
-      ...post,
-      ToDo: {
-        ...post.ToDo,
-        three: val
-      }
-    })
-  }
-  const ToDoFourChange = (val: string) => {
-    setPost({
-      ...post,
-      ToDo: {
-        ...post.ToDo,
-        four: val
-      }
-    })
-  }
+  // const ToDoOneChange = (val: string) => {
+  //   setPost({
+  //     ...post,
+  //     ToDo: {
+  //       ...post.ToDo,
+  //       one: val
+  //     }
+  //   })
+  // }
+  // const ToDoTwoChange = (val: string) => {
+  //   setPost({
+  //     ...post,
+  //     ToDo: {
+  //       ...post.ToDo,
+  //       two: val
+  //     }
+  //   })
+  // }
+  // const ToDoThreeChange = (val: string) => {
+  //   setPost({
+  //     ...post,
+  //     ToDo: {
+  //       ...post.ToDo,
+  //       three: val
+  //     }
+  //   })
+  // }
+  // const ToDoFourChange = (val: string) => {
+  //   setPost({
+  //     ...post,
+  //     ToDo: {
+  //       ...post.ToDo,
+  //       four: val
+  //     }
+  //   })
+  // }
 
 
 
@@ -331,7 +311,7 @@ const StudyReportScreen = ({navigation, route}) => {
               size={22}
               backgroundColor="#fff"
               color="#2e64e5"
-              onPress={showDreamModal}
+              onPress={pressEditPencil}
             />
           </View>
           <Text style={styles.dream_text}> {post.dream} </Text>
@@ -351,7 +331,7 @@ const StudyReportScreen = ({navigation, route}) => {
               size={22}
               backgroundColor="#fff"
               color="#2e64e5"
-              onPress={showGoalModal}
+              onPress={pressEditPencil}
             />
           </View>
           <Text style={styles.purpose_text}>{post.oneDayGoal} </Text>

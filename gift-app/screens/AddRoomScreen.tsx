@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Button, IconButton, TextInput } from 'react-native-paper';
 import { db, FirebaseTimestamp } from '../src/firebase';
+import { windowHeight, windowWidth } from '../utils/Dimentions';
 
-const { width, height } = Dimensions.get('screen');
 
 type Props = {
   title: string;
@@ -30,6 +30,10 @@ export default function AddRoomScreen({ navigation }: any) {
     if (roomName.length > 0) {
       db.collection('threads').add({
           name: roomName,
+          // 管理者にはcreatedBy の値がトークルームに名前になる仕様なので、オープンチャットのときはここにroomNameを入れる
+          createdBy: roomName,
+          creatersId: 'open',
+          openChat: true,
           latestMessage: {
             text: `You have joined the room ${roomName}.`,
             createdAt: new Date().getTime(),
@@ -50,30 +54,23 @@ export default function AddRoomScreen({ navigation }: any) {
 
   return (
     <View style={styles.rootContainer}>
-      <View style={styles.closeButtonContainer}>
-        <IconButton
-          icon='close-circle'
-          size={36}
-          color='#6646ee'
-          onPress={() => navigation.goBack()}
+      <Text style={styles.title}>新しいチャットルームを作る</Text>
+      <Text style={styles.subText}>※このチャットルームは全体に公開されます</Text>
+      <TextInput
+        style={styles.input}
+        labelName='Room Name'
+        placeholder='Room Name'
+        value={roomName}
+        onChangeText={text => setRoomName(text)}
+        clearButtonMode='while-editing'
+      />
+      <FormButton
+        title='Create'
+        modeValue='contained'
+        labelStyle={styles.buttonLabel}
+        onPress={() => handleButtonPress()}
+        disabled={roomName.length === 0}
         />
-      </View>
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Create a new chat room</Text>
-        <TextInput
-          labelName='Room Name'
-          value={roomName}
-          onChangeText={text => setRoomName(text)}
-          clearButtonMode='while-editing'
-        />
-        <FormButton
-          title='Create'
-          modeValue='contained'
-          labelStyle={styles.buttonLabel}
-          onPress={() => handleButtonPress()}
-          disabled={roomName.length === 0}
-        />
-      </View>
     </View>
   );
 }
@@ -81,31 +78,33 @@ export default function AddRoomScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   rootContainer: {
-    flex: 1
-  },
-  closeButtonContainer: {
-    position: 'absolute',
-    top: 30,
-    right: 0,
-    zIndex: 1
-  },
-  innerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    backgroundColor: '#fff',
+    // alignItems: 'center'
   },
   title: {
     fontSize: 24,
-    marginBottom: 10
+    marginTop: windowHeight*0.25,
+    alignSelf: 'center'
+  },
+  subText: {
+    fontSize: 16,
+    alignSelf: 'center',
+    marginBottom: 20,
   },
   buttonLabel: {
     fontSize: 22
   },
   button: {
-    marginTop: 10
+    marginTop: 10,
+    alignSelf: 'center'
   },
   buttonContainer: {
-    width: width / 2,
-    height: height / 15
+    width: windowWidth * 0.5,
+    height: windowHeight *0.06,
+  }, 
+  input: {
+    width: windowWidth*0.8,
+    alignSelf: 'center'
   }
 });
