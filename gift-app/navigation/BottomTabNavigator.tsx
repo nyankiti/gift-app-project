@@ -187,15 +187,16 @@ export function NewsNavigator({navigation}: any) {
         options={({route}: any) => ({ 
           title: route.params.article.title, 
           headerRight: () => ( 
-            <View style={{marginRight: 10}}>
-              <FontAwesome5.Button
-                name="plus"
-                size={22}
-                backgroundColor="#EAC799"
-                color="#2e64e5"
-                // onPress={() => navigation.navigate('AddPost')}
-              />
-            </View>
+            // <View style={{marginRight: 10}}>
+            //   <FontAwesome5.Button
+            //     name="plus"
+            //     size={22}
+            //     backgroundColor="#EAC799"
+            //     color="#2e64e5"
+            //     // onPress={() => navigation.navigate('AddPost')}
+            //   />
+            // </View>
+            <></>
           )
         })}
       />

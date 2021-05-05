@@ -76,7 +76,7 @@ export function Route() {
         />
       </Drawer.Navigator> 
       : 
-      <AuthNavigator/>
+      <AuthNavigator />
       }
     </NavigationContainer>
   );

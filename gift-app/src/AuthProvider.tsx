@@ -7,12 +7,25 @@ import Constants from "expo-constants";
 import { User, AuthContextProps } from '../types';
 
 
+type AuthContextValue = {
+  user: User| null;
+  setUser: (user: User | null) => void;
+  login: (email: string, password: string) => void;
+  register: (email: string, password: string) => void;
+  logout: () => void;
+}
 
 if(!firebase.apps.length){
   firebase.initializeApp(Constants.manifest.extra.firebase);
 };
 
-export const AuthContext = createContext();
+export const AuthContext = createContext<AuthContextValue>({
+  user: null,
+  setUser: () => {},
+  login: () => {},
+  register: () => {},
+  logout: () => {}
+});
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState<User>();
@@ -20,13 +33,17 @@ export const AuthProvider = ({children}) => {
   return ( 
     <AuthContext.Provider
       value={{
-        user,
-        setUser,
+        user: user,
+        setUser: setUser,
         login: async( email, password ) => {
           try{
-            await auth.signInWithEmailAndPassword(email.trim(), password.trim());
+            await auth.signInWithEmailAndPassword(email.trim(), password.trim())
+              .then(() => {
+                // setUser
+              })
           }catch(e){
             console.log(e);
+            return false;
           }
         },
         register: async (email, password) => {

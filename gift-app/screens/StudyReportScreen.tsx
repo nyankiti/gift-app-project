@@ -445,10 +445,11 @@ const styles = StyleSheet.create({
     // marginBottom: windowHeight*0.02,
   },
   text_in_dream_logo: {
+    justifyContent: 'center',
     textAlign: 'center',
     fontFamily: 'ComicSnas_bd',
     paddingTop: windowWidth*0.04,
-    fontSize: RFPercentage(4),
+    fontSize: RFPercentage(3.3),
     // verticalAlign: 'middle',
   },
   calendar_container: {
