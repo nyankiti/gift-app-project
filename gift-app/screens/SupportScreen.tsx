@@ -9,6 +9,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
+import { registerForPushNotificationsAsync } from '../src/notification';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
@@ -21,17 +22,17 @@ type Props = {
 }
 
 const SupportScreen: React.FC<Props> = ({navigation}) => {
-  const {user, logout} = useContext(AuthContext);
+  const {user, setUser, logout} = useContext(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
-  const [userData, setUserData] = useState({
-    'userImg': '',
-    'fname': '',
-    'lname': '',
-    'email': '',
-    'phone': '',
-    'about': '',
-    'city': ''
-  });
+  // const [userData, setUserData] = useState({
+  //   'userImg': '',
+  //   'fname': '',
+  //   'lname': '',
+  //   'email': '',
+  //   'phone': '',
+  //   'about': '',
+  //   'city': ''
+  // });
   
   const loadFonts = async() => {
     await Font.loadAsync({
@@ -46,9 +47,13 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
     await db.collection('users').doc(user.uid).get()
       .then(async(documentSnapshot) => {
         if(documentSnapshot.exists){
-          setUserData(documentSnapshot.data());
+          setUser(documentSnapshot.data());
         }
       })
+    
+      // notificationのテスト
+      // const pushToken = await registerForPushNotificationsAsync();
+      // console.log(pushToken);
   }
 
   const handleChatButtonPress = async() => {
@@ -59,7 +64,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
       // このnameはチャットルームの名前
         // name: userData.fname + userData.lname,
         name: 'Gift管理者へ問い合わせ',
-        createdBy: userData.fname + userData.lname,
+        createdBy: user.fname + user.lname,
         creatersId: user.uid,
         openChat: false,
         latestMessage: {
@@ -83,6 +88,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
   useEffect(() => {
     loadFonts();
     getUser();
+    console.log(user);
   }, []);
 
   if (fontLoaded) {
@@ -104,9 +110,9 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
       <View style={styles.categoryContainer}>
         <TouchableOpacity
           style={styles.categoryBtn}
-          onPress={() =>
-            navigation.navigate('CardListScreen', {title: 'Restaurant'})
-          }>
+          onPress={() =>{
+            navigation.navigate('GiftInfoScreen')
+          }}>
           <View style={styles.categoryIcon}>
             <Ionicons name="information" size={35} />
           </View>

@@ -66,6 +66,8 @@ export type User = {
   fname: string;
   lname: string;
   email: string;
+  // 任意の値は?をつける
+  pushToken?: string;
   userImg: string;
   createdAt: any;
   updatedAt: any;

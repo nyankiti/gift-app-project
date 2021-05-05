@@ -29,9 +29,10 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
     secureTextEntry: true,
     isValidUser: true,
     isValidPassword: true,
+    successLogin: true,
   });
 
-  const { login } = useContext(AuthContext)
+  const { login, setUser } = useContext(AuthContext)
 
   // const [loaded] = useFonts({
   //   Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
@@ -114,6 +115,14 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
         isValidPassword: false
       })
     }
+  }
+
+  const handlePressLogin = async () => {
+    await login(data.email, data.password)
+    setData({
+      ...data,
+      successLogin: false
+    })
   }
 
   useEffect(() => {
@@ -210,13 +219,16 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.errorMsg}>Passwordは8文字以上必要です</Text>
           </Animatable.View>
           }
+          { data.successLogin ? null :
+          <Animatable.View animation='fadeInLeft' duration={500}>
+            <Text style={styles.errorMsg}>EmailまたはPasswordが間違っています</Text>
+          </Animatable.View>
+          }
       </View>
       <View style={styles.buttonArea}>
           <View style={styles.button}>
             <TouchableOpacity 
-              onPress={() => {
-                login(data.email, data.password)
-              }}
+              onPress={handlePressLogin}
               style={styles.signIn}
             >
                 <Text style={[styles.textSign, {color: '#EAC799'}]}>Sign In</Text>
