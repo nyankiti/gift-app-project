@@ -1,27 +1,26 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { StyleSheet, ActivityIndicator, TextInput, View, Text, Image, Alert, TouchableOpacity, ScrollView, Platform, Button, InteractionManager } from 'react-native';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import * as Font from 'expo-font';
-import { Modal, Portal, Provider } from 'react-native-paper';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { FirebaseTimestamp, db } from '../src/firebase';
+import loadFonts from '../utils/loadFonts';
+
 
 /* component */
 import Loading from '../screens/LoadingScreen';
 import { FloatingActionButton } from '../components/FloatingActionButton';
 import StudyClock from '../components/StudyClock';
-import FirstModal from '../components/FirstModal';
-import SecondModal from '../components/SecondModal';
+// import FirstModal from '../components/FirstModal';
+// import SecondModal from '../components/SecondModal';
 /* lib */
 import { formatDateUntilDay, formatDateUntilMinute, formatDate, formatDateUntilDayFromDateObject } from '../utils/file';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
-import { exists } from 'node:fs';
 
 
 const SVGWidth = windowWidth*0.24;
@@ -32,15 +31,6 @@ const StudyReportScreen = ({navigation, route}) => {
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const isFocused = useIsFocused()
 
-
-  const loadFonts = async() => {
-      await Font.loadAsync({
-        Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-        ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-        ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
-      })
-      setFontLoaded(false)
-  }
   const [selectedDate, setSelectedDate]  = useState<any>(formatDate());
   const [selectedDateString, setSelectedDateString] = useState<string>(formatDateUntilDay());
   const [post, setPost] = useState({
@@ -274,7 +264,7 @@ const StudyReportScreen = ({navigation, route}) => {
 
 
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
     initialFetchGoals();
     fetchDateList();
   }, []);

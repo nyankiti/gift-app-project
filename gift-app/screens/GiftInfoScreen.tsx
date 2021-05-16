@@ -2,22 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, SafeAreaView, ScrollView, Text, ActivityIndicator} from 'react-native';
 import Loading from '../components/Loading';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
-import * as Font from 'expo-font';
+import loadFonts from '../utils/loadFonts';
+
 
 
 
 const ArticleScreen: React.FC = () => {
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
-  const loadFonts = async() => {
-    await Font.loadAsync({
-      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-      ComicSnas_bd: require('../assets/fonts/comicbd.ttf'),
-    })
-    setFontLoaded(false)
-  }
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
   }, []);
 
 

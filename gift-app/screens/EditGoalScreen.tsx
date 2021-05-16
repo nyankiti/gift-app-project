@@ -2,13 +2,12 @@ import React, { useState, useEffect, useContext} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Platform, InteractionManager, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useIsFocused } from '@react-navigation/native'
-import { Modal } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RFPercentage } from "react-native-responsive-fontsize";
-import * as Font from 'expo-font';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { formatDateUntilDay, formatDateUntilDayFromDateObject } from '../utils/file';
 import { FirebaseTimestamp, db } from '../src/firebase';
+import loadFonts from '../utils/loadFonts';
 
 /* context */
 import { AuthContext } from '../src/AuthProvider';
@@ -67,14 +66,6 @@ const EditGoalScreen: React.FC = ({route, navigation}) => {
     setDatePickerMode('date');
   }
 // ----------------------------------------------------------------------------------------
-  const loadFonts = async() => {
-      await Font.loadAsync({
-        Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-        ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-        ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
-      })
-      setFontLoaded(false)
-  }
 
   const dreamInputChange = (val: string) => {
     setPost({
@@ -182,7 +173,7 @@ const EditGoalScreen: React.FC = ({route, navigation}) => {
   }
 
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
     fetchGoals();
   }, []);
 

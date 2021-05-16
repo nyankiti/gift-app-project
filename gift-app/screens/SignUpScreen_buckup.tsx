@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Dimensions, Platform, TextInput, StatusBar } from 'react-native';
 
 // react-native moduleがexpoに対応していなくてもexpoが独自のmoduleを用意してくれている可能性がある
@@ -6,11 +6,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import Loading from '../components/Loading';
 import Navigation from '../navigation';
-import loadFonts from '../utils/loadFonts';
-
-
 
 import { AuthContext } from '../src/AuthProvider';
 
@@ -20,7 +16,6 @@ type Props = {
 
 
 const SignUpScreen: React.FC<Props> = ({navigation}) => {
-  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -32,8 +27,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
     isValidPassword: true,
   });
 
-  const { register } = useContext(AuthContext);
-
+  const { register } = useContext(AuthContext)
 
   const textInputChange = (val: string) => {
     if(val.length >= 4){
@@ -116,13 +110,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
     }
   }
 
-  useEffect(() => {
-    loadFonts(setFontLoaded);
-  })
 
-  if (fontLoaded) {
-    return <Loading />;
-  }
 
 
   return ( 

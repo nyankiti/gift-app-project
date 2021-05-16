@@ -3,8 +3,8 @@ import { View, StyleSheet, FlatList, TouchableOpacity, Text,TouchableHighlight }
 import { List, Divider } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import Loading from '../components/Loading';
-import * as Font from 'expo-font';
 import { db, FirebaseTimestamp } from '../src/firebase';
+import loadFonts from '../utils/loadFonts';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { AuthContext } from '../src/AuthProvider';
 
@@ -21,15 +21,6 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
   const [threads, setThreads] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
-
-  const loadFonts = async() => {
-    await Font.loadAsync({
-      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-      ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
-    })
-    setFontLoaded(false)
-  }
 
   /**
    * Fetch threads from Firestore
@@ -69,7 +60,7 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
   })
 
   const handleButtonPress = ({item}) => {

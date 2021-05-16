@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Button, IconButton, TextInput } from 'react-native-paper';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
+import { AuthContext } from '../src/AuthProvider';
+import loadFonts from '../utils/loadFonts';
+
+
 
 
 type Props = {
@@ -25,6 +29,8 @@ const FormButton: React.FC<Props> = ({ title, modeValue, ...rest }) => {
 
 export default function AddRoomScreen({ navigation }: any) {
   const [roomName, setRoomName] = useState('');
+  const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+  const {user} = useContext(AuthContext);
 
   const handleButtonPress = () => {
     if (roomName.length > 0) {
@@ -51,9 +57,47 @@ export default function AddRoomScreen({ navigation }: any) {
     }
   }
 
+  const handleChatButtonPress = async() => {
+    const threadDocRef = await db.collection('threads').doc(user.uid);
+    // console.log((await threadDocRef.get()).data);
+
+    threadDocRef.set({
+      // このnameはチャットルームの名前
+        // name: userData.fname + userData.lname,
+        name: 'Gift管理者へ問い合わせ',
+        createdBy: user.fname + user.lname,
+        creatersId: user.uid,
+        openChat: false,
+        latestMessage: {
+          text: `giftについて質問してみよう`,
+          createdAt: new Date().getTime(),
+        }
+      }
+    )
+    // 始めていメッセージルームを作成した場合はシステムメッセージを入れておく
+    if((await threadDocRef.collection('messages').get()).empty){
+      threadDocRef.collection('messages').add({
+        text: `giftについて質問してみよう`,
+        createdAt: new Date().getTime(),
+        system: true
+    })
+    }
+
+    navigation.navigate('Chat');
+  }
+
+  useEffect(() => {
+    loadFonts(setFontLoaded);
+  }, []);
+
+  if (fontLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.rootContainer}>
+      <Text style={styles.title}>スタッフとチャットする</Text>
+
       <Text style={styles.title}>新しいチャットルームを作る</Text>
       <Text style={styles.subText}>※このチャットルームは全体に公開されます</Text>
       <TextInput
@@ -85,12 +129,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginTop: windowHeight*0.25,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontFamily: 'Anzumozi',
   },
   subText: {
     fontSize: 16,
     alignSelf: 'center',
     marginBottom: 20,
+    fontFamily: 'Anzumozi',
   },
   buttonLabel: {
     fontSize: 22

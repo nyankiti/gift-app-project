@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import { RFPercentage } from "react-native-responsive-fontsize";
-import * as Font from 'expo-font';
 import Loading from '../screens/LoadingScreen';
+import loadFonts from '../utils/loadFonts';
+
+
 
 
 
@@ -16,19 +18,19 @@ type Props = {
 
 const ListItem :React.FC<Props> = ({imageUrl, title, author, onPress}) => {
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
-  const loadFonts = async() => {
-    await Font.loadAsync({
-      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      ComicSnas: require('../assets/fonts/comicsansms3.ttf')
-    })
-    setFontLoaded(false)
-  }
+  // const loadFonts = async() => {
+  //   await Font.loadAsync({
+  //     Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
+  //     ComicSnas: require('../assets/fonts/comicsansms3.ttf')
+  //   })
+  //   setFontLoaded(false)
+  // }
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
   }, []);
 
   if (fontLoaded) {
-    return <Loading />;
+    return <Loading message='読込中' />;
   }
 
 

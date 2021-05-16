@@ -4,12 +4,13 @@ import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, ScrollView 
 import Swiper from 'react-native-swiper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as Font from 'expo-font';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { registerForPushNotificationsAsync } from '../src/notification';
+import loadFonts from '../utils/loadFonts';
+
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
@@ -33,14 +34,6 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
   //   'about': '',
   //   'city': ''
   // });
-  
-  const loadFonts = async() => {
-    await Font.loadAsync({
-      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      ComicSnas: require('../assets/fonts/comicsansms3.ttf')
-    })
-    setFontLoaded(false)
-  }
 
 
   const getUser = async() => {
@@ -58,7 +51,9 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
 
   const handleChatButtonPress = async() => {
     const threadDocRef = await db.collection('threads').doc(user.uid);
-    // console.log((await threadDocRef.get()).data);
+
+    // ここのコードはuser contextが書き換わる前に読まれると危険なので危ない気がする
+    // if(exsits(user.fname)
 
     threadDocRef.set({
       // このnameはチャットルームの名前
@@ -73,6 +68,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
         }
       }
     )
+    console.log(user);
     // 始めていメッセージルームを作成した場合はシステムメッセージを入れておく
     if((await threadDocRef.collection('messages').get()).empty){
       threadDocRef.collection('messages').add({
@@ -86,8 +82,8 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
   }
 
   useEffect(() => {
-    loadFonts();
-    getUser();
+    loadFonts(setFontLoaded);
+    // getUser();
     console.log(user);
   }, []);
 

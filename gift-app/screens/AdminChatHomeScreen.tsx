@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Text,TouchableHighlight } from 'react-native';
 import { List, Divider } from 'react-native-paper';
-import firestore from '@react-native-firebase/firestore';
 import Loading from '../components/Loading';
-import * as Font from 'expo-font';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { RFPercentage } from "react-native-responsive-fontsize";
+import loadFonts from '../utils/loadFonts';
 
 
 import { Container, Card, UserInfo, UserInfoText, UserName, UserImg, UserImgWrapper, PostTime, MessageText, TextSection} from '../styles/UsersStyle';
@@ -20,14 +19,6 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
 
-  const loadFonts = async() => {
-    await Font.loadAsync({
-      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-      ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
-    })
-    setFontLoaded(false)
-  }
 
   /**
    * Fetch threads from Firestore
@@ -63,7 +54,7 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
   })
 
   const handleButtonPress = ({item}) => {
