@@ -72,11 +72,3 @@ export type User = {
   createdAt: any;
   updatedAt: any;
 }
-
-export type AuthContextProps = {
-  user: any;
-  setUser: any;
-  login: any;
-  register: any;
-  logout: any;
-}

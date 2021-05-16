@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, ImageBackground, TextInput, StyleSheet, A
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import * as Font from 'expo-font';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FormButton from '../components/FormButton';
@@ -12,6 +11,7 @@ import FormButton from '../components/FormButton';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 import ImagePicker from 'react-native-image-crop-picker';
+import loadFonts from '../utils/loadFonts';
 
 /* conponent */
 import Loading from '../components/Loading';
@@ -32,7 +32,7 @@ import { AuthContext } from '../src/AuthProvider';
 
 
 const EditProfileScreen = () => {
-  const {user} = useContext(AuthContext);
+  const {user, setUser} = useContext(AuthContext);
   const [image, setImage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
@@ -50,15 +50,6 @@ const EditProfileScreen = () => {
 
   const bs = useRef();
   const fall = new Animated.Value(1);
-
-  const loadFonts = async() => {
-    await Font.loadAsync({
-      Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-      // ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-      ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
-    })
-    setFontLoaded(false)
-  }
 
 
   const getUser = async() => {
@@ -83,11 +74,13 @@ const EditProfileScreen = () => {
     db.collection('users').doc(user.uid).update({
       fname: userData.fname,
       lname: userData.lname,
+      name: userData.lname + userData.fname,
       about: userData.about,
       phone: userData.phone,
       city: userData.city,
       userImg: imgUrl,
     }).then(() => {
+      setUser(userData);
       Alert.alert(
         'Profile Update!',
         'Your profile has been updated successfully'
@@ -153,10 +146,8 @@ const EditProfileScreen = () => {
   
   useEffect(() => {
     getUser();
+    loadFonts(setFontLoaded);
   }, []);
-  useEffect(() => {
-    loadFonts();
-  })
 
   const renderInner = () => (
     <View style={styles.panel}>
@@ -248,7 +239,7 @@ const EditProfileScreen = () => {
           <View style={styles.action}>
           <FontAwesome name="user-o" color="#333333" size={20} />
           <TextInput
-            placeholder="First Name"
+            placeholder="First Name(名前)"
             placeholderTextColor="#666666"
             autoCorrect={false}
             value={userData.fname ? userData.fname : ''}
@@ -259,7 +250,7 @@ const EditProfileScreen = () => {
           <View style={styles.action}>
             <FontAwesome name="user-o" size={20} />
             <TextInput
-              placeholder="Last Name"
+              placeholder="Last Name(苗字)"
               placeholderTextColor="#666666"
               autoCorrect={false}
               value={userData.lname ? userData.lname : ''}

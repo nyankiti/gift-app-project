@@ -4,7 +4,8 @@ import firebase from 'firebase/app';
 import { auth, db, FirebaseTimestamp } from '../src/firebase';
 import Constants from "expo-constants";
 
-import { User, AuthContextProps } from '../types';
+
+import { User } from '../types';
 
 
 type AuthContextValue = {
@@ -24,7 +25,7 @@ export const AuthContext = createContext<AuthContextValue>({
   setUser: () => {},
   login: () => {},
   register: () => {},
-  logout: () => {}
+  logout: () => {},
 });
 
 export const AuthProvider = ({children}) => {

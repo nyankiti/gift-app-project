@@ -1,18 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, SafeAreaView, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import Constants from "expo-constants";
 import { db } from '../src/firebase';
 import { Text, View } from '../components/Themed';
 import ListItem from '../components/ListItem';
 import Loading from '../components/Loading';
+import { AuthContext } from '../src/AuthProvider';
 /* types */
 
 
 
 
 const NewsScreen: React.FC = ({navigation}) => {
+  const {user, setUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<any>([]);
+
+  const getUser = async() => {
+    await db.collection('users').doc(user.uid).get()
+      .then(async(documentSnapshot) => {
+        if(documentSnapshot.exists){
+          setUser(documentSnapshot.data());
+        }
+      })
+  }
 
 
   const fetchArticles = async() => {
@@ -49,6 +60,12 @@ const NewsScreen: React.FC = ({navigation}) => {
   useEffect(() => {
       fetchArticles();
   }, []);
+
+  useEffect(() => {
+    // login時の最初にuserのcontextをfirestoreの情報で上書きして、どこでもユーザー情報にアクセスできるようにする
+    getUser();
+    // fetchArticlesと時間をずらすためにloadingがfalseになってから密かにgetUserする
+  }, [loading])
   
   return (
     <View style={styles.container}>

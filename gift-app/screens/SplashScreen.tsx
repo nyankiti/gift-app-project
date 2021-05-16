@@ -9,8 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import { useFonts } from 'expo-font';
-import * as Font from 'expo-font';
+import loadFonts from '../utils/loadFonts';
 
 import Loading from '../screens/LoadingScreen';
 import { AuthContext } from '../src/AuthProvider';
@@ -33,20 +32,6 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
   });
 
   const { login, setUser } = useContext(AuthContext)
-
-  // const [loaded] = useFonts({
-  //   Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-  //   ComicSnas: require('../assets/fonts/comicsansms3.ttf')
-  // });
-
-  const loadFonts = async() => {
-      await Font.loadAsync({
-        Anzumozi: require('../assets/fonts/Anzumozi.ttf'),
-        ComicSnas: require('../assets/fonts/comicsansms3.ttf'),
-        ComicSnas_bd: require('../assets/fonts/comicbd.ttf')
-      })
-      setFontLoaded(false)
-  }
 
   const textInputChange = (val: string) => {
     if(val.trim().length >= 4){
@@ -126,7 +111,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
   }
 
   useEffect(() => {
-    loadFonts();
+    loadFonts(setFontLoaded);
   })
 
   if (fontLoaded) {
