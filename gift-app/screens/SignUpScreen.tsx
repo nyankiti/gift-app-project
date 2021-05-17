@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Dimensions, Platform, TextInput, StatusBar } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Platform, TextInput, StatusBar } from 'react-native';
 
 // react-native moduleがexpoに対応していなくてもexpoが独自のmoduleを用意してくれている可能性がある
 import {LinearGradient} from 'expo-linear-gradient';
@@ -7,6 +7,7 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Loading from '../components/Loading';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Navigation from '../navigation';
 import loadFonts from '../utils/loadFonts';
 
@@ -24,6 +25,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
   const [data, setData] = useState({
     email: '',
     password: '',
+    name: '',
     confirm_password: '',
     check_textInputChange: false,
     secureTextEntry: true,
@@ -49,6 +51,13 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
         isValidUser: false
       })
     }
+  }
+
+  const handleNameInputChange = (val: string) => {
+    setData({
+      ...data,
+      name: val,
+    })
   }
 
   const handlePasswordChange = (val: string) => {
@@ -126,7 +135,8 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
 
 
   return ( 
-    <View style={styles.container}>
+    <KeyboardAwareScrollView style={styles.container}>
+      <SafeAreaView>
       <StatusBar backgroundColor='#EAC799' barStyle='light-content' />
       <View style={styles.header}>
         <Text style={styles.text_header} >Resister Now!</Text>
@@ -168,6 +178,21 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.errorMsg}>Emailは4文字以上必要です</Text>
           </Animatable.View>
         }
+
+        <Text style={[styles.text_footer, {marginTop: 35}]}>Your Name</Text>
+        <View style={styles.action}>
+            <FontAwesome 
+              name='address-book-o'
+              color='#05375a'
+              size={20}
+            />
+            <TextInput 
+              placeholder="Your Name"
+              style={styles.textInput}
+              autoCapitalize='none'
+              onChangeText={(val) => handleNameInputChange(val)}
+            />
+        </View>
 
         <Text style={[styles.text_footer, {marginTop: 35}]}>Password</Text>
         <View style={styles.action}>
@@ -247,7 +272,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
 
         <View style={styles.button}>
           <TouchableOpacity 
-            onPress={() => register(data.email, data.password)}
+            onPress={() => register(data.email, data.password, data.name)}
             style={styles.signIn}
           >
             <LinearGradient
@@ -268,7 +293,8 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </Animatable.View>
-    </View>
+      </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -281,7 +307,8 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-end',
       paddingHorizontal: 20,
-      paddingBottom: 50
+      marginTop: 50,
+      marginBottom:10
   },
   footer: {
       flex: 3,

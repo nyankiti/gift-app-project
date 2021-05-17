@@ -18,7 +18,7 @@ type Props = {
 const RoomScreen: React.FC<Props> = ({route}) => {
   const { user }: any = useContext(AuthContext);
   const { thread }: any = route.params;
-  const currentUser = user.toJSON();
+  // const currentUser = user.toJSON();
 
   const [messages, setMessages] = useState<any>();
   const [userImg, setUserImg] = useState<string>();
@@ -76,8 +76,8 @@ const RoomScreen: React.FC<Props> = ({route}) => {
       text,
       createdAt: new Date().getTime(),
       user: {
-        _id: currentUser.uid,
-        email: currentUser.email,
+        _id: user.uid,
+        email: user.email,
         userImg: userImg,
       }
     });
@@ -166,7 +166,7 @@ const RoomScreen: React.FC<Props> = ({route}) => {
       <GiftedChat
         messages={messages}
         onSend={handleSend}
-        user={{ _id: currentUser.uid }}
+        user={{ _id: user.uid }}
         renderBubble={renderBubble}
         placeholder='Type your message here...'
         showUserAvatar

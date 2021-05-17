@@ -1,10 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Dimensions, 
-  Image, TouchableOpacity, Platform, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Platform, TextInput, ScrollView } from 'react-native';
 // react-native moduleがexpoに対応していなくてもexpoが独自のmoduleを用意してくれている可能性がある
 // import LinearGradient from 'react-native-linear-gradient';
 import { RFPercentage } from "react-native-responsive-fontsize";
-import {LinearGradient} from 'expo-linear-gradient';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -120,7 +119,7 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
 
 
   return ( 
-    <ScrollView style={styles.container}>
+    <KeyboardAwareScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.header_text}>Lines</Text>
       </View>
@@ -224,10 +223,10 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
       <View style={styles.footer}>
         <Text style={styles.footer_text}>Don't have an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')} >
-            <Text style={[styles.footer_text, {fontFamily: 'ComicSnas_bd'}]}>Sign up</Text>
+            <Text style={styles.footer_button_text}>Sign up</Text>
           </TouchableOpacity>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -246,7 +245,6 @@ const styles = StyleSheet.create({
   header: {
     flex: 2,
     justifyContent: 'center',
-    // alignItems: 'center'
     marginLeft: windowWidth*0.05,
   },
   header_text: {
@@ -266,7 +264,6 @@ const styles = StyleSheet.create({
     // fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: 'ComicSnas_bd',
-    // fontFamily: 'serif',
     padding: windowHeight*0.02,
   },
   formArea: {
@@ -280,13 +277,19 @@ const styles = StyleSheet.create({
   footer: {
       flex: 1,
       flexDirection: 'row',
-      paddingVertical: windowHeight*0.03,
-      paddingLeft: windowWidth*0.03,
+      paddingTop: 10,
+      alignSelf: 'center'
   },
   footer_text:{
-    fontSize: RFPercentage(3),
+    fontSize: RFPercentage(2.6),
     fontFamily: 'ComicSnas',
     padding: 10,
+  },
+  footer_button_text: {
+    fontSize: RFPercentage(3.6),
+    fontFamily: 'ComicSnas_bd',
+    marginLeft: 10,
+    // marginTop: 5,
   },
   text_header: {
     color: '#fff',
