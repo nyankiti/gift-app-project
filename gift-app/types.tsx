@@ -63,6 +63,7 @@ export type SupportTabParamList = {
 // --------------------------------------------------
 export type User = {
   uid: any;
+  displayName: string;
   fname: string;
   lname: string;
   email: string;

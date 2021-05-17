@@ -14,7 +14,9 @@ import { AuthContext } from '../src/AuthProvider';
 const NewsScreen: React.FC = ({navigation}) => {
   const {user, setUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [nextSnapshot, setNextSnapshot] = useState<any>(null);
   const [articles, setArticles] = useState<any>([]);
+  var list: any = [];
 
   const getUser = async() => {
     await db.collection('users').doc(user.uid).get()
@@ -28,9 +30,7 @@ const NewsScreen: React.FC = ({navigation}) => {
 
   const fetchArticles = async() => {
     try{
-      const list: any = []
-
-      await db.collection('news').orderBy('created_at', 'desc').get()
+      await db.collection('news').orderBy('created_at', 'desc').limit(30).get()
       .then((querySnapshot) => {
         querySnapshot.forEach(doc => {
           const {author, html, imageUrl, title, create_at} = doc.data();
@@ -43,9 +43,10 @@ const NewsScreen: React.FC = ({navigation}) => {
             create_at: create_at
           });
         })
-
         setArticles(list);
-
+        
+        setNextSnapshot(querySnapshot.docs[querySnapshot.docs.length-1]);
+        
         if(loading){
           setLoading(false);
         }
@@ -56,9 +57,37 @@ const NewsScreen: React.FC = ({navigation}) => {
     }
   }
 
+  const fetchNextArticles = async() => {
+    list = articles
+    try{
+      await db.collection('news').orderBy('created_at', 'desc').startAt(nextSnapshot).get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(doc => {
+          const {author, html, imageUrl, title, create_at} = doc.data();
+          list.push({
+            id: doc.id,
+            author: author,
+            title: title,
+            imageUrl: imageUrl,
+            html: html,
+            create_at: create_at
+          });
+        })
+        setArticles(list);
+        
+        // 追加で記事を取得するのは一度だけなので以下のstateはnullに戻す
+        setNextSnapshot(null);
+
+      } )
+    }catch(e){
+      console.log(e);
+    }
+  }
+
 
   useEffect(() => {
       fetchArticles();
+      console.log(user);
   }, []);
 
   useEffect(() => {
@@ -84,7 +113,11 @@ const NewsScreen: React.FC = ({navigation}) => {
             }
           />
         )}
-        // onEndReached={}
+        onEndReached={() => {
+          if(nextSnapshot){
+            fetchNextArticles();
+          }
+        }}
         onEndReachedThreshold={0.1}
         ListFooterComponent={ActivityIndicator}
       />

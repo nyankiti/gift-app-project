@@ -31,7 +31,7 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
       .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {
-          console.log(documentSnapshot.id);
+          // console.log(documentSnapshot.id);
           // if(user.uid == documentSnapshot.id){
             return {
               // ここの_id(documentSnapshot.id)がチャットルームのidとなり、チャット画面に受け渡されるので要チェック
@@ -63,10 +63,6 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
     loadFonts(setFontLoaded);
   })
 
-  const handleButtonPress = ({item}) => {
-    console.log(item);
-    navigation.navigate('RoomScreen', { thread: item })
-  }
 
   if (fontLoaded) {
     return <Loading />;
@@ -81,8 +77,6 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate('RoomScreen', {thread: item})}
-            // onPress={handleButtonPress(item)}
-            // onPress={() => {navigation.navigate('RoomScreen')}}
           >
             {/* <List.Item
               title={item.name}

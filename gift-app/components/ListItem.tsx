@@ -30,7 +30,7 @@ const ListItem :React.FC<Props> = ({imageUrl, title, author, onPress}) => {
   }, []);
 
   if (fontLoaded) {
-    return <Loading message='読込中' />;
+    return <Loading message='' />;
   }
 
 

@@ -12,7 +12,7 @@ type AuthContextValue = {
   user: User| null;
   setUser: (user: User | null) => void;
   login: (email: string, password: string) => void;
-  register: (email: string, password: string) => void;
+  register: (email: string, password: string, name: string) => void;
   logout: () => void;
 }
 
@@ -28,7 +28,7 @@ export const AuthContext = createContext<AuthContextValue>({
   logout: () => {},
 });
 
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({children}: any) => {
   const [user, setUser] = useState<User>();
 
   return ( 
@@ -47,13 +47,22 @@ export const AuthProvider = ({children}) => {
             return false;
           }
         },
-        register: async (email, password) => {
+        register: async (email, password, userName) => {
           try{
             await auth.createUserWithEmailAndPassword(email.trim(), password.trim())
+            .then((user) => {
+            // displayNameに名前の登録(firebase authenticationで管理される名前) 
+              user.user.updateProfile({
+                displayName: userName
+              }).then(() => {
+                // displayNameの追加に成功
+              }).catch((error: any) => {
+                console.log(error);
+              })
             // auth側と紐づくようにfirestoreにもデータを登録しておく
-            .then(() => {
               const userInitialData = {
                 uid: auth.currentUser.uid,
+                displayName: userName,
                 fname: '',
                 lname: '',
                 email: email,

@@ -5,6 +5,8 @@ import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { AuthContext } from '../src/AuthProvider';
 import loadFonts from '../utils/loadFonts';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 
 
@@ -65,7 +67,7 @@ export default function AddRoomScreen({ navigation }: any) {
       // このnameはチャットルームの名前
         // name: userData.fname + userData.lname,
         name: 'Gift管理者へ問い合わせ',
-        createdBy: user.fname + user.lname,
+        createdBy: user.displayName,
         creatersId: user.uid,
         openChat: false,
         latestMessage: {
@@ -82,8 +84,8 @@ export default function AddRoomScreen({ navigation }: any) {
         system: true
     })
     }
-
-    navigation.navigate('Chat');
+    const params = {_id: user.uid}
+    navigation.navigate('RoomScreen', {thread: params});
   }
 
   useEffect(() => {
@@ -95,10 +97,17 @@ export default function AddRoomScreen({ navigation }: any) {
   }
 
   return (
-    <View style={styles.rootContainer}>
+    <KeyboardAwareScrollView style={styles.rootContainer}>
       <Text style={styles.title}>スタッフとチャットする</Text>
+      <FormButton
+        title='Start'
+        modeValue='contained'
+        onPress={handleChatButtonPress}
+      />
+      
 
-      <Text style={styles.title}>新しいチャットルームを作る</Text>
+
+      <Text style={styles.second_title}>新しいチャットルームを作る</Text>      
       <Text style={styles.subText}>※このチャットルームは全体に公開されます</Text>
       <TextInput
         style={styles.input}
@@ -111,11 +120,10 @@ export default function AddRoomScreen({ navigation }: any) {
       <FormButton
         title='Create'
         modeValue='contained'
-        labelStyle={styles.buttonLabel}
-        onPress={() => handleButtonPress()}
+        onPress={handleButtonPress}
         disabled={roomName.length === 0}
         />
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -128,7 +136,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginTop: windowHeight*0.25,
+    marginTop: windowHeight*0.20,
+    alignSelf: 'center',
+    fontFamily: 'Anzumozi',
+  },
+  second_title: {
+    fontSize: 24,
+    marginTop: windowHeight*0.10,
     alignSelf: 'center',
     fontFamily: 'Anzumozi',
   },
