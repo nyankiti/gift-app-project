@@ -135,7 +135,8 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
           <View style={styles.action}>
               <FontAwesome 
                 name='user-o'
-                color='#EAC799'
+                // color='#EAC799'
+                color='#05375a'
                 size={20}
               />
               <TextInput 
@@ -152,7 +153,8 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
               >
                 <Feather 
                   name='check'
-                  color='#EAC799'
+                  // color='#EAC799'
+                  color='#05375a'
                   size={20}
                   />
               </Animatable.View>
@@ -168,7 +170,8 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
           <View style={styles.action}>
               <FontAwesome 
                 name='lock'
-                color='#EAC799'
+                // color='#EAC799'
+                color='#05375a'
                 size={20}
               />
               <TextInput 
@@ -186,13 +189,15 @@ const SplashScreen: React.FC<Props> = ({navigation}) => {
                 {data.secureTextEntry ?  
                   <Feather 
                   name='eye-off'
-                  color='#EAC799'
+                  // color='#EAC799'
+                  color='#05375a'
                   size={20}
                   />
                 :
                   <Feather 
                   name='eye'
-                  color='#EAC799'
+                  // color='#EAC799'
+                  color='#05375a'
                   size={20}
                   />
                 }
