@@ -8,10 +8,19 @@ import Loading from '../components/Loading';
 import { AuthContext } from '../src/AuthProvider';
 /* types */
 
+import { NewsTabParamList } from '../types';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type NewsTabNavigationProp = StackNavigationProp<NewsTabParamList> ;
+
+type Props = {
+  navigation: NewsTabNavigationProp;
+  route: any
+}
 
 
 
-const NewsScreen: React.FC = ({navigation}) => {
+const NewsScreen: React.FC<Props> = ({navigation}) => {
   const {user, setUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [nextSnapshot, setNextSnapshot] = useState<any>(null);
@@ -19,7 +28,7 @@ const NewsScreen: React.FC = ({navigation}) => {
   var list: any = [];
 
   const getUser = async() => {
-    await db.collection('users').doc(user.uid).get()
+    await db.collection('users').doc(user?.uid).get()
       .then(async(documentSnapshot) => {
         if(documentSnapshot.exists){
           setUser(documentSnapshot.data());

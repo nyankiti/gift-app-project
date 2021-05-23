@@ -10,6 +10,10 @@ import Loading from '../components/Loading';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Navigation from '../navigation';
 import loadFonts from '../utils/loadFonts';
+import { windowWidth, windowHeight } from '../utils/Dimentions';
+import { RFPercentage } from "react-native-responsive-fontsize";
+
+
 
 
 
@@ -136,16 +140,15 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
 
   return ( 
     <KeyboardAwareScrollView style={styles.container}>
-      <SafeAreaView>
-      <StatusBar backgroundColor='#EAC799' barStyle='light-content' />
       <View style={styles.header}>
-        <Text style={styles.text_header} >Resister Now!</Text>
+        <Text style={styles.header_text}>Register Now!</Text>
       </View>
-      <Animatable.View 
-        animation='fadeInUpBig'
-        style={styles.footer}
-      >
-        <Text style={styles.text_footer}>Email</Text>
+      <View style={styles.formArea} >
+        
+
+        <View style={{marginTop: windowHeight*0.03}}></View>
+
+        <Text style={styles.text_footer}></Text>
         <View style={styles.action}>
             <FontAwesome 
               name='user-o'
@@ -179,7 +182,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
           </Animatable.View>
         }
 
-        <Text style={[styles.text_footer, {marginTop: 35}]}>Your Name</Text>
+        <Text style={[styles.text_footer, {marginTop: 25}]}></Text>
         <View style={styles.action}>
             <FontAwesome 
               name='address-book-o'
@@ -194,7 +197,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
             />
         </View>
 
-        <Text style={[styles.text_footer, {marginTop: 35}]}>Password</Text>
+        <Text style={[styles.text_footer, {marginTop: 25}]}></Text>
         <View style={styles.action}>
             <FontAwesome 
               name='lock'
@@ -202,7 +205,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
               size={20}
             />
             <TextInput 
-              placeholder="Your Password"
+              placeholder="New Password"
               secureTextEntry={data.secureTextEntry ? true : false}
               style={styles.textInput}
               autoCapitalize='none'
@@ -235,7 +238,7 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
         </Animatable.View>
         }
 
-        <Text style={[styles.text_footer, {marginTop: 35}]}>Confirm Password</Text>
+        <Text style={[styles.text_footer, {marginTop: 25}]}></Text>
         <View style={styles.action}>
             <FontAwesome 
               name='lock'
@@ -269,70 +272,61 @@ const SignUpScreen: React.FC<Props> = ({navigation}) => {
             </TouchableOpacity>
         </View>
 
-
-        <View style={styles.button}>
-          <TouchableOpacity 
-            onPress={() => register(data.email, data.password, data.name)}
-            style={styles.signIn}
-          >
-            <LinearGradient
-              colors={['#08d4c4', '#01ab9d']}
+      </View>
+      <View style={styles.buttonArea}>
+          <View style={styles.button}>
+            <TouchableOpacity 
+              onPress={() => register(data.email, data.password, data.name)}
               style={styles.signIn}
-              >
-              <Text style={[styles.textSign, {color: '#ffff'}]}>Sign Up</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+            >
+                <Text style={[styles.textSign, {color: '#EAC799'}]}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+      </View>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SplashScreen')}
-            // goBackメソッドでも同じ動作を実現できる
-            // onPress={() => navigation.goBack()}
-            style={[styles.signIn, {borderColor:"#EAC799", borderWidth: 1, marginTop: 15}]}
-          >
-            <Text style={[styles.textSign, {color: '#EAC799'}]}>Sign In</Text>
+      <View style={styles.footer}>
+        <Text style={styles.footer_text}>Go to Sign in Screen</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SplashScreen')} >
+            <Text style={styles.footer_button_text}>Sign in</Text>
           </TouchableOpacity>
-        </View>
-      </Animatable.View>
-      </SafeAreaView>
+      </View>
     </KeyboardAwareScrollView>
   );
 };
 
+
+const input_width = windowWidth * 0.8
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    backgroundColor: '#EAC799'
+    flex: 1,
+    backgroundColor: '#fff',
+    borderColor:"black", 
+    borderWidth: 1,
+    margin: windowWidth*0.03,
   },
   header: {
-      flex: 1,
-      justifyContent: 'flex-end',
-      paddingHorizontal: 20,
-      marginTop: 50,
-      marginBottom:10
-  },
-  footer: {
-      flex: 3,
-      backgroundColor: '#fff',
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      paddingHorizontal: 20,
-      paddingVertical: 30
+    flex: 2,
+    justifyContent: 'center',
+    marginLeft: windowWidth*0.05,
   },
   text_header: {
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: 30
+    color: '#fff',
+    fontWeight: 'bold',
+    fontFamily: 'ComicSnas',
+    fontSize: 30
   },
   text_footer: {
       color: '#05375a',
       fontSize: 18
   },
   action: {
-      flexDirection: 'row',
-      marginTop: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#f2f2f2',
-      paddingBottom: 5
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EAC799',
+    paddingBottom: 5,
+    width: input_width,
   },
   actionError: {
       flexDirection: 'row',
@@ -352,20 +346,54 @@ const styles = StyleSheet.create({
       fontSize: 14,
   },
   button: {
-      alignItems: 'center',
-      marginTop: 50
+    alignItems: 'flex-start',
+    marginTop: windowHeight*0.08
   },
   signIn: {
-      width: '100%',
+      // width: '100%',
       height: 50,
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: 10
+      borderRadius: 10,
+      marginLeft: windowWidth*0.06,
   },
   textSign: {
-      fontSize: 18,
-      fontWeight: 'bold'
-  }
+    fontSize: RFPercentage(4),
+    // fontWeight: 'bold',
+    fontFamily: 'ComicSnas_bd',
+  },
+  buttonArea: {
+    flex: 2
+  },
+  footer: {
+      flex: 1,
+      flexDirection: 'row',
+      paddingTop: 10,
+      alignSelf: 'center'
+  },
+  footer_text:{
+    fontSize: RFPercentage(2.6),
+    fontFamily: 'ComicSnas',
+    padding: 10,
+  },
+  footer_button_text: {
+    fontSize: RFPercentage(3.6),
+    fontFamily: 'ComicSnas_bd',
+    marginLeft: 10,
+    // marginTop: 5,
+  },
+  formArea: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  header_text: {
+    fontSize: RFPercentage(5),
+    fontFamily: 'ComicSnas',
+    marginTop: windowHeight*0.02,
+    marginBottom: windowHeight*0.04
+  },
+  
 });
 
 

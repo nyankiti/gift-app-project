@@ -6,12 +6,14 @@ import { db, FirebaseTimestamp } from '../src/firebase';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import loadFonts from '../utils/loadFonts';
 
+import { ChatTabParamList } from '../types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Container, Card, UserInfo, UserInfoText, UserName, UserImg, UserImgWrapper, PostTime, MessageText, TextSection} from '../styles/UsersStyle';
-
+type ChatTabNavigationProp = StackNavigationProp<ChatTabParamList> ;
 
 type Props = {
-  navigation: any;
+  navigation: ChatTabNavigationProp;
+  route: any
 }
 
 const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
@@ -57,10 +59,6 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
     loadFonts(setFontLoaded);
   })
 
-  const handleButtonPress = ({item}) => {
-    console.log(item);
-    navigation.navigate('RoomScreen', { thread: item })
-  }
 
   if (fontLoaded) {
     return <Loading />;

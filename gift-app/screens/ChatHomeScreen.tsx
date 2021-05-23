@@ -8,13 +8,16 @@ import loadFonts from '../utils/loadFonts';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { AuthContext } from '../src/AuthProvider';
 
+import { ChatTabParamList } from '../types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Container, Card, UserInfo, UserInfoText, UserName, UserImg, UserImgWrapper, PostTime, MessageText, TextSection} from '../styles/UsersStyle';
-
+type ChatTabNavigationProp = StackNavigationProp<ChatTabParamList> ;
 
 type Props = {
-  navigation: any;
+  navigation: ChatTabNavigationProp;
+  route: any
 }
+
 
 const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
   const {user} = useContext(AuthContext);
@@ -27,7 +30,7 @@ const ChatHomeScreen: React.FC<Props> = ({ navigation }) => {
    */
   useEffect(() => {
     const unsubscribe = db
-      .collection('threads').where('creatersId', 'in', [user.uid, 'open'])
+      .collection('threads').where('creatersId', 'in', [user?.uid, 'open'])
       .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {

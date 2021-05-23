@@ -1,5 +1,4 @@
 import React, {useContext} from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -8,14 +7,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Font from 'expo-font';
 import Loading from '../screens/LoadingScreen';
-
-import useColorScheme from '../hooks/useColorScheme';
 /* Screen */
-
 import AccountInfoScreen from '../screens/AccountInfoScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
-import NewsExampleScreen from '../screens/NewsExampleScreen';
-import AddPostScreen from '../screens/AddPostScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import StudyReportScreen from '../screens/StudyReportScreen';
 import EditGoalScreen from '../screens/EditGoalScreen';
@@ -26,7 +20,7 @@ import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
 import GiftInfoScreen from '../screens/GiftInfoScreen';
 import ArticleScreen from '../screens/ArticleScreen';
-import OAuthTestScreen from '../screens/OAuthTestScreen';
+
 import NewsScreen from '../screens/NewsScreen';
 
 /* types */
@@ -67,7 +61,7 @@ export default function BottomTabNavigator() {
   }, [])
 
   if (fontLoaded) {
-    return <Loading />;
+    return <Loading message='読込中' />;
   }
 
   return (

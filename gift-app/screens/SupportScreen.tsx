@@ -1,26 +1,27 @@
 import React, {useState, useContext, useEffect} from 'react';
-import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
-
-import Swiper from 'react-native-swiper';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { db, FirebaseTimestamp } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { registerForPushNotificationsAsync } from '../src/notification';
 import loadFonts from '../utils/loadFonts';
+import Loading from '../screens/LoadingScreen';
 
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
-import Loading from '../screens/LoadingScreen';
+import { SupportTabParamList } from '../types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-
+type SupportTabNavigationProp = StackNavigationProp<SupportTabParamList> ;
 
 type Props = {
-  navigation: any
+  navigation: SupportTabNavigationProp;
+  route: any
 }
+
+
 
 const SupportScreen: React.FC<Props> = ({navigation}) => {
   const {user, setUser, logout} = useContext(AuthContext);
@@ -37,7 +38,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
 
 
   const getUser = async() => {
-    await db.collection('users').doc(user.uid).get()
+    await db.collection('users').doc(user?.uid).get()
       .then(async(documentSnapshot) => {
         if(documentSnapshot.exists){
           setUser(documentSnapshot.data());
@@ -50,7 +51,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
   }
 
   const handleChatButtonPress = async() => {
-    const threadDocRef = await db.collection('threads').doc(user.uid);
+    const threadDocRef = await db.collection('threads').doc(user?.uid);
 
     // ここのコードはuser contextが書き換わる前に読まれると危険なので危ない気がする
     // if(exsits(user.fname)
@@ -59,8 +60,8 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
       // このnameはチャットルームの名前
         // name: userData.fname + userData.lname,
         name: 'Gift管理者へ問い合わせ',
-        createdBy: user.fname + user.lname,
-        creatersId: user.uid,
+        createdBy: user?.fname + user?.lname,
+        creatersId: user?.uid,
         openChat: false,
         latestMessage: {
           text: `giftについて質問してみよう`,
@@ -88,7 +89,7 @@ const SupportScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   if (fontLoaded) {
-    return <Loading />;
+    return <Loading message='読込中' />;
   }
 
   return (
