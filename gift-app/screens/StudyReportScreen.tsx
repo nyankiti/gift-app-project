@@ -21,13 +21,23 @@ import { formatDateUntilDay, formatDateUntilMinute, formatDate, formatDateUntilD
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 /* context */
 import { AuthContext } from '../src/AuthProvider';
+import { User } from '../types';
+import { StudyReportTabParamList } from '../types';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type StudyReporTabNavigationProp = StackNavigationProp<StudyReportTabParamList> ;
+
+type Props = {
+  navigation: StudyReporTabNavigationProp;
+  route: any
+}
 
 
 const SVGWidth = windowWidth*0.24;
-let goalDocRef: any;
 
-const StudyReportScreen = ({navigation, route}) => {
-  const {user} = useContext<any>(AuthContext);
+
+const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
+  const {user} = useContext(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const isFocused = useIsFocused()
 
@@ -115,7 +125,7 @@ const StudyReportScreen = ({navigation, route}) => {
     console.log(response.dateString);
 
     try {
-      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(response.dateString);
+      const docRef = await db.collection('users').doc(user?.uid).collection('goals').doc(response.dateString);
       docRef.get().then((doc) => {
         // 登録されていな場合はundefinedエラーがでるので場合分け
         if(doc.exists){
@@ -151,7 +161,7 @@ const StudyReportScreen = ({navigation, route}) => {
     // markされた日を選択した場合は達成予定の目標を取りに行く
       console.log('aaa')
       try {
-        const docRef = await db.collection('users').doc(user.uid).collection('goals');
+        const docRef = await db.collection('users').doc(user?.uid).collection('goals');
         // docRef.where("post.dream","==","海に行く").get().then((doc) => {
         docRef.where("post.targetDate","==",dateString).get().then((doc) => {
           // 登録されていな場合はundefinedエラーがでるので場合分け
@@ -220,7 +230,7 @@ const StudyReportScreen = ({navigation, route}) => {
 
   const initialFetchGoals = async () => {
     try {
-      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDateString);
+      const docRef = await db.collection('users').doc(user?.uid).collection('goals').doc(selectedDateString);
       docRef.get().then((doc) => {
         if(doc.exists){
           const fetchedPost: any = doc.data()
@@ -234,7 +244,7 @@ const StudyReportScreen = ({navigation, route}) => {
   }
   const fetchGoals = async () => {
     try {
-      const docRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDateString);
+      const docRef = await db.collection('users').doc(user?.uid).collection('goals').doc(selectedDateString);
       docRef.get().then((doc) => {
         if(doc.exists){
           const fetchedPost: any = doc.data()
@@ -249,7 +259,7 @@ const StudyReportScreen = ({navigation, route}) => {
   }
   const fetchDateList = async () => {
     try {
-      const docRef = await db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
+      const docRef = await db.collection('users').doc(user?.uid).collection('ReservedDate').doc(user?.uid);
       docRef.get().then((doc) => {
         if(doc.exists){
           const fetchedDateLists: any = doc.data()

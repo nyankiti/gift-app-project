@@ -9,8 +9,8 @@ import { User } from '../types';
 
 
 type AuthContextValue = {
-  user: User| null;
-  setUser: (user: User | null) => void;
+  user: User| undefined;
+  setUser: (user: User | undefined) => void;
   login: (email: string, password: string) => void;
   register: (email: string, password: string, name: string) => void;
   logout: () => void;
@@ -21,7 +21,7 @@ if(!firebase.apps.length){
 };
 
 export const AuthContext = createContext<AuthContextValue>({
-  user: null,
+  user: undefined,
   setUser: () => {},
   login: () => {},
   register: () => {},
@@ -52,7 +52,7 @@ export const AuthProvider = ({children}: any) => {
             await auth.createUserWithEmailAndPassword(email.trim(), password.trim())
             .then((user) => {
             // displayNameに名前の登録(firebase authenticationで管理される名前) 
-              user.user.updateProfile({
+              user.user?.updateProfile({
                 displayName: userName
               }).then(() => {
                 // displayNameの追加に成功
@@ -61,7 +61,7 @@ export const AuthProvider = ({children}: any) => {
               })
             // auth側と紐づくようにfirestoreにもデータを登録しておく
               const userInitialData = {
-                uid: auth.currentUser.uid,
+                uid: auth.currentUser?.uid,
                 displayName: userName,
                 fname: '',
                 lname: '',
@@ -71,7 +71,7 @@ export const AuthProvider = ({children}: any) => {
                 userImg: null
               };
 
-              db.collection('users').doc(auth.currentUser.uid).set(userInitialData);
+              db.collection('users').doc(auth.currentUser?.uid).set(userInitialData);
             }).catch(error => {
               console.log("Something went wrong with added user to firestore: ", error)
             })

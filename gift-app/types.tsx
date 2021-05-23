@@ -29,12 +29,18 @@ export type NewsTabParamList = {
   AddPostScreen: undefined;
   NewsDetailScreen: undefined;
   NewsExampleScreen: undefined;
-  ArticleScreen: undefined;
+  ArticleScreen: {
+    article: object,
+  };
 };
 
 export type StudyReportTabParamList = {
   StudyReportScreen: undefined;
-  EditGoalScreen: undefined;
+  EditGoalScreen: {
+    post: object, 
+    selectedDate: any, 
+    dateString: string
+  };
 };
 export type UsersTabParamList = {
   UsersScreen: undefined;
@@ -45,7 +51,9 @@ export type UsersTabParamList = {
 export type ChatTabParamList = {
   ChatHomeScreen: undefined;
   AdminChatHomeScreen: undefined;
-  RoomScreen: undefined;
+  RoomScreen: {
+    thread: object
+  };
   AddRoomScreen: undefined;
 }
 
@@ -57,6 +65,8 @@ export type SupportTabParamList = {
   SupportScreen: undefined;
   GiftInfoScreen: undefined;
   EditProfileScreen: undefined;
+// ChatTabへの遷移もできるようにTabをもたせる
+  Chat: undefined;
 }
 
 
