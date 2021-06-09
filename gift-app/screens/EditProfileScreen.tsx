@@ -71,6 +71,12 @@ const EditProfileScreen = () => {
 
     }
 
+    // // fireAuthenticationの更新
+    // user.updateProfile({ 
+
+    // })
+
+    // firestoreの更新
     db.collection('users').doc(user.uid).update({
       fname: userData.fname,
       lname: userData.lname,

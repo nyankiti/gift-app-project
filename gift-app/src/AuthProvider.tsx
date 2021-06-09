@@ -39,8 +39,14 @@ export const AuthProvider = ({children}: any) => {
         login: async( email, password ) => {
           try{
             await auth.signInWithEmailAndPassword(email.trim(), password.trim())
-              .then(() => {
+              .then((user) => {
+                // ログインと同時にauthentication側の名前も更新したい
                 // setUser
+                // user.user?.updateProfile({
+                //   displayName: '',                  
+                // }).catch((error: any) => {
+                //   console.log(error);
+                // })
               })
           }catch(e){
             console.log(e);
