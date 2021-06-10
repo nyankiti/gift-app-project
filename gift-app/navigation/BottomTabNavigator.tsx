@@ -66,7 +66,7 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="News"
+      initialRouteName="SeatBooking"
       // テスト用に最初の画面を変える
       // initialRouteName = "StudyReport"
       activeColor="#fff"
