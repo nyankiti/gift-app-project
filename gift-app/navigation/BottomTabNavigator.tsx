@@ -20,11 +20,11 @@ import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
 import GiftInfoScreen from '../screens/GiftInfoScreen';
 import ArticleScreen from '../screens/ArticleScreen';
-
+import SeatBookingScreen from '../screens/SeatBookingScreen';
 import NewsScreen from '../screens/NewsScreen';
 
 /* types */
-import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
+import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList, SeatBookingTabParamList } from '../types';
 import { AuthContext } from '../src/AuthProvider';
 import { userInfo } from 'node:os';
 
@@ -123,6 +123,17 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <Icon name="information-circle-outline" color={color} size={26} />,
         })}
       />
+      <BottomTab.Screen
+        name="SeatBooking"
+        component={SeatBookingNavigator}
+        options={({route}) => ({
+          // stackの遷移先のscreenのみtabBarを隠したいので、routeを渡して条件分岐して表示を切り替える
+          tabBarVisible: getTabBarVisibility(route),
+          tabBarLabel: 'Seat Booking',
+          tabBarColor: '#EAC799',
+          tabBarIcon: ({ color }) => <Icon name="bookmarks-outline" color={color} size={26} />,
+        })}
+      />
     </BottomTab.Navigator>
   );
 }
@@ -200,7 +211,7 @@ export function NewsNavigator({navigation}: any) {
 
 const StudyReportStack = createStackNavigator<StudyReportTabParamList>();
 
-function StudyReportNavigator({navigation}) {
+function StudyReportNavigator({navigation} :any) {
   return (
     <StudyReportStack.Navigator screenOptions={{
       headerStyle: {
@@ -374,5 +385,33 @@ function SupportNavigator({navigation}: any) {
         }}
       />
     </SupportStack.Navigator>
+  );
+}
+
+
+const SeatBookingStack = createStackNavigator<SeatBookingTabParamList>();
+
+function SeatBookingNavigator({navigation}: any) {
+  return (
+    <SeatBookingStack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: '#EAC799',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'normal',
+        fontFamily: 'ComicSnas_bd',
+        alignSelf: 'center',
+      }
+    }}>
+      <SeatBookingStack.Screen
+        name="SeatBookingScreen"
+        component={SeatBookingScreen}
+        options={{ 
+          headerTitle: 'SeatBooking', 
+          // headerRight: () => (<></>)
+        }}
+      />
+    </SeatBookingStack.Navigator>
   );
 }
