@@ -159,7 +159,6 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
 
   const fetchMarkedDatesDream = async(dateString: string) => {
     // markされた日を選択した場合は達成予定の目標を取りに行く
-      console.log('aaa')
       try {
         const docRef = await db.collection('users').doc(user?.uid).collection('goals');
         // docRef.where("post.dream","==","海に行く").get().then((doc) => {
