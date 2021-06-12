@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
-import { useIsFocused } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar } from 'react-native-calendars';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -39,7 +39,8 @@ const SVGWidth = windowWidth*0.24;
 const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
   const {user} = useContext(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
-  const isFocused = useIsFocused()
+  // 画面遷移時（EditGoalScreenから戻ってきた時）にstateを更新するためにはreact-navigationが用意するisFocusedステートを使うと便利
+  const isFocused = useIsFocused();
 
   const [selectedDate, setSelectedDate]  = useState<any>(formatDate());
   const [selectedDateString, setSelectedDateString] = useState<string>(formatDateUntilDay());
@@ -159,7 +160,6 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
 
   const fetchMarkedDatesDream = async(dateString: string) => {
     // markされた日を選択した場合は達成予定の目標を取りに行く
-      console.log('aaa')
       try {
         const docRef = await db.collection('users').doc(user?.uid).collection('goals');
         // docRef.where("post.dream","==","海に行く").get().then((doc) => {

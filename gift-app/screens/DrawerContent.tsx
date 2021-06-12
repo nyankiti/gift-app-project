@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { useTheme, Avatar, Title, Caption, Paragraph, Drawer, Text, TouchableRipple, Switch } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, StyleSheet, Image, Text } from 'react-native';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { useTheme, Avatar, Title, Caption, Paragraph, Drawer, TouchableRipple, Switch } from 'react-native-paper';
+// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 /* context */
 import { AuthContext } from '../src/AuthProvider';
@@ -12,9 +14,10 @@ import { AuthContext } from '../src/AuthProvider';
 type Props = {
 }
 
-const DrawerContent: React.FC = (props) => {
-  const {user, logout} = useContext(AuthContext);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+const DrawerContent: React.FC = (props: any) => {
+  const {user, logout} = useContext<any>(AuthContext);
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+  const [active, setActive] = useState<string>('Home');
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
@@ -27,48 +30,44 @@ const DrawerContent: React.FC = (props) => {
           <View style={styles.userInfoSection}>
             
             <View style={{flexDirection: 'row', marginTop: 15}} >
+            
               <Avatar.Image 
-                source={require('../assets/images/Gift_splash_20210220.jpg')}
-                size={50}
+              source={user.userImg ? user.userImg : require('../assets/images/Gift_splash_20210220.jpg')}
+              size={50}
+              accessibilityComponentType ='image'
+              accessibilityTraits='image'
               />
+
               <View style={{flexDirection:'column', marginLeft: 15}} >
-                <Title style={styles.title}>User Name</Title>
+                <Title style={styles.title}>{user.displayName ? user.displayName : 'user name'}</Title>
                 <Caption style={styles.caption}>@{user.uid}</Caption>
               </View>
             </View>
 
             <View style={styles.row}>
-              <View>
-                <Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>
-                <Caption style={styles.caption}>Following</Caption>
-              </View>
-                <Paragraph style={[styles.paragraph, styles.caption]}>100</Paragraph>
-                <Caption style={styles.caption}>Follower</Caption>
-              <View>
 
-              </View>
             </View>
           </View>
 
-          <Drawer.Section style={styles.drawerSection}>
-            <DrawerItem 
-              icon={({color, size}) => ( <Icon name='home' color={color} size={size} />)} 
-              label='Home'
+          <Drawer.Section  style={styles.drawerSection}>
+            <Drawer.Item 
+              icon={({color, size}) => ( <Icon name='ios-home' color={color} size={size} />)} 
+              label='News'
+              active={active === 'News'}
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
               onPress={() => {props.navigation.navigate('News')}}
+              accessibilityComponentType ='button'
+              accessibilityTraits='button'
             />
-            <DrawerItem 
-              icon={({color, size}) => ( <Icon name='account-check-outline' color={color} size={size} />)} 
-              label='Support'
-              onPress={() => props.navigation.navigate('SupportScreen')}
-            />
-            <DrawerItem 
-              icon={({color, size}) => ( <Icon name='chat-outline' color={color} size={size} />)} 
-              label='問い合わせ'
-              onPress={() => props.navigation.navigate('ChatScreen')}
+            <Drawer.Item 
+              icon={({color, size}) => ( <Icon name='bookmarks-outline' color={color} size={size} />)} 
+              label='SeatBooking'
+              onPress={() => props.navigation.navigate('SeatBooking')}
+              accessibilityComponentType ='button'
+              accessibilityTraits='button'
             />
           </Drawer.Section>
-          <Drawer.Section title="Preference">
+          {/* <Drawer.Section title="Preference">
             <TouchableRipple onPress={() => {toggleTheme()}} >
               <View style={styles.preference}>
                 <Text>Dark Theme</Text>
@@ -77,15 +76,35 @@ const DrawerContent: React.FC = (props) => {
                 </View>
               </View>
             </TouchableRipple>
-          </Drawer.Section>
+          </Drawer.Section> */}
 
+          <Drawer.Section title='Gift Innovation 合同会社' style={styles.drawerSection}>
+            <Drawer.Item 
+              icon={({color, size}) => ( <Icon name='person' color={color} size={size} />)} 
+              label='EditProfile'
+              active={active === 'EditProfile'}
+              // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
+              onPress={() => {props.navigation.navigate('SeatBooking', {screen: 'EditProfileScreen'})}}
+              accessibilityComponentType ='button'
+              accessibilityTraits='button'
+            />
+            <Drawer.Item 
+              icon={({color, size}) => ( <Icon name='information-circle' color={color} size={size} />)} 
+              label='Infomation'
+              onPress={() => props.navigation.navigate('SeatBooking', {screen: 'GiftInfoScreen'})}
+              accessibilityComponentType ='button'
+              accessibilityTraits='button'
+            />
+          </Drawer.Section>
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
-        <DrawerItem 
-          icon={({color, size}) => ( <Icon name='exit-to-app' color={color} size={size} />)} 
+        <Drawer.Item 
+          icon={({color, size}) => ( <Icon name='log-out' color={color} size={size} />)} 
           label='Sign Out'
           onPress={() => logout()}
+          accessibilityComponentType ='button'
+          accessibilityTraits='button'
         />
       </Drawer.Section>
     </View>
@@ -122,10 +141,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 15,
-  },
-  paragraph: {
-    fontWeight: 'bold',
-    marginRight: 3,
   },
   drawerSection: {
     marginTop: 15,

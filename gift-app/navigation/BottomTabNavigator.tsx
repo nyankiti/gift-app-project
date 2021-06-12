@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -20,11 +21,12 @@ import AddRoomScreen from '../screens/AddRoomScreen';
 import SupportScreen from '../screens/SupportScreen';
 import GiftInfoScreen from '../screens/GiftInfoScreen';
 import ArticleScreen from '../screens/ArticleScreen';
-
+import SeatBookingScreen from '../screens/SeatBookingScreen';
+import SeatUnBookingScreen from '../screens/SeatUnBookingScreen';
 import NewsScreen from '../screens/NewsScreen';
 
 /* types */
-import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList } from '../types';
+import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList, SeatBookingTabParamList } from '../types';
 import { AuthContext } from '../src/AuthProvider';
 import { userInfo } from 'node:os';
 
@@ -66,7 +68,7 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="News"
+      initialRouteName="SeatBooking"
       // テスト用に最初の画面を変える
       // initialRouteName = "StudyReport"
       activeColor="#fff"
@@ -112,7 +114,7 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <Icon name="settings-outline" color={color} size={26} />,
         })}
       /> */}
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Support"
         component={SupportNavigator}
         options={({route}) => ({
@@ -121,6 +123,17 @@ export default function BottomTabNavigator() {
           tabBarLabel: 'Support',
           tabBarColor: '#EAC799',
           tabBarIcon: ({ color }) => <Icon name="information-circle-outline" color={color} size={26} />,
+        })}
+      /> */}
+      <BottomTab.Screen
+        name="SeatBooking"
+        component={SeatBookingNavigator}
+        options={({route}) => ({
+          // stackの遷移先のscreenのみtabBarを隠したいので、routeを渡して条件分岐して表示を切り替える
+          tabBarVisible: getTabBarVisibility(route),
+          tabBarLabel: 'Seat Booking',
+          tabBarColor: '#EAC799',
+          tabBarIcon: ({ color }) => <Icon name="bookmarks-outline" color={color} size={26} />,
         })}
       />
     </BottomTab.Navigator>
@@ -160,8 +173,8 @@ export function NewsNavigator({navigation}: any) {
         // component={OAuthTestScreen}
         options={{ 
           headerTitle: 'Gift News', 
-          // headerLeft: () => (
-          //   <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
+          headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
           // headerRight: () => ( 
           //   <View style={{marginRight: 10}}>
           //     <FontAwesome5.Button
@@ -173,6 +186,7 @@ export function NewsNavigator({navigation}: any) {
           //     />
           //   </View>
           // )
+          headerRight: () => (<></>),
         }}
       />
       <NewsStack.Screen
@@ -200,7 +214,7 @@ export function NewsNavigator({navigation}: any) {
 
 const StudyReportStack = createStackNavigator<StudyReportTabParamList>();
 
-function StudyReportNavigator({navigation}) {
+function StudyReportNavigator({navigation} :any) {
   return (
     <StudyReportStack.Navigator screenOptions={{
       headerStyle: {
@@ -218,9 +232,10 @@ function StudyReportNavigator({navigation}) {
         component={StudyReportScreen}
         options={{ 
           headerTitle: 'Study Report', 
-          // headerLeft: () => (
-          //   <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        // )
+          headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+          ),
+          headerRight: () => (<></>),
       }}
       />
       <StudyReportStack.Screen
@@ -260,7 +275,8 @@ function ChatNavigator({navigation}: any) {
       component={AdminChatHomeScreen}
       options={{ 
         headerTitle: 'Admin Chat home', 
-        headerLeft: () => (<></>),
+        headerLeft: () => (
+          <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
         headerRight: () => (
           <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
           )
@@ -272,7 +288,8 @@ function ChatNavigator({navigation}: any) {
       component={ChatHomeScreen}
       options={{ 
         headerTitle: 'Chat home', 
-        headerLeft: () => (<></>),
+        headerLeft: () => (
+          <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
         headerRight: () => (
           <FontAwesome5.Button name='plus' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('AddRoomScreen')} />
           )
@@ -352,9 +369,9 @@ function SupportNavigator({navigation}: any) {
         component={SupportScreen}
         options={{ 
           headerTitle: 'SupportInfo', 
-        //   headerLeft: () => (
-        // <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        // )
+          headerLeft: () => (
+        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+        )
         }}
       />
       <SupportStack.Screen
@@ -374,5 +391,69 @@ function SupportNavigator({navigation}: any) {
         }}
       />
     </SupportStack.Navigator>
+  );
+}
+
+
+const SeatBookingStack = createStackNavigator<SeatBookingTabParamList>();
+
+function SeatBookingNavigator({navigation}: any) {
+  return (
+    <SeatBookingStack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: '#EAC799',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'normal',
+        fontFamily: 'Anzumozi',
+        fontSize: 24,
+        alignSelf: 'center',
+      }
+    }}>
+      <SeatBookingStack.Screen
+        name="SeatBookingScreen"
+        component={SeatBookingScreen}
+        options={{ 
+          headerTitle: '座席登録', 
+          headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
+          headerRight: () => (
+            <>
+            <Text style={{fontFamily: 'Anzumozi', marginBottom: 4, color: 'white', fontSize: 20}}>退出
+            <FontAwesome5.Button name='external-link-square-alt' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('SeatUnBookingScreen')} />
+            </Text>
+            </>
+          )
+        }}
+      />
+      <SeatBookingStack.Screen
+        name="SeatUnBookingScreen"
+        component={SeatUnBookingScreen}
+        options={{ 
+          headerTitle: '登録解除', 
+          headerRight: () => (<></>),
+        }}
+      />
+      {/* Drawerから遷移した時用のスクリーンをSeatBookingStackに入れておく */}
+      <SeatBookingStack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{ 
+          headerTitle: 'Edit Profile',
+          headerBackTitleVisible: false,
+          headerTitleAlign: 'center',
+        }}
+      />
+      <SeatBookingStack.Screen
+        name="GiftInfoScreen"
+        component={GiftInfoScreen}
+        options={{ 
+          headerTitle: 'Information',
+          headerBackTitleVisible: false,
+          headerTitleAlign: 'center',
+        }}
+      />
+    </SeatBookingStack.Navigator>
   );
 }

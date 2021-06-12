@@ -1,8 +1,22 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
 // props を受けてstyleを変更できるので、Likeボタンが押されたときにアイコンや文字の色を変えるdynamicなスタイルが実現できる
-
+export const SeatBox = styled.TouchableOpacity`
+background-color: ${props => props.backgroundColor };
+width: ${props => props.width };
+height: ${props => props.height };
+align-items: 'center',
+shadow-color: 'black',
+shadow-opacity: .3,
+shadow-offset: {
+  height:3,
+  width:-3
+},
+elevation:4,
+margin-bottom: 40,
+`;
 export const Container = styled.View`
     flex: 1;
     align-items: center;
@@ -11,7 +25,7 @@ export const Container = styled.View`
 `;
 
 export const Card = styled.View`
-    background-color: #f8f8f8;
+    background-color: red;
     width: 100%;
     margin-bottom: 20px;
     border-radius: 10px;

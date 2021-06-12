@@ -12,12 +12,13 @@ export type BottomTabParamList = {
   AccountInfo: undefined;
   Chat: undefined;
   Support: undefined;
+  SeatBooking: undefined;
 };
 
 export type DrawerParamaList = {
   home: undefined;
-  SupportScreen: undefined;
-  ChatScreen: undefined;
+  EditProfileScreen: undefined;
+  GiftInfoScreen: undefined;
 }
 
 export type UsersStackParamList = {
@@ -67,6 +68,14 @@ export type SupportTabParamList = {
   EditProfileScreen: undefined;
 // ChatTabへの遷移もできるようにTabをもたせる
   Chat: undefined;
+}
+
+export type SeatBookingTabParamList = {
+  SeatBookingScreen: undefined;
+  SeatUnBookingScreen: undefined;
+  // drawerからの遷移用
+  EditProfileScreen: undefined;
+  GiftInfoScreen: undefined;
 }
 
 

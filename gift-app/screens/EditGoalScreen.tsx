@@ -179,7 +179,7 @@ const EditGoalScreen: React.FC = ({route, navigation}) => {
 
   useEffect(() => {
     fetchGoals();
-  }, [isFocused])
+  }, [isFocused]);
 
   if (fontLoaded) {
     return null;
