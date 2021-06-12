@@ -9,11 +9,12 @@ import Loading from '../components/Loading';
 
 /* screens */
 import NotFoundScreen from '../screens/NotFoundScreen';
-import AuthScreen from '../screens/AuthScreen';
 import LoadingScreen from '../screens/LoadingScreen';
 import DrawerContent from '../screens/DrawerContent';
 import SupportScreen from '../screens/SupportScreen';
 import ChatHomeScreen from '../screens/ChatHomeScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import GiftInfoScreen from '../screens/GiftInfoScreen';
 
 /* navigator */
 import BottomTabNavigator from './BottomTabNavigator';
@@ -21,7 +22,6 @@ import LinkingConfiguration from './LinkingConfiguration';
 import AuthNavigator from './AuthNavigator';
 
 /* type */
-import { RootStackParamList } from '../types';
 import { DrawerParamaList } from '../types';
 import { User } from '../types';
 
@@ -41,7 +41,7 @@ export function Route() {
   const {user, setUser} = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
 
-  const onAuthStateChanged = (user) => {
+  const onAuthStateChanged = (user: any) => {
     setUser(user);
     if(initializing) setInitializing(false);
   }
@@ -58,7 +58,7 @@ export function Route() {
       {user ?
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} >
         <Drawer.Screen name="home" component={BottomTabNavigator} />
-        <Drawer.Screen name='SupportScreen' component={SupportScreen} 
+        <Drawer.Screen name='EditProfileScreen' component={EditProfileScreen} 
           options={{
             headerShown: true,
             headerStyle: {
@@ -66,7 +66,7 @@ export function Route() {
             }
           }}
         />
-        <Drawer.Screen name='ChatScreen' component={ChatHomeScreen}
+        <Drawer.Screen name='GiftInfoScreen' component={GiftInfoScreen}
           options={{
             headerShown: true,
             headerStyle: {
@@ -76,7 +76,7 @@ export function Route() {
         />
       </Drawer.Navigator> 
       : 
-      <AuthNavigator />
+      <AuthNavigator navigation />
       }
     </NavigationContainer>
   );

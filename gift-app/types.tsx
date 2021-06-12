@@ -17,8 +17,8 @@ export type BottomTabParamList = {
 
 export type DrawerParamaList = {
   home: undefined;
-  SupportScreen: undefined;
-  ChatScreen: undefined;
+  EditProfileScreen: undefined;
+  GiftInfoScreen: undefined;
 }
 
 export type UsersStackParamList = {
@@ -72,6 +72,10 @@ export type SupportTabParamList = {
 
 export type SeatBookingTabParamList = {
   SeatBookingScreen: undefined;
+  SeatUnBookingScreen: undefined;
+  // drawerからの遷移用
+  EditProfileScreen: undefined;
+  GiftInfoScreen: undefined;
 }
 
 

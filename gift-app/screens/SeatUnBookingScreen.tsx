@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView }
 import { useIsFocused } from '@react-navigation/native';
 
 /* screen */
-import Loading from '../screens/LoadingScreen';
+import Loading from './LoadingScreen';
 /* types */
 import {User} from '../types';
 /* lib */
@@ -33,7 +33,7 @@ const seatWidth = windowWidth*0.1
 
 
 
-export default function SeatBookingScreen() {
+export default function SeatUnBookingScreen() {
   const {user} = useContext(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const isFocused = useIsFocused();
@@ -73,7 +73,7 @@ export default function SeatBookingScreen() {
 
   const color = (x: 'A'|'B'|'C'|'D'|'E' ,y: number) => {
     // console.log(selected[x][y]);
-    return selected[x][y] ?  'skyblue' : '#EAC799';
+    return selected[x][y] ?  '#32cd32' : 'crimson';
   }
 
   const renderChoosenSeats = (datas: Array<boolean>, alphabet: string) => {
@@ -92,17 +92,25 @@ export default function SeatBookingScreen() {
       }
     })
   }
-  const handleRegister = async () => {
-    console.log(booked);
+  const checkBoolean = (booked: boolean, selected: boolean) => {
+      if(selected == false && booked == true){
+        return true
+      }
+      return false
+  };
+
+  const handleUnRegister = async () => {
     // firestoreでnestされた配列はsupportされていないのでobject型に変形する
     const temp = {
-      'A' : [booked['A'][0] || selected['A'][0], booked['A'][1] || selected['A'][1], booked['A'][2] || selected['A'][2],booked['A'][3] || selected['A'][3], booked['A'][4] || selected['A'][4], booked['A'][5] || selected['A'][5]], 
-      'B' : [booked['B'][0] || selected['B'][0], booked['B'][1] || selected['B'][1], booked['B'][2] || selected['B'][2],booked['B'][3] || selected['B'][3], booked['B'][4] || selected['B'][4], booked['B'][5] || selected['B'][5]], 
-      'C' : [booked['C'][0] || selected['C'][0], booked['C'][1] || selected['C'][1], booked['C'][2] || selected['C'][2],booked['C'][3] || selected['C'][3], booked['C'][4] || selected['C'][4], booked['C'][5] || selected['C'][5]], 
-      'D' : [booked['D'][0] || selected['D'][0], booked['D'][1] || selected['D'][1], booked['D'][2] || selected['D'][2],booked['D'][3] || selected['D'][3], booked['D'][4] || selected['D'][4], booked['D'][5] || selected['D'][5]], 
-      'E' : [booked['E'][0] || selected['E'][0], booked['E'][1] || selected['E'][1], booked['E'][2] || selected['E'][2],booked['E'][3] || selected['E'][3]], 
+      'A' : [checkBoolean(booked['A'][0],selected['A'][0]), checkBoolean(booked['A'][1],selected['A'][1]), checkBoolean(booked['A'][2],selected['A'][2]), checkBoolean(booked['A'][3],selected['A'][3]), checkBoolean(booked['A'][4],selected['A'][4]), checkBoolean(booked['A'][5],selected['A'][5])], 
+      'B' : [checkBoolean(booked['B'][0],selected['B'][0]), checkBoolean(booked['B'][1],selected['B'][1]), checkBoolean(booked['B'][2],selected['B'][2]) ,checkBoolean(booked['B'][3],selected['B'][3]), checkBoolean(booked['B'][4],selected['B'][4]), checkBoolean(booked['B'][5],selected['B'][5])], 
+      'C' : [checkBoolean(booked['C'][0], selected['C'][0]), checkBoolean(booked['C'][1], selected['C'][1]) , checkBoolean(booked['C'][2], selected['C'][2]), checkBoolean(booked['C'][3], selected['C'][3]), checkBoolean(booked['C'][4], selected['C'][4]) , checkBoolean(booked['C'][5], selected['C'][5])], 
+      'D' : [checkBoolean(booked['D'][0], selected['D'][0]) , checkBoolean(booked['D'][1], selected['D'][1]), checkBoolean(booked['D'][2], selected['D'][2]) ,checkBoolean(booked['D'][3], selected['D'][3]) ,checkBoolean(booked['D'][4], selected['D'][4]) , checkBoolean(booked['D'][5], selected['D'][5])], 
+      'E' : [checkBoolean(booked['E'][0], selected['E'][0]), checkBoolean(booked['E'][1], selected['E'][1]), checkBoolean(booked['E'][2], selected['E'][2]) ,checkBoolean(booked['E'][3], selected['E'][3])], 
     }
     setBooked(temp);
+
+    console.log(booked);
 
     try{
       const docRef = await db.collection('seat').doc(formatDateUntilDay());
@@ -135,6 +143,7 @@ export default function SeatBookingScreen() {
     loadFonts(setFontLoaded);
     fetchBookedSeatsList();
   }, [fontLoaded]);
+
   useEffect(() => {
     fetchBookedSeatsList();
   }, [isFocused]);
@@ -154,52 +163,52 @@ export default function SeatBookingScreen() {
         <View style={styles.seatContainer}>
           <View style={{flexDirection: 'row'}}>
             {booked["A"][0] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',0)} ]} onPress={() => handleSeatPress('A',0)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',0)} ]} onPress={() => handleSeatPress('A',0)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
 
             {booked["A"][1] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',1)} ]} onPress={() => handleSeatPress('A',1)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',1)} ]} onPress={() => handleSeatPress('A',1)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["A"][2] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',2)} ]} onPress={() => handleSeatPress('A',2)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',2)} ]} onPress={() => handleSeatPress('A',2)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["A"][3] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',3)} ]} onPress={() => handleSeatPress('A', 3)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',3)} ]} onPress={() => handleSeatPress('A', 3)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["A"][4] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',4)} ]} onPress={() => handleSeatPress('A',4)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',4)} ]} onPress={() => handleSeatPress('A',4)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["A"][5] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',5)} ]} onPress={() => handleSeatPress('A',5)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('A',5)} ]} onPress={() => handleSeatPress('A',5)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
@@ -208,51 +217,51 @@ export default function SeatBookingScreen() {
         <View style={styles.seatContainer}>
           <View style={{flexDirection: 'row'}}>
             {booked["B"][0] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',0)} ]} onPress={() => handleSeatPress('B',0)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',0)} ]} onPress={() => handleSeatPress('B',0)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["B"][1] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',1)} ]} onPress={() => handleSeatPress('B',1)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',1)} ]} onPress={() => handleSeatPress('B',1)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["B"][2] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',2)} ]} onPress={() => handleSeatPress('B',2)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',2)} ]} onPress={() => handleSeatPress('B',2)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["B"][3] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',3)} ]} onPress={() => handleSeatPress('B',3)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',3)} ]} onPress={() => handleSeatPress('B',3)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["B"][4] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',4)} ]} onPress={() => handleSeatPress('B',4)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',4)} ]} onPress={() => handleSeatPress('B',4)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["B"][5] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',5)} ]} onPress={() => handleSeatPress('B',5)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('B',5)} ]} onPress={() => handleSeatPress('B',5)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
@@ -261,51 +270,51 @@ export default function SeatBookingScreen() {
         <View style={styles.seatContainer}>
           <View style={{flexDirection: 'row'}}>
             {booked["C"][0] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',0)} ]} onPress={() => handleSeatPress('C',0)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',0)} ]} onPress={() => handleSeatPress('C',0)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["C"][1] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',1)} ]} onPress={() => handleSeatPress('C',1)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',1)} ]} onPress={() => handleSeatPress('C',1)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["C"][2] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',2)} ]} onPress={() => handleSeatPress('C',2)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',2)} ]} onPress={() => handleSeatPress('C',2)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["C"][3] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',3)} ]} onPress={() => handleSeatPress('C',3)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',3)} ]} onPress={() => handleSeatPress('C',3)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
           {booked["C"][4] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',4)} ]} onPress={() => handleSeatPress('C',4)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',4)} ]} onPress={() => handleSeatPress('C',4)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["C"][5] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',5)} ]} onPress={() => handleSeatPress('C',5)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('C',5)} ]} onPress={() => handleSeatPress('C',5)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
@@ -314,51 +323,51 @@ export default function SeatBookingScreen() {
         <View style={styles.seatContainer}>
           <View style={{flexDirection: 'row'}}>
             {booked["D"][0] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',0)} ]} onPress={() => handleSeatPress('D',0)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',0)} ]} onPress={() => handleSeatPress('D',0)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["D"][1] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',1)} ]} onPress={() => handleSeatPress('D',1)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',1)} ]} onPress={() => handleSeatPress('D',1)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["D"][2] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',2)} ]} onPress={() => handleSeatPress('D',2)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',2)} ]} onPress={() => handleSeatPress('D',2)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["D"][3] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',3)} ]} onPress={() => handleSeatPress('D',3)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',3)} ]} onPress={() => handleSeatPress('D',3)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
             {booked["D"][4] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',4)} ]} onPress={() => handleSeatPress('D',4)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',4)} ]} onPress={() => handleSeatPress('D',4)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["D"][5] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',5)} ]} onPress={() => handleSeatPress('D',5)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('D',5)} ]} onPress={() => handleSeatPress('D',5)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
@@ -367,34 +376,34 @@ export default function SeatBookingScreen() {
         <View style={styles.seatContainer}>
           <View style={{flexDirection: 'row'}}>
             {booked["E"][0] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',0)} ]} onPress={() => handleSeatPress('E',0)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',0)} ]} onPress={() => handleSeatPress('E',0)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["E"][1] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',1)} ]} onPress={() => handleSeatPress('E',1)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',1)} ]} onPress={() => handleSeatPress('E',1)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
 
           <View style={{flexDirection: 'row'}}>
           {booked["E"][2] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',2)} ]} onPress={() => handleSeatPress('E',2)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',2)} ]} onPress={() => handleSeatPress('E',2)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
             {booked["E"][3] ?
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: 'crimson'} ]} >
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',3)} ]} onPress={() => handleSeatPress('E',3)}>
               </TouchableOpacity>
               :
-              <TouchableOpacity style={[styles.menuBox, {backgroundColor: color('E',3)} ]} onPress={() => handleSeatPress('E',3)}>
+              <TouchableOpacity style={[styles.menuBox, {backgroundColor: '#EAC799'} ]} >
               </TouchableOpacity>
             }
           </View>
@@ -416,8 +425,8 @@ export default function SeatBookingScreen() {
           {renderChoosenSeats(selected['D'], 'D')}
           {renderChoosenSeats(selected['E'], 'E')}
 
-          <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister} >
-            <Text style={styles.button_text}>登録する</Text>
+          <TouchableOpacity style={styles.buttonContainer} onPress={handleUnRegister} >
+            <Text style={styles.button_text}>解除する</Text>
           </TouchableOpacity>
       </View>
     </ScrollView>
