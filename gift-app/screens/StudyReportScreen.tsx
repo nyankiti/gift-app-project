@@ -67,6 +67,8 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
   const [settingDateList, setSettingDateList] = useState<any>([]);
   const [targetDateList, setTargetDateList] = useState<any>([]);
 
+  const [studyTime, setStudyTime] = useState<Number>();
+
   const pressEditPencil = () => {
     navigation.navigate('EditGoalScreen', {post: post, selectedDate: selectedDate, dateString: selectedDateString});
   }
@@ -111,7 +113,8 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
 
 
   const calcClockRotation = () => {
-    let result = Number(post.targetHours)
+    // 座席管理機能から今日の勉強時間が二回目の登録で更新されてしまうので、自分で目標設定とともに勉強時間を設定したならばそちらを使う
+    let result = Number(post.targetHours ? studyTime : studyTime )
     return result*30
   }
 
@@ -244,13 +247,20 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
   }
   const fetchGoals = async () => {
     try {
-      const docRef = await db.collection('users').doc(user?.uid).collection('goals').doc(selectedDateString);
-      docRef.get().then((doc) => {
+      const docRef = await db.collection('users').doc(user?.uid);
+      docRef.collection('goals').doc(selectedDateString).get().then((doc) => {
         if(doc.exists){
           const fetchedPost: any = doc.data()
           setPost(fetchedPost.post)
           // EditGoalScreenからの遷移時に日付の値を渡す
           setSelectedDate(route.params.selectedDate);
+        }
+      })
+      docRef.collection('seat').doc(selectedDateString).get().then((doc) => {
+        if(doc.exists){
+          const fetchedPost: any = doc.data()
+          // EditGoalScreenからの遷移時に日付の値を渡す
+          setStudyTime(fetchedPost.studyTime);
         }
       })
     }catch(e){

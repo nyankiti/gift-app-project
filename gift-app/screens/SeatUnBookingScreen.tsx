@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 
 /* screen */
@@ -36,6 +36,8 @@ const seatWidth = windowWidth*0.1
 export default function SeatUnBookingScreen() {
   const {user} = useContext(AuthContext);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
+  // startTimeはfirebaseTimeStamp型 typescriptで型付けをするべし
+  const [startTime, setStartTime] = useState<any>(true);
   const isFocused = useIsFocused();
   // 座席とarrayのindexの対応表  アルファベットが列、数字が行  (縦-横)
   // [[A-1, A-2, A-3, A-4, A-5, A-6] , [B-1, B-2, B-3, B-4, B-5, B-6] ,[ C-1, C-2, C-3, C-4, C-5, C-6] , [D-1, D-2, D-3, D-4, D-5, D-6] ,[E-1, E-2, E-3, E-4]]
@@ -82,16 +84,28 @@ export default function SeatUnBookingScreen() {
         return( 
           <View key={index} style={{flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10}}>
             <View style={{width: windowWidth*0.5, alignItems: 'center'}}>
-              <Text style={{fontSize: RFPercentage(2.6), fontFamily: 'ComicSans' }}>位置</Text>
+              <Text style={{fontSize: RFPercentage(2.6), fontFamily: 'ComicSnas' }}>位置</Text>
             </View>
             <View style={{width: windowWidth*0.5, alignItems: 'center'}}>
-              <Text style={{ fontSize: RFPercentage(2.6), fontFamily: 'ComicSans'}}>{alphabet}-{index+1}</Text>
+              <Text style={{ fontSize: RFPercentage(2.6), fontFamily: 'ComicSnas'}}>{alphabet}-{index+1}</Text>
             </View> 
           </View>
         )
       }
-    })
+    }).filter(v => v);
   }
+
+  const renderChoosenSeatsForAlert = (datas: Array<boolean>, alphabet: string) => {
+    const list =  datas.map((data, index) => {
+      if(data){
+        return `位置 : ${alphabet}-${index-1}`
+      }
+      // fileterメソッドをかますことでundefinedを除去する
+    }).filter(v => v);
+    return list.join('\n');
+  }
+
+
   const checkBoolean = (booked: boolean, selected: boolean) => {
       if(selected == false && booked == true){
         return true
@@ -108,22 +122,37 @@ export default function SeatUnBookingScreen() {
       'D' : [checkBoolean(booked['D'][0], selected['D'][0]) , checkBoolean(booked['D'][1], selected['D'][1]), checkBoolean(booked['D'][2], selected['D'][2]) ,checkBoolean(booked['D'][3], selected['D'][3]) ,checkBoolean(booked['D'][4], selected['D'][4]) , checkBoolean(booked['D'][5], selected['D'][5])], 
       'E' : [checkBoolean(booked['E'][0], selected['E'][0]), checkBoolean(booked['E'][1], selected['E'][1]), checkBoolean(booked['E'][2], selected['E'][2]) ,checkBoolean(booked['E'][3], selected['E'][3])], 
     }
-    setBooked(temp);
 
     console.log(booked);
 
     try{
-      const docRef = await db.collection('seat').doc(formatDateUntilDay());
-      docRef.set({bookedSeatList: temp});
+      const docRef = db.collection('seat').doc(formatDateUntilDay());
+      await docRef.set({bookedSeatList: temp});
+      // firestore側への記録に成功すれば、stateも更新する
+      setBooked(temp);
+      // 今日の勉強時間のをfirestoreへ登録する
+      const diff = calcStudyTime(FirebaseTimestamp.fromDate(new Date()));
+      const userRef = db.collection('users').doc(user?.uid).collection('seat').doc(formatDateUntilDay());
+      await userRef.set({
+        studyTime: diff 
+      }, {merge: true});
+      // 全ての通信が正常に終了するとselectedステートの初期化
+      setSelected({
+        'A' : [false,false,false,false,false,false], 
+        'B' : [false,false,false,false,false,false], 
+        'C' : [false,false,false,false,false,false], 
+        'D' : [false,false,false,false,false,false], 
+        'E' : [false,false,false,false]
+      })
     }catch(e){
       console.log(e);
     }
   }
 
   const fetchBookedSeatsList = async () => {
+    const docRef = db.collection('seat').doc(formatDateUntilDay());
     try{
-      const docRef = await db.collection('seat').doc(formatDateUntilDay());
-      docRef.get().then((doc: any) => {
+      await docRef.get().then((doc: any) => {
         // 登録されていな場合はundefinedエラーがでるので場合分け
         if(doc.exists){
           console.log('Document data: ', doc.data())
@@ -138,10 +167,48 @@ export default function SeatUnBookingScreen() {
     }
   }
 
+  const fetchStartTime = async() => {
+    const userRef = db.collection('users').doc(user?.uid).collection('seat').doc(formatDateUntilDay());
+    try{
+      await userRef.get().then((doc: any) => {
+        if(doc.exists){
+          console.log('Start Time is ', doc.data().startTime);
+          setStartTime(doc.data().startTime);
+        }else{
+          console.log('dataがありません')
+        }
+      })
+    }catch(e){
+      console.log(e);
+    }
+  }
+
+  const calcStudyTime = (endTime: any) => {
+    const diff = (endTime.seconds-startTime.seconds)/3600;
+    // 少数第3位を四捨五入し、少数第2位までの値を返す
+    return Math.round(diff*100)/100;
+  }
+
+  const showAlert = () => {
+    if(Platform.OS === 'web'){
+      const res = confirm('登録しますか？');
+      if (res){
+        handleUnRegister();
+      }
+    }else{
+      Alert.alert(
+        'Check',
+        renderChoosenSeatsForAlert(selected['A'], 'A') + renderChoosenSeatsForAlert(selected['B'], 'B') + renderChoosenSeatsForAlert(selected['C'], 'C') + renderChoosenSeatsForAlert(selected['D'], 'D') + renderChoosenSeatsForAlert(selected['E'], 'E'),
+        [{text: '戻る', onPress: ()=>{}}, {text: '解除する', onPress: ()=>handleUnRegister()}],
+        {cancelable: false}
+      )
+    }
+  }
 
   useEffect(() => {
     loadFonts(setFontLoaded);
     fetchBookedSeatsList();
+    fetchStartTime();
   }, [fontLoaded]);
 
   useEffect(() => {
@@ -157,7 +224,7 @@ export default function SeatUnBookingScreen() {
 
       <View style={styles.classRoomContainer}>
         <View style={styles.whiteboard}>
-          <Text style={{fontFamily: 'ComicSans'}}>White Board</Text>
+          <Text style={{fontFamily: 'ComicSnas'}}>White Board</Text>
         </View>
           {/* 一列目 */}
         <View style={styles.seatContainer}>
@@ -425,7 +492,7 @@ export default function SeatUnBookingScreen() {
           {renderChoosenSeats(selected['D'], 'D')}
           {renderChoosenSeats(selected['E'], 'E')}
 
-          <TouchableOpacity style={styles.buttonContainer} onPress={handleUnRegister} >
+          <TouchableOpacity style={styles.buttonContainer} onPress={showAlert} >
             <Text style={styles.button_text}>解除する</Text>
           </TouchableOpacity>
       </View>
@@ -455,8 +522,8 @@ const styles = StyleSheet.create({
   seatContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingTop: '40',
-    paddingBottom: '30',
+    // paddingTop: '40',
+    // paddingBottom: '30',
   },
   menuBox:{
     backgroundColor: "#EAC799",
