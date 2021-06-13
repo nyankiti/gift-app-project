@@ -53,7 +53,7 @@ const EditProfileScreen = () => {
 
 
   const getUser = async() => {
-    await db.collection('users').doc(user.uid).get()
+    await db.collection('users').doc(user?.uid).get()
       .then(async(documentSnapshot) => {
         if(documentSnapshot.exists){
           setUserData(documentSnapshot.data());

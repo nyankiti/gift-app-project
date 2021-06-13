@@ -102,20 +102,20 @@ const EditGoalScreen: React.FC = ({route, navigation}) => {
     try{
       // 日付が選択されているか、初期状態かによってselectedDayが値を持つかどうか変わるので条件分岐する
       if(selectedDate.dateString){
-        goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString);
+        goalDocRef = db.collection('users').doc(user.uid).collection('goals').doc(selectedDate.dateString);
       }else{
-        goalDocRef = await db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
+        goalDocRef = db.collection('users').doc(user.uid).collection('goals').doc(formatDateUntilDay());
       }
-      goalDocRef.set({
+      await goalDocRef.set({
         post: post,
         postTime: FirebaseTimestamp.fromDate(new Date()),
-      });
-      const ReservedDateDocRef = await db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
-      ReservedDateDocRef.set({
+      }, {merge: true});
+      const ReservedDateDocRef = db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
+      await ReservedDateDocRef.set({
         settingDateList: settingDateList,
         targetDateList: targetDateList,
         updateTime: FirebaseTimestamp.fromDate(new Date()),
-      })
+      }, {merge: true})
     }catch (e){
       console.log(e);
     }

@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 
 /* screen */
@@ -76,22 +76,34 @@ export default function SeatBookingScreen() {
     return selected[x][y] ?  'skyblue' : '#EAC799';
   }
 
+
   const renderChoosenSeats = (datas: Array<boolean>, alphabet: string) => {
     return datas.map((data, index) => {
       if(data){
         return( 
           <View key={index} style={{flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10}}>
             <View style={{width: windowWidth*0.5, alignItems: 'center'}}>
-              <Text style={{fontSize: RFPercentage(2.6), fontFamily: 'ComicSans' }}>位置</Text>
+              <Text style={{fontSize: RFPercentage(2.6), fontFamily: 'ComicSnas' }}>位置</Text>
             </View>
             <View style={{width: windowWidth*0.5, alignItems: 'center'}}>
-              <Text style={{ fontSize: RFPercentage(2.6), fontFamily: 'ComicSans'}}>{alphabet}-{index+1}</Text>
+              <Text style={{ fontSize: RFPercentage(2.6), fontFamily: 'ComicSnas'}}>{alphabet}-{index+1}</Text>
             </View> 
           </View>
         )
       }
-    })
+    }).filter(v => v);
   }
+
+  const renderChoosenSeatsForAlert = (datas: Array<boolean>, alphabet: string) => {
+    const list =  datas.map((data, index) => {
+      if(data){
+        return `位置 : ${alphabet}-${index-1}`
+      }
+      // fileterメソッドをかますことでundefinedを除去する
+    }).filter(v => v);
+    return list.join('\n');
+  }
+
   const handleRegister = async () => {
     console.log(booked);
     // firestoreでnestされた配列はsupportされていないのでobject型に変形する
@@ -102,11 +114,25 @@ export default function SeatBookingScreen() {
       'D' : [booked['D'][0] || selected['D'][0], booked['D'][1] || selected['D'][1], booked['D'][2] || selected['D'][2],booked['D'][3] || selected['D'][3], booked['D'][4] || selected['D'][4], booked['D'][5] || selected['D'][5]], 
       'E' : [booked['E'][0] || selected['E'][0], booked['E'][1] || selected['E'][1], booked['E'][2] || selected['E'][2],booked['E'][3] || selected['E'][3]], 
     }
-    setBooked(temp);
 
     try{
-      const docRef = await db.collection('seat').doc(formatDateUntilDay());
-      docRef.set({bookedSeatList: temp});
+      const docRef = db.collection('seat').doc(formatDateUntilDay());
+      await docRef.set({bookedSeatList: temp});
+      // firestore側への記録に成功すれば、stateも更新する
+      setBooked(temp);
+      // 登録の際に時間管理も行う
+      const userRef = db.collection('users').doc(user?.uid).collection('seat').doc(formatDateUntilDay());
+      await userRef.set({
+        startTime:  FirebaseTimestamp.fromDate(new Date()),
+      }, {merge: true});
+      // 全ての通信が正常に終了するとselectedステートの初期化
+      setSelected({
+        'A' : [false,false,false,false,false,false], 
+        'B' : [false,false,false,false,false,false], 
+        'C' : [false,false,false,false,false,false], 
+        'D' : [false,false,false,false,false,false], 
+        'E' : [false,false,false,false]
+      })
     }catch(e){
       console.log(e);
     }
@@ -130,6 +156,21 @@ export default function SeatBookingScreen() {
     }
   }
 
+  const showAlert = () => {
+    if(Platform.OS === 'web'){
+      const res = confirm('登録しますか？');
+      if (res){
+        handleRegister();
+      }
+    }else{
+      Alert.alert(
+        'Check',
+        renderChoosenSeatsForAlert(selected['A'], 'A') + renderChoosenSeatsForAlert(selected['B'], 'B') + renderChoosenSeatsForAlert(selected['C'], 'C') + renderChoosenSeatsForAlert(selected['D'], 'D') + renderChoosenSeatsForAlert(selected['E'], 'E'),
+        [{text: '戻る', onPress: ()=>{}}, {text: '登録する', onPress: ()=>handleRegister()}],
+        {cancelable: false}
+      )
+    }
+  }
 
   useEffect(() => {
     loadFonts(setFontLoaded);
@@ -148,7 +189,7 @@ export default function SeatBookingScreen() {
 
       <View style={styles.classRoomContainer}>
         <View style={styles.whiteboard}>
-          <Text style={{fontFamily: 'ComicSans'}}>White Board</Text>
+          <Text style={{fontFamily: 'ComicSnas'}}>White Board</Text>
         </View>
           {/* 一列目 */}
         <View style={styles.seatContainer}>
@@ -416,7 +457,7 @@ export default function SeatBookingScreen() {
           {renderChoosenSeats(selected['D'], 'D')}
           {renderChoosenSeats(selected['E'], 'E')}
 
-          <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister} >
+          <TouchableOpacity style={styles.buttonContainer} onPress={showAlert} >
             <Text style={styles.button_text}>登録する</Text>
           </TouchableOpacity>
       </View>
@@ -446,21 +487,20 @@ const styles = StyleSheet.create({
   seatContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingTop: '40',
-    paddingBottom: '30',
   },
   menuBox:{
-    backgroundColor: "#EAC799",
     width: seatWidth,
     height: seatWidth,
     alignItems: 'center',
     shadowColor: 'black',
-    shadowOpacity: .3,
+    shadowOpacity: 0.3,
     shadowOffset: {
       height:3,
       width:-3
     },
-    elevation:4,
+    borderColor: 'lightgray',
+    borderWidth: 0.5,
+    elevation:3,
     marginBottom: 40,
   },
   info:{

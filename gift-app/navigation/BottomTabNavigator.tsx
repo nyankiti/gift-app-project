@@ -420,7 +420,7 @@ function SeatBookingNavigator({navigation}: any) {
             <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>),
           headerRight: () => (
             <>
-            <Text style={{fontFamily: 'Anzumozi', marginBottom: 4, color: 'white', fontSize: 20}}>退出
+            <Text style={{fontFamily: 'Anzumozi', marginBottom: 4, color: 'white', fontSize: 20}}>退室
             <FontAwesome5.Button name='external-link-square-alt' size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('SeatUnBookingScreen')} />
             </Text>
             </>
