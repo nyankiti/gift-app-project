@@ -56,6 +56,7 @@ export type ChatTabParamList = {
     thread: object
   };
   AddRoomScreen: undefined;
+  QuestionnaireScreen: undefined;
 }
 
 export type AccountInfoTabParamList = {
@@ -91,4 +92,14 @@ export type User = {
   userImg: string;
   createdAt: any;
   updatedAt: any;
+}
+
+
+// ------------------------------------------------------
+export type SeatObject = {
+  'A': Array<boolean>,
+  'B': Array<boolean>,
+  'C': Array<boolean>,
+  'D': Array<boolean>,
+  'E': Array<boolean>,
 }

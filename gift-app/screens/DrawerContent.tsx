@@ -17,11 +17,7 @@ type Props = {
 const DrawerContent: React.FC = (props: any) => {
   const {user, logout} = useContext<any>(AuthContext);
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
-  const [active, setActive] = useState<string>('Home');
 
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
-  }
 
   return( 
     <View style={{flex: 1}}>
@@ -40,7 +36,7 @@ const DrawerContent: React.FC = (props: any) => {
 
               <View style={{flexDirection:'column', marginLeft: 15}} >
                 <Title style={styles.title}>{user.displayName ? user.displayName : 'user name'}</Title>
-                <Caption style={styles.caption}>@{user.uid}</Caption>
+                <Caption style={styles.caption}>@{user.uid.slice(0,8)}</Caption>
               </View>
             </View>
 
@@ -49,11 +45,10 @@ const DrawerContent: React.FC = (props: any) => {
             </View>
           </View>
 
-          <Drawer.Section  style={styles.drawerSection}>
+          <Drawer.Section title='HOME' style={styles.drawerSection}>
             <Drawer.Item 
               icon={({color, size}) => ( <Icon name='ios-home' color={color} size={size} />)} 
               label='News'
-              active={active === 'News'}
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
               onPress={() => {props.navigation.navigate('News')}}
               accessibilityComponentType ='button'
@@ -61,7 +56,7 @@ const DrawerContent: React.FC = (props: any) => {
             />
             <Drawer.Item 
               icon={({color, size}) => ( <Icon name='bookmarks-outline' color={color} size={size} />)} 
-              label='SeatBooking'
+              label='座席登録'
               onPress={() => props.navigation.navigate('SeatBooking')}
               accessibilityComponentType ='button'
               accessibilityTraits='button'
@@ -78,20 +73,26 @@ const DrawerContent: React.FC = (props: any) => {
             </TouchableRipple>
           </Drawer.Section> */}
 
-          <Drawer.Section title='Gift Innovation 合同会社' style={styles.drawerSection}>
+          <Drawer.Section title='MENU' style={styles.drawerSection}>
             <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='person' color={color} size={size} />)} 
+              icon={({color, size}) => ( <Icon name='person-outline' color={color} size={size} />)} 
               label='EditProfile'
-              active={active === 'EditProfile'}
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
               onPress={() => {props.navigation.navigate('SeatBooking', {screen: 'EditProfileScreen'})}}
               accessibilityComponentType ='button'
               accessibilityTraits='button'
             />
             <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='information-circle' color={color} size={size} />)} 
+              icon={({color, size}) => ( <Icon name='information-circle-outline' color={color} size={size} />)} 
               label='Infomation'
               onPress={() => props.navigation.navigate('SeatBooking', {screen: 'GiftInfoScreen'})}
+              accessibilityComponentType ='button'
+              accessibilityTraits='button'
+            />
+            <Drawer.Item 
+              icon={({color, size}) => ( <Icon name='help-circle-outline' color={color} size={size} />)} 
+              label='勉強の質問・相談'
+              onPress={() => props.navigation.navigate('Chat', {screen: 'QuestionnaireScreen'})}
               accessibilityComponentType ='button'
               accessibilityTraits='button'
             />
