@@ -24,6 +24,7 @@ import ArticleScreen from '../screens/ArticleScreen';
 import SeatBookingScreen from '../screens/SeatBookingScreen';
 import SeatUnBookingScreen from '../screens/SeatUnBookingScreen';
 import NewsScreen from '../screens/NewsScreen';
+import QuestionnaireScreen from '../screens/QuestionnaireScreen';
 
 /* types */
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList, SeatBookingTabParamList } from '../types';
@@ -68,7 +69,7 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="SeatBooking"
+      initialRouteName="News"
       // テスト用に最初の画面を変える
       // initialRouteName = "StudyReport"
       activeColor="#fff"
@@ -169,8 +170,8 @@ export function NewsNavigator({navigation}: any) {
     }}>
       <NewsStack.Screen
         name="NewsScreen"
-        component={NewsScreen}
-        // component={OAuthTestScreen}
+        // component={NewsScreen}
+        component={QuestionnaireScreen}
         options={{ 
           headerTitle: 'Gift News', 
           headerLeft: () => (
@@ -309,90 +310,101 @@ function ChatNavigator({navigation}: any) {
         component={AddRoomScreen}
         options={{ headerRight: () => (<></>)}}
       />
+      <ChatStack.Screen
+        name="QuestionnaireScreen"
+        component={QuestionnaireScreen}
+        options={{ 
+          headerTitle: '質問・相談作成',
+          headerBackTitleVisible: false,
+          headerLeft: () => (
+            <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate(user.uid == 'd1SJQ07DeUWVUQ74tNizyrjKR4x1' || user.uid == 'zHBbV8enFlR3AEi9D0DbgzamHB63' ? 'AdminChatHomeScreen': 'ChatHomeScreen')}></Icon.Button>),
+          headerTitleAlign: 'center',
+        }}
+      />
     </ChatStack.Navigator>
   );
 }
 
-const AccountInfoStack = createStackNavigator<AccountInfoTabParamList>();
+// const AccountInfoStack = createStackNavigator<AccountInfoTabParamList>();
 
-function AccountInfoNavigator({navigation}: any) {
-  return (
-    <AccountInfoStack.Navigator screenOptions={{
-      headerStyle: {
-        backgroundColor: '#EAC799',
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'normal',
-        fontFamily: 'ComicSnas_bd',
-        alignSelf: 'center',
-      }
-    }}>
-      <AccountInfoStack.Screen
-        name="AccountInfoScreen"
-        component={AccountInfoScreen}
-        options={{ 
-          headerTitle: 'AccountInfo', headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        )}}
-      />
-      <AccountInfoStack.Screen
-        name="EditProfileScreen"
-        component={EditProfileScreen}
-        options={{ 
-          headerTitle: 'Edit Profile',
-          headerBackTitleVisible: false,
-          headerTitleAlign: 'center',
-        }}
-      />
-    </AccountInfoStack.Navigator>
-  );
-}
+// function AccountInfoNavigator({navigation}: any) {
+//   return (
+//     <AccountInfoStack.Navigator screenOptions={{
+//       headerStyle: {
+//         backgroundColor: '#EAC799',
+//       },
+//       headerTintColor: '#fff',
+//       headerTitleStyle: {
+//         fontWeight: 'normal',
+//         fontFamily: 'ComicSnas_bd',
+//         alignSelf: 'center',
+//       }
+//     }}>
+//       <AccountInfoStack.Screen
+//         name="AccountInfoScreen"
+//         component={AccountInfoScreen}
+//         options={{ 
+//           headerTitle: 'AccountInfo', headerLeft: () => (
+//         <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+//         )}}
+//       />
+//       <AccountInfoStack.Screen
+//         name="EditProfileScreen"
+//         component={EditProfileScreen}
+//         options={{ 
+//           headerTitle: 'Edit Profile',
+//           headerBackTitleVisible: false,
+//           headerTitleAlign: 'center',
+//         }}
+//       />
+//     </AccountInfoStack.Navigator>
+//   );
+// }
 
-const SupportStack = createStackNavigator<SupportTabParamList>();
+// const SupportStack = createStackNavigator<SupportTabParamList>();
 
-function SupportNavigator({navigation}: any) {
-  return (
-    <SupportStack.Navigator screenOptions={{
-      headerStyle: {
-        backgroundColor: '#EAC799',
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'normal',
-        fontFamily: 'ComicSnas_bd',
-        alignSelf: 'center',
-      }
-    }}>
-      <SupportStack.Screen
-        name="SupportScreen"
-        component={SupportScreen}
-        options={{ 
-          headerTitle: 'SupportInfo', 
-          headerLeft: () => (
-        <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
-        )
-        }}
-      />
-      <SupportStack.Screen
-        name="GiftInfoScreen"
-        component={GiftInfoScreen}
-        options={{ 
-          headerTitle: 'SupportInfo', 
-          headerRight: () => (<></>)}}
-      />
-      <SupportStack.Screen
-        name="EditProfileScreen"
-        component={EditProfileScreen}
-        options={{ 
-          headerTitle: 'Edit Profile',
-          headerBackTitleVisible: false,
-          headerTitleAlign: 'center',
-        }}
-      />
-    </SupportStack.Navigator>
-  );
-}
+// function SupportNavigator({navigation}: any) {
+//   return (
+//     <SupportStack.Navigator screenOptions={{
+//       headerStyle: {
+//         backgroundColor: '#EAC799',
+//       },
+//       headerTintColor: '#fff',
+//       headerTitleStyle: {
+//         fontWeight: 'normal',
+//         fontFamily: 'ComicSnas_bd',
+//         alignSelf: 'center',
+//       }
+//     }}>
+//       <SupportStack.Screen
+//         name="SupportScreen"
+//         component={SupportScreen}
+//         options={{ 
+//           headerTitle: 'SupportInfo', 
+//           headerLeft: () => (
+//         <Icon.Button name="ios-menu" size={25} backgroundColor='#EAC799' onPress={() => navigation.openDrawer()}></Icon.Button>
+//         )
+//         }}
+//       />
+//       <SupportStack.Screen
+//         name="GiftInfoScreen"
+//         component={GiftInfoScreen}
+//         options={{ 
+//           headerTitle: 'SupportInfo', 
+//           headerRight: () => (<></>)}}
+//       />
+//       <SupportStack.Screen
+//         name="EditProfileScreen"
+//         component={EditProfileScreen}
+//         options={{ 
+//           headerTitle: 'Edit Profile',
+//           headerBackTitleVisible: false,
+//           headerTitleAlign: 'center',
+//         }}
+//       />
+//     </SupportStack.Navigator>
+//   );
+// }
 
 
 const SeatBookingStack = createStackNavigator<SeatBookingTabParamList>();
@@ -441,7 +453,9 @@ function SeatBookingNavigator({navigation}: any) {
         component={EditProfileScreen}
         options={{ 
           headerTitle: 'Edit Profile',
-          headerBackTitleVisible: false,
+          // headerBackTitleVisible: false,
+          headerLeft: () => (
+            <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('SeatBookingScreen')}></Icon.Button>),
           headerTitleAlign: 'center',
         }}
       />
@@ -450,7 +464,9 @@ function SeatBookingNavigator({navigation}: any) {
         component={GiftInfoScreen}
         options={{ 
           headerTitle: 'Information',
-          headerBackTitleVisible: false,
+          // headerBackTitleVisible: false,
+          headerLeft: () => (
+            <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('SeatBookingScreen')}></Icon.Button>),
           headerTitleAlign: 'center',
         }}
       />

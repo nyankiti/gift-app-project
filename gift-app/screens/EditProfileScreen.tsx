@@ -48,7 +48,7 @@ const EditProfileScreen = () => {
   });
 
 
-  const bs = useRef();
+  const bs: any = useRef();
   const fall = new Animated.Value(1);
 
 

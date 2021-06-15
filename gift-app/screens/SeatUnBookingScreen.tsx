@@ -5,7 +5,7 @@ import { useIsFocused } from '@react-navigation/native';
 /* screen */
 import Loading from './LoadingScreen';
 /* types */
-import {User} from '../types';
+import {SeatObject, User} from '../types';
 /* lib */
 import {getUsers} from '../src/firebase'; 
 import { windowHeight, windowWidth } from '../utils/Dimentions';
@@ -13,20 +13,12 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import loadFonts from '../utils/loadFonts';
 import { FirebaseTimestamp, db } from '../src/firebase';
 import { formatDateUntilDay } from '../utils/file';
+import { renderChoosenSeats, renderChoosenSeatsForAlert, fetchBookedSeatsList } from '../src/SeatManage';
 
 /* context */
 import { AuthContext } from '../src/AuthProvider';
 
 
-
-
-type SeatObject = {
-  'A': Array<boolean>,
-  'B': Array<boolean>,
-  'C': Array<boolean>,
-  'D': Array<boolean>,
-  'E': Array<boolean>,
-}
 
 
 const seatWidth = windowWidth*0.1
@@ -78,32 +70,6 @@ export default function SeatUnBookingScreen() {
     return selected[x][y] ?  '#32cd32' : 'crimson';
   }
 
-  const renderChoosenSeats = (datas: Array<boolean>, alphabet: string) => {
-    return datas.map((data, index) => {
-      if(data){
-        return( 
-          <View key={index} style={{flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10}}>
-            <View style={{width: windowWidth*0.5, alignItems: 'center'}}>
-              <Text style={{fontSize: RFPercentage(2.6), fontFamily: 'ComicSnas' }}>位置</Text>
-            </View>
-            <View style={{width: windowWidth*0.5, alignItems: 'center'}}>
-              <Text style={{ fontSize: RFPercentage(2.6), fontFamily: 'ComicSnas'}}>{alphabet}-{index+1}</Text>
-            </View> 
-          </View>
-        )
-      }
-    }).filter(v => v);
-  }
-
-  const renderChoosenSeatsForAlert = (datas: Array<boolean>, alphabet: string) => {
-    const list =  datas.map((data, index) => {
-      if(data){
-        return `位置 : ${alphabet}-${index-1}`
-      }
-      // fileterメソッドをかますことでundefinedを除去する
-    }).filter(v => v);
-    return list.join('\n');
-  }
 
 
   const checkBoolean = (booked: boolean, selected: boolean) => {
@@ -149,23 +115,6 @@ export default function SeatUnBookingScreen() {
     }
   }
 
-  const fetchBookedSeatsList = async () => {
-    const docRef = db.collection('seat').doc(formatDateUntilDay());
-    try{
-      await docRef.get().then((doc: any) => {
-        // 登録されていな場合はundefinedエラーがでるので場合分け
-        if(doc.exists){
-          console.log('Document data: ', doc.data())
-          const fetchedList: any = doc.data().bookedSeatList
-          setBooked(fetchedList)
-        }else{
-          console.log('dataがありません');
-        }
-      })
-    }catch(e){
-      console.log(e);
-    }
-  }
 
   const fetchStartTime = async() => {
     const userRef = db.collection('users').doc(user?.uid).collection('seat').doc(formatDateUntilDay());
@@ -191,7 +140,7 @@ export default function SeatUnBookingScreen() {
 
   const showAlert = () => {
     if(Platform.OS === 'web'){
-      const res = confirm('登録しますか？');
+      const res = confirm('解除しますか？');
       if (res){
         handleUnRegister();
       }
@@ -207,12 +156,12 @@ export default function SeatUnBookingScreen() {
 
   useEffect(() => {
     loadFonts(setFontLoaded);
-    fetchBookedSeatsList();
+    fetchBookedSeatsList(setBooked);
     fetchStartTime();
   }, [fontLoaded]);
 
   useEffect(() => {
-    fetchBookedSeatsList();
+    fetchBookedSeatsList(setBooked);
   }, [isFocused]);
 
   if (fontLoaded) {
