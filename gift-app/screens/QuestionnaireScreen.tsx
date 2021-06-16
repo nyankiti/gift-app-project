@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground, Image, Alert} from 'react-native';
 import { Button } from 'react-native-paper';
-import { db, FirebaseTimestamp } from '../src/firebase';
+import { db, FirebaseTimestamp, storage } from '../src/firebase';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { AuthContext } from '../src/AuthProvider';
 import loadFonts from '../utils/loadFonts';
@@ -10,6 +10,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import RNPickerSelect from 'react-native-picker-select';
 import { pickImage } from "../src/image-picker";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getExtension, formatDateUntilMinute } from '../utils/file'
 
 
 
@@ -20,26 +21,165 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 使っている参考書のページなどの参照物（画像付きが好ましい） => 自由記述+画像
 連絡方法 => アプリ内チャット、LINE、メール、その他
 */
-const subjects = ['国語','英語','世界史','日本史','地理','数学','物理','化学','生物','その他'];
+
+const imageWidth = windowWidth * 0.6;
 
 
 export default function QuestionnaireScreen(props) {
-  const defaultValue = 1900;
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [value, setValue] = useState<string>();
   const [communicationMethod, setCommunicationMethod] = useState<string>();
   const [text, setText] = useState<string>();
-  const [image1, setImage1] = useState();
-  const [image2, setImage2] = useState();
+  const [image1, setImage1] = useState(null);
+  const [image2, setImage2] = useState(null);
   const {user} = useContext(AuthContext);
 
-  const handleSubmit = () => {
+  // データをfirestoreとfirestrageに保存 メール送信部分はfunctionsで実装
+  const handleSubmit = async() => {
+    const image1Url = await uploadImage(image1, setImage1);
+    const image2Url = await uploadImage(image2, setImage2);
+
+    // firestoreの登録
+    db.collection('mail').add({
+      userId: user.uid,
+      name: user.displayName,
+      subject: value,
+      communicationMethod: communicationMethod,
+      text: text,
+      img1: image1Url,
+      img2: image2Url
+    }).then(() => {
+      Alert.alert(
+        '質問・相談を受け付けました!'
+      );
+    }).catch((e) => {
+      console.log(e)
+    })
   }
 
   
   const choosePhotoFromLibrary = async(setImage: React.Dispatch<React.SetStateAction<any>>) => {
     const uri = await pickImage();
     setImage(uri);
+  }
+
+
+  const uploadImage = async(image, setImage) => {
+    
+    if( image == null){
+      return null;
+    }else{ 
+      const uploadUri = image;
+      const extension = getExtension(uploadUri);
+      // file名はランダムに生成
+      const filename = Math.random().toString(36).substring(7) + "." + extension;
+      
+      
+      let storagePath = `mail/${user.uid}/${filename}`;
+      
+      const storageRef = storage.ref(storagePath);
+
+      // blob形式でstorageへ保存する
+      const tempUri = await fetch(uploadUri);
+      const blob = await tempUri.blob();
+      const task = storageRef.put(blob);
+      try{
+        // taskを待つことでstorageのurlが取れるようになる
+        await task;
+
+        const urlOfFireStorage = storageRef.getDownloadURL();
+
+        // storageへのuploadが完了したらstateは開放する
+        setImage(null);
+        
+        return urlOfFireStorage
+        // return null
+      }catch(e){
+        console.log(e);
+        return null
+      }
+    }
+  }
+
+  const renderImages = () => {
+    if(image1 && image2){
+      return(
+        <>
+          <ImageBackground source={{uri: image1}} style={styles.image}>
+          <Icon name="close" size={30} color="black"
+            style={{
+              position: 'absolute',
+              bottom: imageWidth - 10,
+              left: imageWidth -10 ,
+            }}
+            onPress={()=> {
+              setImage1(null);
+            }}
+          />
+          </ImageBackground>
+          <ImageBackground source={{uri: image2}} style={styles.image}>
+          <Icon name="close" size={30} color="black"
+            style={{
+              position: 'absolute',
+              bottom: imageWidth - 10,
+              left: imageWidth -10 ,
+            }}
+            onPress={()=> {
+              setImage2(null);
+            }}
+          />
+          </ImageBackground>
+        </>
+      )
+    }else if (image1 && image2 == null) {
+      return( 
+        <>
+          <ImageBackground source={{uri: image1}} style={styles.image}>
+          <Icon name="close" size={30} color="black"
+            style={{
+              position: 'absolute',
+              bottom: imageWidth - 10,
+              left: imageWidth -10 ,
+            }}
+            onPress={()=> {
+              setImage1(null);
+            }}
+          />
+          </ImageBackground>
+          <Button icon='camera-outline' mode="outlined" onPress={() => choosePhotoFromLibrary(setImage2)} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
+          写真を選択(最大2枚)
+          </Button>
+        </>
+      )
+    }else if (image1 == null && image2){
+      return( 
+        <>
+          <ImageBackground source={{uri: image2}} style={styles.image}>
+          <Icon name="close" size={30} color="black"
+            style={{
+              position: 'absolute',
+              bottom: imageWidth - 10,
+              left: imageWidth -10 ,
+            }}
+            onPress={()=> {
+              setImage2(null);
+            }}
+          />
+          </ImageBackground>
+          <Button icon='camera-outline' mode="outlined" onPress={() => choosePhotoFromLibrary(setImage1)} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
+          写真を選択(最大2枚)
+          </Button>
+        </>
+      )
+    }else{
+      return (
+        <>
+          <Button icon='camera-outline' mode="outlined" onPress={() => choosePhotoFromLibrary(setImage1)} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
+          写真を選択
+          </Button>
+        </>
+      )
+    }
   }
 
 
@@ -76,7 +216,7 @@ export default function QuestionnaireScreen(props) {
         <Text style={{ marginVertical: 10 }}>内容詳細</Text>
         <TextInput 
           value={text}
-          onChangeText={text => setValue(text)}
+          onChangeText={text => setText(text)}
           placeholder='学習中の単元、わからない問題についてなど、質問の詳細'
           multiline={true}
           style={styles.textInput}
@@ -85,23 +225,7 @@ export default function QuestionnaireScreen(props) {
 
         <Text style={{ marginVertical: 10 }}>該当ページの写真など(解答などもあれば助かります)</Text>
 
-        {image1? image1 && image2 ? 
-        <>
-          <Image source={{uri: image1}} style={styles.image} />
-          <Image source={{uri: image2}} style={styles.image} />
-        </>
-        :
-        <> 
-          <Image source={{uri: image1}} style={styles.image} />
-          <Button icon='camera-outline' mode="outlined" onPress={() => choosePhotoFromLibrary(setImage2)} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
-          写真を選択(最大2枚)
-          </Button>
-        </>
-        : 
-          <Button icon='camera-outline' mode="outlined" onPress={() => choosePhotoFromLibrary(setImage1)} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
-          写真を選択
-          </Button>
-        }
+        {renderImages()}
 
         <Text style={{ marginVertical: 10 }}>連絡手段</Text>
           <View style={styles.pickerContainer}>
@@ -142,11 +266,13 @@ const styles = StyleSheet.create({
   },
   image: {
     marginVertical: 10,
-    width: windowWidth*0.6,
-    height: windowWidth*0.6,
+    width: imageWidth,
+    height: imageWidth,
     borderRadius: 5,
     borderColor: 'black',
-    borderWidth: 1
+    borderWidth: 1,
+    // flexDirection: 'row',
+    // justifyContent: 'flex-end',
   },
   pickerContainer: {
     width: windowWidth*0.7,

@@ -34,7 +34,6 @@ import { AuthContext } from '../src/AuthProvider';
 const EditProfileScreen = () => {
   const {user, setUser} = useContext(AuthContext);
   const [image, setImage] = useState("");
-  const [uploading, setUploading] = useState(false);
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [transferred, setTransferred] = useState(0);
   const [userData, setUserData] = useState({
@@ -101,8 +100,6 @@ const EditProfileScreen = () => {
       return null;
     }
 
-    setUploading(true);
-
     const uploadUri = image;
     const extension = getExtension(uploadUri);
     const date_for_filename = formatDateUntilMinute();
@@ -131,8 +128,6 @@ const EditProfileScreen = () => {
 
       const urlOfFireStorage = storageRef.getDownloadURL();
 
-      setUploading(false);
-      // storageへのuploadが完了したらstateは開放する
       setImage(null);
 
       return urlOfFireStorage

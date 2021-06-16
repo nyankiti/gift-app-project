@@ -16,6 +16,36 @@ Giftユーザーの管理（管理者用）
 
 ## Technical Details
 
+### データベース
+users/{userID}  
+  uid  
+  displayName
+  fname  
+  lname  
+  userImg  
+  city  
+  phone  
+  email  
+  createdAt  
+  updatedAt  
+  about  
+
+
+users/{userID}/Goals/{datestring}  
+  post: {
+    dream
+    oneDayGoal
+  }
+  postTime  
+
+
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+
+
 <!-- ### selection機能
   * Gesture  
   強くスクロールしたときに下に行く速度があがるように工夫
