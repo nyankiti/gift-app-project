@@ -17,7 +17,6 @@ export const pickImage = async () => {
   // ImagePicker起動
   let result = await ImagePicker.launchImageLibraryAsync();
   if (!result.cancelled) {
-    console.log(result);
     return result.uri;
   }
 };

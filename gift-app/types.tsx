@@ -33,6 +33,7 @@ export type NewsTabParamList = {
   ArticleScreen: {
     article: object,
   };
+  QuestionnaireScreen: undefined;
 };
 
 export type StudyReportTabParamList = {
