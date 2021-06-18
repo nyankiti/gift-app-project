@@ -29,7 +29,7 @@ import QuestionnaireScreen from '../screens/QuestionnaireScreen';
 /* types */
 import { BottomTabParamList, NewsTabParamList, StudyReportTabParamList, UsersTabParamList, AccountInfoTabParamList, ChatTabParamList, SupportTabParamList, SeatBookingTabParamList } from '../types';
 import { AuthContext } from '../src/AuthProvider';
-import { userInfo } from 'node:os';
+
 
 
 
@@ -170,8 +170,8 @@ export function NewsNavigator({navigation}: any) {
     }}>
       <NewsStack.Screen
         name="NewsScreen"
-        // component={NewsScreen}
-        component={QuestionnaireScreen}
+        component={NewsScreen}
+        // component={QuestionnaireScreen}
         options={{ 
           headerTitle: 'Gift News', 
           headerLeft: () => (
@@ -208,6 +208,17 @@ export function NewsNavigator({navigation}: any) {
             <></>
           )
         })}
+      />
+      <NewsStack.Screen
+        name="QuestionnaireScreen"
+        component={QuestionnaireScreen}
+        options={{ 
+          headerTitle: '質問・相談作成',
+          headerBackTitleVisible: false,
+          headerLeft: () => (
+            <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate('NewsScreen')}></Icon.Button>),
+          headerTitleAlign: 'center',
+        }}
       />
     </NewsStack.Navigator>
   );
@@ -309,17 +320,6 @@ function ChatNavigator({navigation}: any) {
         name="AddRoomScreen"
         component={AddRoomScreen}
         options={{ headerRight: () => (<></>)}}
-      />
-      <ChatStack.Screen
-        name="QuestionnaireScreen"
-        component={QuestionnaireScreen}
-        options={{ 
-          headerTitle: '質問・相談作成',
-          headerBackTitleVisible: false,
-          headerLeft: () => (
-            <Icon.Button name="arrow-back-outline" size={25} backgroundColor='#EAC799' onPress={() => navigation.navigate(user.uid == 'd1SJQ07DeUWVUQ74tNizyrjKR4x1' || user.uid == 'zHBbV8enFlR3AEi9D0DbgzamHB63' ? 'AdminChatHomeScreen': 'ChatHomeScreen')}></Icon.Button>),
-          headerTitleAlign: 'center',
-        }}
       />
     </ChatStack.Navigator>
   );

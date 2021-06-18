@@ -92,7 +92,7 @@ const DrawerContent: React.FC = (props: any) => {
             <Drawer.Item 
               icon={({color, size}) => ( <Icon name='help-circle-outline' color={color} size={size} />)} 
               label='勉強の質問・相談'
-              onPress={() => props.navigation.navigate('Chat', {screen: 'QuestionnaireScreen'})}
+              onPress={() => props.navigation.navigate('News', {screen: 'QuestionnaireScreen'})}
               accessibilityComponentType ='button'
               accessibilityTraits='button'
             />

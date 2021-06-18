@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground, Image, Alert} from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground, Platform, Alert} from 'react-native';
 import { Button } from 'react-native-paper';
-import { db, FirebaseTimestamp, storage } from '../src/firebase';
+import { db, storage } from '../src/firebase';
+import functions from '@react-native-firebase/functions';
 import { windowHeight, windowWidth } from '../utils/Dimentions';
 import { AuthContext } from '../src/AuthProvider';
 import loadFonts from '../utils/loadFonts';
@@ -10,7 +11,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import RNPickerSelect from 'react-native-picker-select';
 import { pickImage } from "../src/image-picker";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getExtension, formatDateUntilMinute } from '../utils/file'
+import { getExtension } from '../utils/file'
 
 
 
@@ -23,9 +24,10 @@ import { getExtension, formatDateUntilMinute } from '../utils/file'
 */
 
 const imageWidth = windowWidth * 0.6;
+let data = {}
 
 
-export default function QuestionnaireScreen(props) {
+export default function QuestionnaireScreen({navigation}) {
   const [fontLoaded, setFontLoaded] = useState<boolean>(true);
   const [value, setValue] = useState<string>();
   const [communicationMethod, setCommunicationMethod] = useState<string>();
@@ -49,12 +51,11 @@ export default function QuestionnaireScreen(props) {
       img1: image1Url,
       img2: image2Url
     }).then(() => {
-      Alert.alert(
-        '質問・相談を受け付けました!'
-      );
     }).catch((e) => {
       console.log(e)
     })
+    
+    navigation.navigate('NewsScreen')
   }
 
   
@@ -98,6 +99,31 @@ export default function QuestionnaireScreen(props) {
         console.log(e);
         return null
       }
+    }
+  }
+
+  const callBackEndFunctions = async (data) => {
+    const func = functions().httpsCallable('sendMail-default');
+    func(data).then(res => {
+      console.log(res);
+    }).catch(e => {
+      console.log(e);
+    })
+  }
+
+  const showAlert = () => {
+    if(Platform.OS === 'web'){
+      const res = confirm('メールを送信しますか？');
+      if (res){
+        handleSubmit();
+      }
+    }else{
+      Alert.alert(
+        'メールを送信しますか',
+        'メールの内容は studyroomgift@gmail.com へ送信されます',
+        [{text: '戻る', onPress: ()=>{}}, {text: '登録する', onPress: ()=>handleSubmit()}],
+        {cancelable: false}
+      )
     }
   }
 
@@ -198,6 +224,7 @@ export default function QuestionnaireScreen(props) {
         <View style={styles.pickerContainer}>
           <RNPickerSelect
             onValueChange={(v) => setValue(v)}
+            style={pickerSelectStyles}
             items={[
               { label: '英語', value: '英語' },
               { label: '国語', value: '国語' },
@@ -209,8 +236,7 @@ export default function QuestionnaireScreen(props) {
               { label: '日本史', value: '日本史' },
               { label: 'その他', value: 'その他' },
             ]}
-            // style={pickerSelectStyles}
-            placeholder={{ label: '選択してください', value: '' }}
+            placeholder={{ label: '選択してください', value: '未選択' }}
           />
         </View>
         <Text style={{ marginVertical: 10 }}>内容詳細</Text>
@@ -231,17 +257,18 @@ export default function QuestionnaireScreen(props) {
           <View style={styles.pickerContainer}>
             <RNPickerSelect
               onValueChange={(v) => setCommunicationMethod(v)}
+              style={pickerSelectStyles}
               items={[
-                { label: 'LIEN(奨励)', value: 'line' },
-                { label: 'アプリ内チャット', value: 'chat' },
-                { label: 'メール', value: 'mail' },
+                { label: 'LIEN(奨励)', value: 'Line' },
+                { label: 'アプリ内チャット', value: 'アプリ内チャット' },
+                { label: 'メール', value: 'メール' },
               ]}
               // style={pickerSelectStyles}
-              placeholder={{ label: '選択してください', value: '' }}
+              placeholder={{ label: '選択してください', value: '未選択' }}
             />
           </View>
 
-          <Button icon='email-check-outline' mode="outlined" onPress={() => handleSubmit()} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
+          <Button icon='email-check-outline' mode="outlined" onPress={() => showAlert()} style={styles.button} accessibilityComponentType='button' accessibilityTraits='button' >
           送信
           </Button>
       </View>

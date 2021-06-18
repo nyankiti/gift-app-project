@@ -16,34 +16,11 @@ Giftユーザーの管理（管理者用）
 
 ## Technical Details
 
-### データベース
-users/{userID}  
-  uid  
-  displayName
-  fname  
-  lname  
-  userImg  
-  city  
-  phone  
-  email  
-  createdAt  
-  updatedAt  
-  about  
+### 勉強管理画面
+・時計のイラスト
 
-
-users/{userID}/Goals/{datestring}  
-  post: {
-    dream
-    oneDayGoal
-  }
-  postTime  
-
-
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+### メール送信  
+sendgrid apiを利用
 
 
 <!-- ### selection機能
