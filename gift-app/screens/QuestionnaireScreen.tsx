@@ -54,7 +54,12 @@ export default function QuestionnaireScreen({navigation}) {
     }).catch((e) => {
       console.log(e)
     })
-    
+
+    if(Platform.OS === 'web'){
+      alert('Junyaからの回答をお待ちください');
+    }else{
+      Alert.alert('Junyaからの回答をお待ちください')
+    }
     navigation.navigate('NewsScreen')
   }
 
@@ -100,15 +105,6 @@ export default function QuestionnaireScreen({navigation}) {
         return null
       }
     }
-  }
-
-  const callBackEndFunctions = async (data) => {
-    const func = functions().httpsCallable('sendMail-default');
-    func(data).then(res => {
-      console.log(res);
-    }).catch(e => {
-      console.log(e);
-    })
   }
 
   const showAlert = () => {
@@ -325,7 +321,7 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: '#789',
+    borderColor: 'black',
     borderRadius: 4,
     color: '#789',
     paddingRight: 30, // to ensure the text is never behind the icon
@@ -333,11 +329,12 @@ const pickerSelectStyles = StyleSheet.create({
     marginLeft: 30
   },
   inputAndroid: {
+    alignItems: 'center',
     fontSize: 16,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: '#789',
+    borderWidth: 1,
+    borderColor: 'black',
     borderRadius: 8,
     color: 'black',
     paddingRight: 30, // to ensure the text is never behind the icon
@@ -347,3 +344,31 @@ const pickerSelectStyles = StyleSheet.create({
     backgroundColor:'#eee'
   },
 });
+
+const pickerStyle = {
+	inputIOS: {
+		color: 'white',
+		paddingTop: 13,
+		paddingHorizontal: 10,
+		paddingBottom: 12,
+	},
+	inputAndroid: {
+		color: 'white',
+	},
+	placeholderColor: 'white',
+	underline: { borderTopWidth: 0 },
+	icon: {
+		position: 'absolute',
+		backgroundColor: 'transparent',
+		borderTopWidth: 5,
+		borderTopColor: '#00000099',
+		borderRightWidth: 5,
+		borderRightColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: 'transparent',
+		width: 0,
+		height: 0,
+		top: 20,
+		right: 15,
+	},
+};

@@ -43,6 +43,17 @@ export default functions.region("asia-northeast1").firestore
         to: 'nyancic77@outlook.jp',
         from: 'Gift-App <nyankiti20000824@gmail.com>',
         subject: 'アプリからの質問依頼',
+        // templateId: 'd-04ab840d55d444d8a71462d25fe0c0ee ',
+        // substitutionWrapper: ['{{', '}}'],
+        // substitutions: {
+        //   name: mailData.name,
+        //   userId: mailData.userId,
+        //   text: mailData.text,
+        //   subject: mailData.subject,
+        //   img1: mailData.img1,
+        //   img2: mailData.img2,
+        //   communicationMethod: mailData.communicationMethod
+        // }
         text: mailData.text, 
         html: html
       }
@@ -62,14 +73,3 @@ export default functions.region("asia-northeast1").firestore
 
   })
 
-
-  // templateId: 'd-c25475b79c3441db96a395e91ae84461',
-// substitutionWrapper: ['{{', '}}'],
-// substitutions: {
-//   name: mailData.name,
-//   text: mailData.text,
-//   subject: mailData.subject,
-//   communicationMethod: mailData.communicationMethod,
-//   img1: mailData.img1,
-//   img2: mailData.img2,
-// }
