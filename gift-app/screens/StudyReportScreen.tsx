@@ -114,7 +114,7 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
 
   const calcClockRotation = () => {
     // 座席管理機能から今日の勉強時間が二回目の登録で更新されてしまうので、自分で目標設定とともに勉強時間を設定したならばそちらを使う
-    let result = Number(post.targetHours ? studyTime : studyTime )
+    let result = Number(studyTime )
     return result*30
   }
 
@@ -252,25 +252,26 @@ const StudyReportScreen: React.FC<Props> = ({navigation, route}) => {
         if(doc.exists){
           const fetchedPost: any = doc.data()
           setPost(fetchedPost.post)
+          setStudyTime(fetchedPost.studyTime);
           // EditGoalScreenからの遷移時に日付の値を渡す
           setSelectedDate(route.params.selectedDate);
         }
       })
-      docRef.collection('seat').doc(selectedDateString).get().then((doc) => {
-        if(doc.exists){
-          const fetchedPost: any = doc.data()
-          // EditGoalScreenからの遷移時に日付の値を渡す
-          setStudyTime(fetchedPost.studyTime);
-        }
-      })
+      // docRef.collection('seat').doc(selectedDateString).get().then((doc) => {
+      //   if(doc.exists){
+      //     const fetchedPost: any = doc.data()
+      //     // EditGoalScreenからの遷移時に日付の値を渡す
+      //     setStudyTime(fetchedPost.studyTime);
+      //   }
+      // })
     }catch(e){
       console.log(e);
     }
   }
   const fetchDateList = async () => {
     try {
-      const docRef = await db.collection('users').doc(user?.uid).collection('ReservedDate').doc(user?.uid);
-      docRef.get().then((doc) => {
+      const docRef = db.collection('users').doc(user?.uid).collection('ReservedDate').doc(user?.uid);
+      await docRef.get().then((doc) => {
         if(doc.exists){
           const fetchedDateLists: any = doc.data()
           setSettingDateList(fetchedDateLists.settingDateList)
