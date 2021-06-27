@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import * as sendgrid from "@sendgrid/mail";
 
 // 後々にmail送信はbackendのlaravelで扱いたい
-export default functions.region("asia-northeast1").firestore
+exports.sendQuestionMail = functions.region("asia-northeast1").firestore
   .document("mail/{documentId}").onCreate(async(snapshot, context) => {
     const mailData = snapshot.data();
     var html = `<div>
@@ -22,20 +22,19 @@ export default functions.region("asia-northeast1").firestore
     const apiKey = functions.config().sendgrid.apikey;
     sendgrid.setApiKey(apiKey);
     
-    // try{
-      const msg = {
-        to: 'nyankiti20000824@gmail.com',
-        from: 'Gift-App <nyancic77@outlook.jp>',
-        subject: 'アプリからの質問依頼',
+    const msg = {
+      to: 'nyankiti20000824@gmail.com',
+      from: 'Gift-App <nyancic77@outlook.jp>',
+      subject: 'アプリからの質問依頼',
 
-        text: mailData.text, 
-        html: html
-      }
-      await sendgrid.send(msg).then((result) => {
-        return console.log('Successfully sent messages: ', result);
-      }).catch((error) => {
-        console.log(error.toString());
-        return console.log("Error sending message: ", error);
-      })
+      text: mailData.text, 
+      html: html
+    }
+    await sendgrid.send(msg).then((result) => {
+      return console.log('Successfully sent messages: ', result);
+    }).catch((error) => {
+      console.log(error.toString());
+      return console.log("Error sending message: ", error);
+    })
 
   })

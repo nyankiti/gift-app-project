@@ -109,6 +109,7 @@ const EditGoalScreen: React.FC = ({route, navigation}) => {
       await goalDocRef.set({
         post: post,
         postTime: FirebaseTimestamp.fromDate(new Date()),
+        studyTime: post.targetHours,
       }, {merge: true});
       const ReservedDateDocRef = db.collection('users').doc(user.uid).collection('ReservedDate').doc(user.uid);
       await ReservedDateDocRef.set({
