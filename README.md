@@ -1,6 +1,10 @@
 # gift_app_project 
 gift合同会社公式アプリ\
 王寺駅前自習室Giftに関わりのある全てのひとを繋ぐプラットフォーム
+Android版
+https://play.google.com/store/apps/details?id=com.gift.studyroom
+IOS版
+Coming Soon
 <!-- 画像はGithubを使って利用する（ソースコードに含めない） -->
 
 ## Features
