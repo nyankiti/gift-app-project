@@ -19,11 +19,12 @@ export type DrawerParamaList = {
   home: undefined;
   EditProfileScreen: undefined;
   GiftInfoScreen: undefined;
-}
+  QuestionnaireScreen: undefined;
+};
 
 export type UsersStackParamList = {
   User: undefined;
-}
+};
 
 export type NewsTabParamList = {
   NewsScreen: undefined;
@@ -31,17 +32,19 @@ export type NewsTabParamList = {
   NewsDetailScreen: undefined;
   NewsExampleScreen: undefined;
   ArticleScreen: {
-    article: object,
+    article: object;
   };
   QuestionnaireScreen: undefined;
+  EditProfileScreen: undefined;
+  GiftInfoScreen: undefined;
 };
 
 export type StudyReportTabParamList = {
   StudyReportScreen: undefined;
   EditGoalScreen: {
-    post: object, 
-    selectedDate: any, 
-    dateString: string
+    post: object;
+    selectedDate: any;
+    dateString: string;
   };
 };
 export type UsersTabParamList = {
@@ -54,23 +57,17 @@ export type ChatTabParamList = {
   ChatHomeScreen: undefined;
   AdminChatHomeScreen: undefined;
   RoomScreen: {
-    thread: object
+    thread: object;
   };
   AddRoomScreen: undefined;
   QuestionnaireScreen: undefined;
-}
+};
 
 export type AccountInfoTabParamList = {
   AccountInfoScreen: undefined;
   EditProfileScreen: undefined;
-};
-export type SupportTabParamList = {
   SupportScreen: undefined;
-  GiftInfoScreen: undefined;
-  EditProfileScreen: undefined;
-// ChatTabへの遷移もできるようにTabをもたせる
-  Chat: undefined;
-}
+};
 
 export type SeatBookingTabParamList = {
   SeatBookingScreen: undefined;
@@ -78,8 +75,7 @@ export type SeatBookingTabParamList = {
   // drawerからの遷移用
   EditProfileScreen: undefined;
   GiftInfoScreen: undefined;
-}
-
+};
 
 // --------------------------------------------------
 export type User = {
@@ -93,14 +89,13 @@ export type User = {
   userImg: string;
   createdAt: any;
   updatedAt: any;
-}
-
+};
 
 // ------------------------------------------------------
 export type SeatObject = {
-  'A': Array<boolean>,
-  'B': Array<boolean>,
-  'C': Array<boolean>,
-  'D': Array<boolean>,
-  'E': Array<boolean>,
-}
+  A: Array<boolean>;
+  B: Array<boolean>;
+  C: Array<boolean>;
+  D: Array<boolean>;
+  E: Array<boolean>;
+};

@@ -1,65 +1,77 @@
-import React, { useContext, useState } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
-import { useTheme, Avatar, Title, Caption, Paragraph, Drawer, TouchableRipple, Switch } from 'react-native-paper';
+import React, { useContext, useState } from "react";
+import { View, StyleSheet, Image, Text } from "react-native";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
+import { Avatar, Title, Caption, Drawer } from "react-native-paper";
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Icon from 'react-native-vector-icons/Ionicons';
-
+import Icon from "react-native-vector-icons/Ionicons";
 
 /* context */
-import { AuthContext } from '../src/AuthProvider';
+import { AuthContext } from "../src/AuthProvider";
 
 /* screen */
 
-type Props = {
-}
+type Props = {};
 
-const DrawerContent: React.FC = (props: any) => {
-  const {user, logout} = useContext<any>(AuthContext);
+const DrawerContent = (props: any) => {
+  const { user, logout } = useContext<any>(AuthContext);
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
 
-
-  return( 
-    <View style={{flex: 1}}>
-      <DrawerContentScrollView {...props} >
+  return (
+    <View style={{ flex: 1 }}>
+      <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
           <View style={styles.userInfoSection}>
-            
-            <View style={{flexDirection: 'row', marginTop: 15}} >
-            
-              <Avatar.Image 
-              source={user.userImg ? user.userImg : require('../assets/images/Gift_splash_20210220.jpg')}
-              size={50}
-              accessibilityComponentType ='image'
-              accessibilityTraits='image'
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <Avatar.Image
+                source={
+                  user.userImg
+                    ? user.userImg
+                    : require("../assets/images/Gift_splash_20210220.jpg")
+                }
+                size={50}
+                accessibilityComponentType="image"
+                accessibilityTraits="image"
               />
 
-              <View style={{flexDirection:'column', marginLeft: 15}} >
-                <Title style={styles.title}>{user.displayName ? user.displayName : 'user name'}</Title>
-                <Caption style={styles.caption}>@{user.uid.slice(0,8)}</Caption>
+              <View style={{ flexDirection: "column", marginLeft: 15 }}>
+                <Title style={styles.title}>
+                  {user.displayName ? user.displayName : "user name"}
+                </Title>
+                <Caption style={styles.caption}>
+                  @{user.uid.slice(0, 8)}
+                </Caption>
               </View>
             </View>
 
-            <View style={styles.row}>
-
-            </View>
+            <View style={styles.row}></View>
           </View>
 
-          <Drawer.Section title='HOME' style={styles.drawerSection}>
-            <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='ios-home' color={color} size={size} />)} 
-              label='News'
+          <Drawer.Section
+            title="HOME"
+            style={styles.drawerSection}
+            accessibilityComponentType
+            accessibilityTraits
+          >
+            <Drawer.Item
+              icon={({ color, size }) => (
+                <Icon name="ios-home" color={color} size={size} />
+              )}
+              label="Home"
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
-              onPress={() => {props.navigation.navigate('News')}}
-              accessibilityComponentType ='button'
-              accessibilityTraits='button'
+              onPress={() => {
+                props.navigation.navigate("News");
+              }}
+              accessibilityComponentType="button"
+              accessibilityTraits="button"
             />
-            <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='bookmarks-outline' color={color} size={size} />)} 
-              label='座席登録'
-              onPress={() => props.navigation.navigate('SeatBooking')}
-              accessibilityComponentType ='button'
-              accessibilityTraits='button'
+            <Drawer.Item
+              icon={({ color, size }) => (
+                <Icon name="bookmarks-outline" color={color} size={size} />
+              )}
+              label="座席登録"
+              onPress={() => props.navigation.navigate("SeatBooking")}
+              accessibilityComponentType="button"
+              accessibilityTraits="button"
             />
           </Drawer.Section>
           {/* <Drawer.Section title="Preference">
@@ -73,49 +85,84 @@ const DrawerContent: React.FC = (props: any) => {
             </TouchableRipple>
           </Drawer.Section> */}
 
-          <Drawer.Section title='MENU' style={styles.drawerSection}>
-            <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='person-outline' color={color} size={size} />)} 
-              label='EditProfile'
+          <Drawer.Section
+            title="MENU"
+            style={styles.drawerSection}
+            accessibilityComponentType
+            accessibilityTraits
+          >
+            <Drawer.Item
+              icon={({ color, size }) => (
+                <Icon name="person-outline" color={color} size={size} />
+              )}
+              label="EditProfile"
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
-              onPress={() => {props.navigation.navigate('SeatBooking', {screen: 'EditProfileScreen'})}}
-              accessibilityComponentType ='button'
-              accessibilityTraits='button'
+              onPress={() => {
+                props.navigation.navigate("News", {
+                  screen: "EditProfileScreen",
+                });
+              }}
+              // onPress={() => {
+              //   props.navigation.navigate("EditProfileScreen");
+              // }}
+              accessibilityComponentType="button"
+              accessibilityTraits="button"
             />
-            <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='information-circle-outline' color={color} size={size} />)} 
-              label='Infomation'
-              onPress={() => props.navigation.navigate('SeatBooking', {screen: 'GiftInfoScreen'})}
-              accessibilityComponentType ='button'
-              accessibilityTraits='button'
+            <Drawer.Item
+              icon={({ color, size }) => (
+                <Icon
+                  name="information-circle-outline"
+                  color={color}
+                  size={size}
+                />
+              )}
+              label="Infomation"
+              onPress={() => {
+                props.navigation.navigate("News", {
+                  screen: "GiftInfoScreen",
+                });
+              }}
+              // onPress={() => props.navigation.navigate("GiftInfoScreen")}
+              accessibilityComponentType="button"
+              accessibilityTraits="button"
             />
-            <Drawer.Item 
-              icon={({color, size}) => ( <Icon name='help-circle-outline' color={color} size={size} />)} 
-              label='勉強の質問・相談'
-              onPress={() => props.navigation.navigate('News', {screen: 'QuestionnaireScreen'})}
-              accessibilityComponentType ='button'
-              accessibilityTraits='button'
+            <Drawer.Item
+              icon={({ color, size }) => (
+                <Icon name="help-circle-outline" color={color} size={size} />
+              )}
+              label="勉強の質問・相談"
+              onPress={() => {
+                props.navigation.navigate("News", {
+                  screen: "QuestionnaireScreen",
+                });
+              }}
+              // onPress={() => props.navigation.navigate("QuestionnaireScreen")}
+              accessibilityComponentType="button"
+              accessibilityTraits="button"
             />
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
-      <Drawer.Section style={styles.bottomDrawerSection}>
-        <Drawer.Item 
-          icon={({color, size}) => ( <Icon name='log-out' color={color} size={size} />)} 
-          label='Sign Out'
+      <Drawer.Section
+        style={styles.bottomDrawerSection}
+        accessibilityComponentType
+        accessibilityTraits
+      >
+        <Drawer.Item
+          icon={({ color, size }) => (
+            <Icon name="log-out" color={color} size={size} />
+          )}
+          label="Sign Out"
           onPress={() => logout()}
-          accessibilityComponentType ='button'
-          accessibilityTraits='button'
+          accessibilityComponentType="button"
+          accessibilityTraits="button"
         />
       </Drawer.Section>
     </View>
-  )
-}
-
+  );
+};
 
 export default DrawerContent;
-
-
 
 const styles = StyleSheet.create({
   drawerContent: {
@@ -127,7 +174,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     marginTop: 3,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   caption: {
     fontSize: 14,
@@ -135,25 +182,25 @@ const styles = StyleSheet.create({
   },
   row: {
     marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   section: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 15,
   },
   drawerSection: {
     marginTop: 15,
   },
   bottomDrawerSection: {
-      marginBottom: 15,
-      borderTopColor: '#f4f4f4',
-      borderTopWidth: 1
+    marginBottom: 15,
+    borderTopColor: "#f4f4f4",
+    borderTopWidth: 1,
   },
   preference: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
