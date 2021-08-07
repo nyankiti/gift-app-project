@@ -1,98 +1,78 @@
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
-import React, { useState, useEffect, useMemo, useContext } from 'react';
-import { ColorSchemeName } from 'react-native';
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { useState, useEffect, useMemo, useContext } from "react";
+import { ColorSchemeName } from "react-native";
 
 /* componets */
-import Loading from '../components/Loading';
+import Loading from "../components/Loading";
 
 /* screens */
-import NotFoundScreen from '../screens/NotFoundScreen';
-import LoadingScreen from '../screens/LoadingScreen';
-import DrawerContent from '../screens/DrawerContent';
-import SupportScreen from '../screens/SupportScreen';
-import ChatHomeScreen from '../screens/ChatHomeScreen';
-import EditProfileScreen from '../screens/EditProfileScreen';
-import GiftInfoScreen from '../screens/GiftInfoScreen';
+import NotFoundScreen from "../screens/NotFoundScreen";
+import LoadingScreen from "../screens/LoadingScreen";
+import DrawerContent from "../screens/DrawerContent";
+import SupportScreen from "../screens/SupportScreen";
+import ChatHomeScreen from "../screens/ChatHomeScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
+import GiftInfoScreen from "../screens/GiftInfoScreen";
 
 /* navigator */
-import BottomTabNavigator from './BottomTabNavigator';
-import LinkingConfiguration from './LinkingConfiguration';
-import AuthNavigator from './AuthNavigator';
+import BottomTabNavigator from "./BottomTabNavigator";
+import LinkingConfiguration from "./LinkingConfiguration";
+import AuthNavigator from "./AuthNavigator";
+import DrawerNavigator from "./DrawerNavigator";
 
 /* type */
-import { DrawerParamaList } from '../types';
-import { User } from '../types';
+import { DrawerParamaList } from "../types";
+import { User } from "../types";
 
 /* context */
-import { AuthProvider } from '../src/AuthProvider';
-import { AuthContext } from '../src/AuthProvider';
+import { AuthProvider } from "../src/AuthProvider";
+import { AuthContext } from "../src/AuthProvider";
 
 /* firebae */
-import { auth } from '../src/firebase';
+import { auth } from "../src/firebase";
 
 const Drawer = createDrawerNavigator<DrawerParamaList>();
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 export function Route() {
-
-  const {user, setUser} = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
 
   const onAuthStateChanged = (user: any) => {
     setUser(user);
-    if(initializing) setInitializing(false);
-  }
+    if (initializing) setInitializing(false);
+  };
 
   useEffect(() => {
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
 
-  if(initializing) return null;
+  if (initializing) return null;
 
   return (
     <NavigationContainer>
-      {user ?
-      <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} >
-        <Drawer.Screen name="home" component={BottomTabNavigator} />
-        <Drawer.Screen name='EditProfileScreen' component={EditProfileScreen} 
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: '#EAC799',
-            }
-          }}
-        />
-        <Drawer.Screen name='GiftInfoScreen' component={GiftInfoScreen}
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor:'#EAC799',
-            },
-          }}
-        />
-      </Drawer.Navigator> 
-      : 
-      <AuthNavigator navigation />
-      }
+      {user ? <DrawerNavigator navigation /> : <AuthNavigator navigation />}
     </NavigationContainer>
   );
 }
 
-
 const Navigation = () => {
-  return ( 
+  return (
     <AuthProvider>
-      <Route/>
+      <Route />
     </AuthProvider>
-  )
-}
+  );
+};
 
 export default Navigation;
-
 
 // // A root stack navigator is often used for displaying modals on top of all other content
 // // Read more here: https://reactnavigation.org/docs/modal
@@ -101,9 +81,6 @@ export default Navigation;
 // function RootNavigator() {
 //   const [isLoading, setIsLoading] = useState(true);
 //   const [userToken, setUseeToken] = useState(null);
-
-
-
 
 //   useEffect(() => {
 //     setTimeout(() => {
