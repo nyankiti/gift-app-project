@@ -1,3 +1,5 @@
+import { HatenaArticle } from "./news";
+
 // NavigationのParamaList
 export type RootStackParamList = {
   Root: undefined;
@@ -22,18 +24,10 @@ export type DrawerParamaList = {
 };
 
 export type NewsTabParamList = {
-  NewsScreen: {
-    openDrawer: any;
-  };
-  AddPostScreen: undefined;
-  NewsDetailScreen: undefined;
-  NewsExampleScreen: undefined;
+  NewsScreen: undefined;
   ArticleScreen: {
-    article: object;
+    article: HatenaArticle;
   };
-  QuestionnaireScreen: undefined;
-  EditProfileScreen: undefined;
-  GiftInfoScreen: undefined;
 };
 
 export type StudyReportTabParamList = {
@@ -46,11 +40,14 @@ export type StudyReportTabParamList = {
 };
 
 export type AuthTabParamList = {
-  SingInScreen: undefined;
+  SignInScreen: undefined;
+  SignUpScreen: undefined;
 };
 
 export type SeatBookingTabParamList = {
   SeatBookingScreen: undefined;
+  SignInScreen: undefined;
+  SignUpScreen: undefined;
 };
 
 export type AudioTabParamList = {

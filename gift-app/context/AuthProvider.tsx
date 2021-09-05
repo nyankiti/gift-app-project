@@ -1,17 +1,23 @@
 import React, { createContext, useState } from "react";
 // import auth from '@react-native-firebase/auth';
 import firebase from "firebase/app";
-import { auth, db, FirebaseTimestamp } from "../libs/firebae";
+import { auth, db, FirebaseTimestamp, getUser } from "../libs/firebae";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { User } from "../types/user";
 
 type AuthContextValue = {
   user: User | undefined;
   setUser: (user: User | undefined) => void;
-  login: (email: string, password: string) => void;
-  register: (email: string, password: string, name: string) => void;
-  logout: () => void;
+  login: (email: string, password: string, navigation: any) => void;
+  register: (
+    email: string,
+    password: string,
+    name: string,
+    navigation: any
+  ) => void;
+  logout: (navigation: any) => void;
 };
 
 if (!firebase.apps.length) {
@@ -34,29 +40,34 @@ export const AuthProvider = ({ children }: any) => {
       value={{
         user: user,
         setUser: setUser,
-        login: async (email, password) => {
+        login: async (email, password, navigation) => {
+          console.log(email);
           try {
             await auth
               .signInWithEmailAndPassword(email.trim(), password.trim())
-              .then((user) => {
-                // ログインと同時にauthentication側の名前も更新したい
-                // setUser
-                // user.user?.updateProfile({
-                //   displayName: '',
-                // }).catch((error: any) => {
-                //   console.log(error);
-                // })
+              .then(async (user) => {
+                if (user.user?.uid) {
+                  // user情報をcontextへ保存
+                  getUser(user.user?.uid, setUser);
+                  // local storageへuidの保存
+                  try {
+                    await AsyncStorage.setItem("uid", user.user?.uid);
+                  } catch (e) {
+                    console.log(e);
+                  }
+                  navigation.navigate("SeatBookingScreen");
+                }
               });
           } catch (e) {
             console.log(e);
             return false;
           }
         },
-        register: async (email, password, userName) => {
+        register: async (email, password, userName, navigation) => {
           try {
             await auth
               .createUserWithEmailAndPassword(email.trim(), password.trim())
-              .then((user) => {
+              .then(async (user) => {
                 // displayNameに名前の登録(firebase authenticationで管理される名前)
                 user.user
                   ?.updateProfile({
@@ -80,9 +91,20 @@ export const AuthProvider = ({ children }: any) => {
                   userImg: null,
                 };
 
+                // local storageへのuidの保存
+                if (user.user?.uid) {
+                  try {
+                    await AsyncStorage.setItem("uid", user.user?.uid);
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }
+                // firestoreへの登録
                 db.collection("users")
                   .doc(auth.currentUser?.uid)
                   .set(userInitialData);
+
+                navigation.navigate("SeatBookingScreen");
               })
               .catch((error) => {
                 console.log(
@@ -94,9 +116,13 @@ export const AuthProvider = ({ children }: any) => {
             console.log(e);
           }
         },
-        logout: async () => {
+        logout: async (navigation) => {
           try {
             await auth.signOut();
+            // local storageからのuidの消去
+            await AsyncStorage.removeItem("uid");
+            setUser({ uid: "00000", displayName: "ゲストユーザー" });
+            navigation.navigate("SignInScreen");
           } catch (e) {
             console.log(e);
           }

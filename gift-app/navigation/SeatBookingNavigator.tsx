@@ -1,30 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { FontAwesome } from "@expo/vector-icons";
+/* context */
+import { AuthContext } from "../context/AuthProvider";
 /* screen */
 import SeatBookingScreen from "../screens/SeatBooking/SeatBookingScreen";
+import SignInScreen from "../screens/Auth/SignInScreen";
+import SignUpScreen from "../screens/Auth/SignUpScreen";
 /* types */
 import { SeatBookingTabParamList } from "../types/navigationType";
 
 import color from "../constants/color";
+import { DrawerActions } from "@react-navigation/native";
 
-type SeatBookingScreenNavigationProps = StackScreenProps<
-  SeatBookingTabParamList,
-  "SeatBookingScreen"
->;
+type SeatBookingNavigationProps = StackScreenProps<SeatBookingTabParamList>;
 
 const SeatBookingStack = createStackNavigator<SeatBookingTabParamList>();
 
-const SeatBookingNavigator: React.FC<SeatBookingScreenNavigationProps> = ({
+const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
   navigation,
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <SeatBookingStack.Navigator
+      initialRouteName={
+        user?.uid === "00000" ? "SignInScreen" : "SeatBookingScreen"
+      }
       screenOptions={{
         headerStyle: {
           backgroundColor: color.BASE_COLOR,
@@ -50,12 +56,37 @@ const SeatBookingNavigator: React.FC<SeatBookingScreenNavigationProps> = ({
                 size={25}
                 backgroundColor={color.BASE_COLOR}
                 color="#fff"
-                onPress={() =>
-                  (navigation as any as DrawerNavigationProp<{}>).openDrawer()
-                }
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
               ></FontAwesome>
             </View>
           ),
+          headerRight: () => <></>,
+        }}
+      />
+      <SeatBookingStack.Screen
+        name="SignInScreen"
+        component={SignInScreen}
+        options={{
+          headerTitle: "ログイン",
+          headerLeft: () => (
+            <View style={{ paddingLeft: 10 }}>
+              <FontAwesome
+                name="bars"
+                size={25}
+                backgroundColor={color.BASE_COLOR}
+                color="#fff"
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              ></FontAwesome>
+            </View>
+          ),
+          headerRight: () => <></>,
+        }}
+      />
+      <SeatBookingStack.Screen
+        name="SignUpScreen"
+        component={SignUpScreen}
+        options={{
+          headerTitle: "アカウント登録",
           headerRight: () => <></>,
         }}
       />

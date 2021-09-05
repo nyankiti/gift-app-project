@@ -24,21 +24,21 @@ const DrawerContent = (props: any) => {
           <View style={styles.userInfoSection}>
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <Avatar.Image
-                // source={
-                //   user.userImg
-                //     ? user.userImg
-                //     : require("../assets/images/Gift_splash_20210220.jpg")
-                // }
-                source={require("../assets/images/Gift_splash_20210220.jpg")}
+                source={
+                  user?.userImg
+                    ? user.userImg
+                    : require("../assets/images/Gift_splash_20210220.jpg")
+                }
+                // source={require("../assets/images/Gift_splash_20210220.jpg")}
                 size={50}
               />
 
               <View style={{ flexDirection: "column", marginLeft: 15 }}>
                 <Title style={styles.title}>
-                  {/* {user.displayName ? user.displayName : "user name"} */}
+                  {user?.displayName ? user?.displayName : "user name"}
                 </Title>
                 <Caption style={styles.caption}>
-                  {/* @{user.uid.slice(0, 8)} */}
+                  @{user?.uid.slice(0, 8)}
                 </Caption>
               </View>
             </View>
@@ -67,11 +67,11 @@ const DrawerContent = (props: any) => {
               icon={() => <AntDesign name="team" size={26} color="black" />}
               label="EditProfile"
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
-              onPress={() => {
-                props.navigation.navigate("News", {
-                  screen: "EditProfileScreen",
-                });
-              }}
+              // onPress={() => {
+              //   props.navigation.navigate("News", {
+              //     screen: "EditProfileScreen",
+              //   });
+              // }}
               // onPress={() => {
               //   props.navigation.navigate("EditProfileScreen");
               // }}
@@ -79,33 +79,35 @@ const DrawerContent = (props: any) => {
             <Drawer.Item
               icon={() => <AntDesign name="team" size={26} color="black" />}
               label="Infomation"
-              onPress={() => {
-                props.navigation.navigate("News", {
-                  screen: "GiftInfoScreen",
-                });
-              }}
+              // onPress={() => {
+              //   props.navigation.navigate("News", {
+              //     screen: "GiftInfoScreen",
+              //   });
+              // }}
               // onPress={() => props.navigation.navigate("GiftInfoScreen")}
             />
             <Drawer.Item
               icon={() => <AntDesign name="team" size={26} color="black" />}
               label="勉強の質問・相談"
-              onPress={() => {
-                props.navigation.navigate("News", {
-                  screen: "QuestionnaireScreen",
-                });
-              }}
+              // onPress={() => {
+              //   props.navigation.navigate("News", {
+              //     screen: "QuestionnaireScreen",
+              //   });
+              // }}
               // onPress={() => props.navigation.navigate("QuestionnaireScreen")}
             />
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
-      <Drawer.Section style={styles.bottomDrawerSection}>
-        <Drawer.Item
-          icon={() => <AntDesign name="team" size={26} color="black" />}
-          label="Sign Out"
-          onPress={() => logout()}
-        />
-      </Drawer.Section>
+      {user?.uid === "00000" ? null : (
+        <Drawer.Section style={styles.bottomDrawerSection}>
+          <Drawer.Item
+            icon={() => <AntDesign name="team" size={26} color="black" />}
+            label="Sign Out"
+            onPress={() => logout(props.navigation)}
+          />
+        </Drawer.Section>
+      )}
     </View>
   );
 };

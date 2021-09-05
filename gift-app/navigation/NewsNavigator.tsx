@@ -5,22 +5,20 @@ import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
 /* screen */
 import NewsScreen from "../screens/News/NewsScreen";
+import ArticleScreen from "../screens/News/ArticlesScreen";
 /* types */
 import { NewsTabParamList } from "../types/navigationType";
 
 import color from "../constants/color";
+import { DrawerActions } from "@react-navigation/native";
 
-type NewsScreenNavigationProps = StackScreenProps<
-  NewsTabParamList,
-  "NewsScreen"
->;
+type NewsNavigationProps = StackScreenProps<NewsTabParamList>;
 
 const NewsStack = createStackNavigator<NewsTabParamList>();
 
-const NewsNavigator: React.FC<NewsScreenNavigationProps> = ({ navigation }) => {
+const NewsNavigator: React.FC<NewsNavigationProps> = ({ navigation }) => {
   return (
     <NewsStack.Navigator
       screenOptions={{
@@ -48,14 +46,20 @@ const NewsNavigator: React.FC<NewsScreenNavigationProps> = ({ navigation }) => {
                 size={25}
                 backgroundColor={color.BASE_COLOR}
                 color="#fff"
-                onPress={() =>
-                  (navigation as any as DrawerNavigationProp<{}>).openDrawer()
-                }
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
               ></FontAwesome>
             </View>
           ),
           headerRight: () => <></>,
         }}
+      />
+      <NewsStack.Screen
+        name="ArticleScreen"
+        component={ArticleScreen}
+        options={({ route }) => ({
+          title: route.params.article.title,
+          headerRight: () => <></>,
+        })}
       />
     </NewsStack.Navigator>
   );

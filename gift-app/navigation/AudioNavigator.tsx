@@ -4,7 +4,6 @@ import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { FontAwesome } from "@expo/vector-icons";
 /* screen */
 import PlayerScreen from "../screens/Audio/PlayerScreen";
@@ -12,17 +11,13 @@ import PlayerScreen from "../screens/Audio/PlayerScreen";
 import { AudioTabParamList } from "../types/navigationType";
 
 import color from "../constants/color";
+import { DrawerActions } from "@react-navigation/routers";
 
-type PlayerScreenNavigationProps = StackScreenProps<
-  AudioTabParamList,
-  "PlayerScreen"
->;
+type AudioNavigationProps = StackScreenProps<AudioTabParamList>;
 
 const AudioStack = createStackNavigator<AudioTabParamList>();
 
-const AudioNavigator: React.FC<PlayerScreenNavigationProps> = ({
-  navigation,
-}) => {
+const AudioNavigator: React.FC<AudioNavigationProps> = ({ navigation }) => {
   return (
     <AudioStack.Navigator
       screenOptions={{
@@ -50,9 +45,7 @@ const AudioNavigator: React.FC<PlayerScreenNavigationProps> = ({
                 size={25}
                 backgroundColor={color.BASE_COLOR}
                 color="#fff"
-                onPress={() =>
-                  (navigation as any as DrawerNavigationProp<{}>).openDrawer()
-                }
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
               ></FontAwesome>
             </View>
           ),

@@ -4,7 +4,6 @@ import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { FontAwesome } from "@expo/vector-icons";
 /* screen */
 import StudyReportScreen from "../screens/StudyReport/StudyReportScreen";
@@ -12,15 +11,13 @@ import StudyReportScreen from "../screens/StudyReport/StudyReportScreen";
 import { StudyReportTabParamList } from "../types/navigationType";
 
 import color from "../constants/color";
+import { DrawerActions } from "@react-navigation/native";
 
-type StudyReportScreenNavigationProps = StackScreenProps<
-  StudyReportTabParamList,
-  "StudyReportScreen"
->;
+type StudyReportNavigationProps = StackScreenProps<StudyReportTabParamList>;
 
 const StudyReportStack = createStackNavigator<StudyReportTabParamList>();
 
-const StudyReportNavigator: React.FC<StudyReportScreenNavigationProps> = ({
+const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
   navigation,
 }) => {
   return (
@@ -51,9 +48,7 @@ const StudyReportNavigator: React.FC<StudyReportScreenNavigationProps> = ({
                 size={25}
                 backgroundColor={color.BASE_COLOR}
                 color="#fff"
-                onPress={() =>
-                  (navigation as any as DrawerNavigationProp<{}>).openDrawer()
-                }
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
               ></FontAwesome>
             </View>
           ),

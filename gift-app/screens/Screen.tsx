@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.APP_BG,
-    paddingTop: StatusBar.currentHeight,
+    // 以下のようにStatuBarの高さを全体から変更することもできる
+    // paddingTop: StatusBar.currentHeight,
   },
 });
 

@@ -1,20 +1,51 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { View, Text } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import color from "../constants/color";
+import { getUser } from "../libs/firebae";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 /* navigator */
 import AuthNavigator from "./AuthNavigator";
 import NewsNavigator from "./NewsNavigator";
 import SeatBookingNavigator from "./SeatBookingNavigator";
 import StudyReportNavigator from "./StudyReportNavigator";
 import AudioNavigator from "./AudioNavigator";
+/* context */
+import { AuthContext } from "../context/AuthProvider";
 /* types */
 import { BottomTabParamList } from "../types/navigationType";
+import { User } from "../types/user";
 
 const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
 const BottomTabNavigator = () => {
+  // ここでuser情報を取得する処理を入れても良いかも
+  const { user, setUser } = useContext(AuthContext);
+
+  const getUidFromStorage = async () => {
+    try {
+      const uid = await AsyncStorage.getItem("uid");
+      console.log("uid in getUidFromStorage : " + uid);
+      return uid;
+    } catch (e) {
+      console.log("error occured in get async storage: " + e);
+    }
+  };
+
+  useEffect(() => {
+    getUidFromStorage().then((uid) => {
+      console.log("uid in useEffect : " + uid);
+      // uid が null undefinedではない場合にそのuidからuser情報を取得する
+      if (uid) {
+        getUser(uid, setUser);
+      } else {
+        // ゲストユーザー用の情報を登録
+        setUser({ uid: "00000", displayName: "ゲストユーザー" });
+      }
+    });
+  }, []);
+
   return (
     <BottomTab.Navigator initialRouteName="News" activeColor="#fff">
       <BottomTab.Screen
@@ -24,7 +55,7 @@ const BottomTabNavigator = () => {
           tabBarLabel: "News",
           tabBarColor: color.BASE_COLOR,
           tabBarIcon: ({ color }) => (
-            <AntDesign name="team" size={26} color="black" />
+            <Ionicons name="ios-home" size={26} color="black" />
           ),
         }}
       />
@@ -35,7 +66,7 @@ const BottomTabNavigator = () => {
           tabBarLabel: "Report",
           tabBarColor: color.BASE_COLOR,
           tabBarIcon: ({ color }) => (
-            <AntDesign name="team" size={26} color="black" />
+            <Ionicons name="bar-chart-outline" size={26} color="black" />
           ),
         }}
       />
@@ -46,37 +77,21 @@ const BottomTabNavigator = () => {
           tabBarLabel: "Audio",
           tabBarColor: color.BASE_COLOR,
           tabBarIcon: ({ color }) => (
-            <AntDesign name="team" size={26} color="black" />
+            <MaterialIcons name="audiotrack" size={26} color="black" />
           ),
         }}
       />
-      {/* SeatBookingScreenはログインが必要な機能なのでここでAuthNavigatorを渡す */}
-      {true ? (
-        <BottomTab.Screen
-          name="SeatBooking"
-          component={SeatBookingNavigator}
-          options={{
-            tabBarLabel: "Report",
-            tabBarColor: color.BASE_COLOR,
-            tabBarIcon: ({ color }) => (
-              <AntDesign name="team" size={26} color="black" />
-            ),
-          }}
-        />
-      ) : (
-        <BottomTab.Screen
-          name="Auth"
-          // SeatBookingScreenはログインが必要な機能なのでここでAuthNavigatorを渡す
-          component={AuthNavigator}
-          options={{
-            tabBarLabel: "Report",
-            tabBarColor: color.BASE_COLOR,
-            tabBarIcon: ({ color }) => (
-              <AntDesign name="team" size={26} color="black" />
-            ),
-          }}
-        />
-      )}
+      <BottomTab.Screen
+        name="SeatBooking"
+        component={SeatBookingNavigator}
+        options={{
+          tabBarLabel: "Report",
+          tabBarColor: color.BASE_COLOR,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="bookmarks-outline" size={26} color="black" />
+          ),
+        }}
+      />
     </BottomTab.Navigator>
   );
 };
