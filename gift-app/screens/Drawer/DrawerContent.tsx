@@ -5,10 +5,10 @@ import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Avatar, Title, Caption, Drawer } from "react-native-paper";
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Icon from "react-native-vector-icons/Ionicons";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 /* context */
-import { AuthContext } from "../context/AuthProvider";
+import { AuthContext } from "../../context/AuthProvider";
 
 /* screen */
 
@@ -27,9 +27,8 @@ const DrawerContent = (props: any) => {
                 source={
                   user?.userImg
                     ? user.userImg
-                    : require("../assets/images/Gift_splash_20210220.jpg")
+                    : require("../../assets/images/Gift_splash_20210220.jpg")
                 }
-                // source={require("../assets/images/Gift_splash_20210220.jpg")}
                 size={50}
               />
 
@@ -48,7 +47,7 @@ const DrawerContent = (props: any) => {
 
           <Drawer.Section title="HOME" style={styles.drawerSection}>
             <Drawer.Item
-              icon={() => <AntDesign name="team" size={26} color="black" />}
+              icon={() => <Ionicons name="ios-home" size={26} color="black" />}
               label="Home"
               // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
               onPress={() => {
@@ -56,47 +55,48 @@ const DrawerContent = (props: any) => {
               }}
             />
             <Drawer.Item
-              icon={() => <AntDesign name="team" size={26} color="black" />}
+              icon={() => (
+                <Ionicons name="bookmarks-outline" size={26} color="black" />
+              )}
               label="座席登録"
               onPress={() => props.navigation.navigate("SeatBooking")}
             />
           </Drawer.Section>
-
-          <Drawer.Section title="MENU" style={styles.drawerSection}>
-            <Drawer.Item
-              icon={() => <AntDesign name="team" size={26} color="black" />}
-              label="EditProfile"
-              // BottomTabNavigatorのそれぞれの要素のnameを指定することで遷移できる
-              // onPress={() => {
-              //   props.navigation.navigate("News", {
-              //     screen: "EditProfileScreen",
-              //   });
-              // }}
-              // onPress={() => {
-              //   props.navigation.navigate("EditProfileScreen");
-              // }}
-            />
-            <Drawer.Item
-              icon={() => <AntDesign name="team" size={26} color="black" />}
-              label="Infomation"
-              // onPress={() => {
-              //   props.navigation.navigate("News", {
-              //     screen: "GiftInfoScreen",
-              //   });
-              // }}
-              // onPress={() => props.navigation.navigate("GiftInfoScreen")}
-            />
-            <Drawer.Item
-              icon={() => <AntDesign name="team" size={26} color="black" />}
-              label="勉強の質問・相談"
-              // onPress={() => {
-              //   props.navigation.navigate("News", {
-              //     screen: "QuestionnaireScreen",
-              //   });
-              // }}
-              // onPress={() => props.navigation.navigate("QuestionnaireScreen")}
-            />
-          </Drawer.Section>
+          {user?.uid === "00000" ? null : (
+            <Drawer.Section title="MENU" style={styles.drawerSection}>
+              <Drawer.Item
+                icon={() => (
+                  <Ionicons name="person-outline" size={26} color="black" />
+                )}
+                label="EditProfile"
+                onPress={() => {
+                  props.navigation.navigate("EditProfileScreen");
+                }}
+              />
+              <Drawer.Item
+                icon={() => (
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={26}
+                    color="black"
+                  />
+                )}
+                label="Infomation"
+                onPress={() => props.navigation.navigate("GiftInfoScreen")}
+              />
+              <Drawer.Item
+                icon={() => (
+                  <Ionicons
+                    name="help-circle-outline"
+                    size={26}
+                    color="black"
+                  />
+                )}
+                label="勉強の質問・相談"
+                onPress={() => props.navigation.navigate("QuestionnaireScreen")}
+              />
+            </Drawer.Section>
+          )}
         </View>
       </DrawerContentScrollView>
       {user?.uid === "00000" ? null : (

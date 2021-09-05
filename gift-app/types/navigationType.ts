@@ -16,7 +16,7 @@ export type BottomTabParamList = {
   Hidden: undefined;
 };
 
-export type DrawerParamaList = {
+export type DrawerParamList = {
   home: undefined;
   EditProfileScreen: undefined;
   GiftInfoScreen: undefined;

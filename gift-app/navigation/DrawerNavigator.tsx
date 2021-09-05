@@ -1,24 +1,62 @@
 import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerContentComponentProps,
+} from "@react-navigation/drawer";
+import color from "../constants/color";
+import { Ionicons } from "@expo/vector-icons";
 /* navigator */
 import BottomTabNavigator from "./BottomTabNavigator";
 /* screen */
-import DrawerContent from "../screens/DrawerContent";
-import NewsScreen from "../screens/News/NewsScreen";
+import DrawerContent from "../screens/Drawer/DrawerContent";
+import QuestionnaireScreen from "../screens/Drawer/QuestionnaireScreen";
+import EditProfileScreen from "../screens/Drawer/EditProfileScreen";
+import GiftInfoScreen from "../screens/Drawer/GiftInfoScreen";
 /* types */
-import { DrawerParamaList } from "../types/navigationType";
+import { DrawerParamList } from "../types/navigationType";
 
-const Drawer = createDrawerNavigator<DrawerParamaList>();
+// type DrawerNaviProps = DrawerContentComponentProps<DrawerParamList>;
 
-const DrawerNavigator = ({ navigation }: any) => {
+const Drawer = createDrawerNavigator<DrawerParamList>();
+
+const DrawerNavigator: React.FC<DrawerContentComponentProps> = ({
+  navigation,
+}) => {
   return (
-    <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
+    <Drawer.Navigator
+      drawerContent={(props) => <DrawerContent {...props} />}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: color.BASE_COLOR,
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "normal",
+          fontFamily: "ComicSnas_bd",
+          alignSelf: "center",
+          alignItems: "center",
+        },
+      }}
+    >
       <Drawer.Screen
         name="home"
         component={BottomTabNavigator}
         options={{
           headerShown: false,
         }}
+      />
+      <Drawer.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{
+          headerTitle: "Edit Profile",
+          headerRight: () => <></>,
+        }}
+      />
+      <Drawer.Screen name="GiftInfoScreen" component={GiftInfoScreen} />
+      <Drawer.Screen
+        name="QuestionnaireScreen"
+        component={QuestionnaireScreen}
       />
     </Drawer.Navigator>
   );
