@@ -12,8 +12,7 @@ export type BottomTabParamList = {
   StudyReport: undefined;
   Audio: undefined;
   SeatBooking: undefined;
-  Auth: undefined;
-  Hidden: undefined;
+  // Auth: undefined;
 };
 
 export type DrawerParamList = {
@@ -51,5 +50,6 @@ export type SeatBookingTabParamList = {
 };
 
 export type AudioTabParamList = {
+  AudioListScreen: undefined;
   PlayerScreen: undefined;
 };

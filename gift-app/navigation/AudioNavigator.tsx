@@ -7,6 +7,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 /* screen */
 import PlayerScreen from "../screens/Audio/PlayerScreen";
+import AudioListScreen from "../screens/Audio/AudioListScreen";
 /* types */
 import { AudioTabParamList } from "../types/navigationType";
 
