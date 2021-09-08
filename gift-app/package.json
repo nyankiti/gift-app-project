@@ -5,7 +5,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "iconfont": "icon-font-generator assets/icons/*.svg -o assets/fonts --jsonpath constants/iconfonts.json --css false --html false --types ttf"
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
@@ -42,6 +43,7 @@
     "@babel/core": "^7.9.0",
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
+    "icon-font-generator": "2.1.11",
     "typescript": "~4.0.0"
   },
   "private": true

@@ -12,7 +12,8 @@ import { width, height } from "../../libs/utils/Dimension";
 import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 // const Calendar = require('react-native-calendars')
-import { db } from "../../libs/firebae";
+import { db, fetchDream, fetchTargetByDate } from "../../libs/firebae";
+import { formatDateUntilDay } from "../../libs/utils/file";
 /* components */
 import Screen from "../Screen";
 import TargetModal from "../../components/StudyReport/TargetModal";
@@ -24,23 +25,39 @@ const SVGWidth = width * 0.24;
 const backgroundImage = require("../../assets/images/notebook.jpg");
 
 const StudyReportScreen = () => {
+  const { user } = useContext(AuthContext);
   // dreamは配列をstackのように扱うことで最新の夢から順番に参照できるようにする
-  const [dreamStack, setDreamStack] = useState<string[]>();
-  const [dream, setDream] = useState<string>("夢初期値");
+  const [dreamStack, setDreamStack] = useState<string[]>([]);
+  const [dream, setDream] = useState<string>("夢を記入しよう！");
   // targetはカレンダーと紐付く１日ごとの目標
   const [target, setTarget] = useState<string>("目標初期値");
 
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
 
+  const [selectedDateString, setSelectedDateString] = useState<string>(
+    formatDateUntilDay()
+  );
+
   const pressDreamEdit = () => {
     setDreamModalVisible(!dreamModalVisible);
   };
+
   const pressTargetEdit = () => {
     setTargetModalVisible(!targetModalVisible);
   };
 
-  const handleCalendarDayPress = () => {};
+  const handleCalendarDayPress = async (response: any) => {
+    console.log(response);
+    setSelectedDateString(response.dateString);
+    await fetchTargetByDate(user?.uid, response.dateString, setTarget);
+  };
+
+  useEffect(() => {
+    fetchDream(user?.uid, setDreamStack, setDream);
+    fetchTargetByDate(user?.uid, selectedDateString, setTarget);
+  }, []);
+
   return (
     <Screen>
       <ScrollView>
@@ -51,12 +68,17 @@ const StudyReportScreen = () => {
               setVisible={setDreamModalVisible}
               dream={dream}
               setDream={setDream}
+              uid={user?.uid}
+              dreamStack={dreamStack}
+              setDreamStack={setDreamStack}
             />
             <TargetModal
               visible={targetModalVisible}
               setVisible={setTargetModalVisible}
-              text={target}
-              setText={setTarget}
+              target={target}
+              setTarget={setTarget}
+              uid={user?.uid}
+              dateString={selectedDateString}
             />
           </Portal>
 
@@ -133,7 +155,10 @@ const StudyReportScreen = () => {
                   }}
                 >
                   <View>
-                    <Text style={styles.second_text}>今日の目標</Text>
+                    <Text style={styles.second_text}>
+                      今日の目標{"\n"}
+                      {selectedDateString}
+                    </Text>
                   </View>
                   <View style={{}}>
                     <FontAwesome5.Button
@@ -166,9 +191,10 @@ const StudyReportScreen = () => {
               />
               <Calendar
                 markedDates={{
-                  "2021-09-24": { marked: true, dotColor: "skyblue" },
+                  selectedDateString: {
+                    selected: true,
+                  },
                 }}
-                // markedDates={renderMarkedDates()}
                 onDayPress={handleCalendarDayPress}
                 // current={formatDateUntilDay()}
                 renderArrow={(direction: any) => (

@@ -1,17 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { width, height } from "../../libs/utils/Dimension";
 import { Modal, TextInput, Button } from "react-native-paper";
 import color from "../../constants/color";
+import { db } from "../../libs/firebae";
 
 type Props = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  text: string;
-  setText: React.Dispatch<React.SetStateAction<string>>;
+  target: string;
+  setTarget: React.Dispatch<React.SetStateAction<string>>;
+  uid: string;
+  dateString: string;
 };
 
-const TargetModal = ({ visible, setVisible, text, setText }: Props) => {
+const TargetModal = ({
+  visible,
+  setVisible,
+  target,
+  setTarget,
+  uid,
+  dateString,
+}: Props) => {
+  const [value, setValue] = useState<string>("");
+
+  const submitTarget = async () => {
+    const dreamDocRef = db
+      .collection("users")
+      .doc(uid)
+      .collection("target")
+      .doc(dateString);
+
+    await dreamDocRef.set({
+      target: value,
+    });
+    // 今日の目標欄の値にも反映させる
+    setTarget(value);
+
+    setVisible(false);
+  };
+
   return (
     <Modal
       visible={visible}
@@ -22,13 +50,13 @@ const TargetModal = ({ visible, setVisible, text, setText }: Props) => {
       <TextInput
         mode="outlined"
         label="目標"
-        value={text}
-        onChangeText={(v) => setText(v)}
+        value={value}
+        onChangeText={(v) => setValue(v)}
         style={styles.input}
       />
       <Button
         mode="contained"
-        onPress={() => console.log("Pressed")}
+        onPress={() => submitTarget()}
         style={styles.button}
       >
         登録する
