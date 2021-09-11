@@ -35,7 +35,17 @@ const AudioNavigator: React.FC<AudioNavigationProps> = ({ navigation }) => {
           alignItems: "center",
         },
       }}
+      initialRouteName="AudioListScreen"
     >
+      <AudioStack.Screen
+        name="AudioListScreen"
+        component={AudioListScreen}
+        options={{
+          headerTitle: "Gift Radio",
+          headerLeft: () => <BarsIcon navigation={navigation} />,
+          headerRight: () => <></>,
+        }}
+      />
       <AudioStack.Screen
         name="PlayerScreen"
         component={PlayerScreen}
@@ -50,5 +60,3 @@ const AudioNavigator: React.FC<AudioNavigationProps> = ({ navigation }) => {
 };
 
 export default AudioNavigator;
-
-const styles = StyleSheet.create({});

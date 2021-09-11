@@ -11,6 +11,7 @@ import NewsNavigator from "./NewsNavigator";
 import SeatBookingNavigator from "./SeatBookingNavigator";
 import StudyReportNavigator from "./StudyReportNavigator";
 import AudioNavigator from "./AudioNavigator";
+import AudioTopTabNavigator from "./AudioTopTabNavigator";
 /* context */
 import { AuthContext } from "../context/AuthProvider";
 /* types */
@@ -61,7 +62,7 @@ const BottomTabNavigator = () => {
       />
       <BottomTab.Screen
         name="Audio"
-        component={AudioNavigator}
+        component={AudioTopTabNavigator}
         options={{
           tabBarLabel: "Audio",
           tabBarColor: color.BASE_COLOR,

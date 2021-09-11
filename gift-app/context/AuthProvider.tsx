@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { User } from "../types/user";
 
-type AuthContextValue = {
+type AuthContextType = {
   user: User | undefined;
   setUser: (user: User | undefined) => void;
   login: (
@@ -30,7 +30,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest?.extra?.firebase);
 }
 
-export const AuthContext = createContext<AuthContextValue>({
+export const AuthContext = createContext<AuthContextType>({
   user: undefined,
   setUser: () => {},
   login: () => {},

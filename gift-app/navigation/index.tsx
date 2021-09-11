@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useContext } from "react";
 import DrawerNavigator from "./DrawerNavigator";
 /* context */
 import { AuthContext, AuthProvider } from "../context/AuthProvider";
+import { AudioProvider } from "../context/AudioProvider";
 
 /* firebae */
 import { auth } from "../libs/firebae";
@@ -24,9 +25,11 @@ const Navigation = () => {
 
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <DrawerNavigator navigation />
-      </NavigationContainer>
+      <AudioProvider>
+        <NavigationContainer>
+          <DrawerNavigator navigation />
+        </NavigationContainer>
+      </AudioProvider>
     </AuthProvider>
   );
 };
