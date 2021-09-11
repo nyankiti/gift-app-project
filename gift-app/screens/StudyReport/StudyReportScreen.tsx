@@ -18,6 +18,7 @@ import { formatDateUntilDay } from "../../libs/utils/file";
 import Screen from "../Screen";
 import TargetModal from "../../components/StudyReport/TargetModal";
 import DreamModal from "../../components/StudyReport/DreamModal";
+import StudyClock from "../../components/StudyReport/StudyClock";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
 
@@ -30,7 +31,7 @@ const StudyReportScreen = () => {
   const [dreamStack, setDreamStack] = useState<string[]>([]);
   const [dream, setDream] = useState<string>("夢を記入しよう！");
   // targetはカレンダーと紐付く１日ごとの目標
-  const [target, setTarget] = useState<string>("目標初期値");
+  const [target, setTarget] = useState<string>("                ");
 
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
@@ -38,14 +39,6 @@ const StudyReportScreen = () => {
   const [selectedDateString, setSelectedDateString] = useState<string>(
     formatDateUntilDay()
   );
-
-  const pressDreamEdit = () => {
-    setDreamModalVisible(!dreamModalVisible);
-  };
-
-  const pressTargetEdit = () => {
-    setTargetModalVisible(!targetModalVisible);
-  };
 
   const handleCalendarDayPress = async (response: any) => {
     console.log(response);
@@ -104,7 +97,7 @@ const StudyReportScreen = () => {
                   size={22}
                   backgroundColor="rgba(0, 0, 0, 0)"
                   color="#2e64e5"
-                  onPress={pressDreamEdit}
+                  onPress={() => setDreamModalVisible(!dreamModalVisible)}
                 />
               </View>
             </View>
@@ -118,27 +111,11 @@ const StudyReportScreen = () => {
                 }}
               >
                 <Text style={styles.second_text}>今日の{"\n"}勉強時間</Text>
-                <View
-                  style={{
-                    height: SVGWidth * 0.9,
-                    width: SVGWidth * 0.9,
-                    marginLeft: 4,
-                    borderRadius: 15,
-                    backgroundColor: "#EAC799",
-                  }}
-                >
-                  <Text
-                    style={{
-                      justifyContent: "center",
-                      textAlign: "center",
-                      fontFamily: "ComicSnas_bd",
-                      paddingTop: width * 0.04,
-                      fontSize: 20,
-                    }}
-                  >
-                    時計
-                  </Text>
-                </View>
+                <StudyClock
+                  SVGWidth={SVGWidth}
+                  calcClockRotation={90}
+                  text_in_clock={selectedDateString.slice(-2)}
+                />
               </View>
               <View
                 style={{
@@ -166,7 +143,7 @@ const StudyReportScreen = () => {
                       size={22}
                       backgroundColor="rgba(0, 0, 0, 0)"
                       color="#2e64e5"
-                      onPress={pressTargetEdit}
+                      onPress={() => setTargetModalVisible(!targetModalVisible)}
                     />
                   </View>
                 </View>

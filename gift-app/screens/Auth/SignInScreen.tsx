@@ -17,17 +17,25 @@ import Screen from "../Screen";
 /*context */
 import { AuthContext } from "../../context/AuthProvider";
 /* types */
-import { AuthTabParamList } from "../../types/navigationType";
+import {
+  SeatBookingTabParamList,
+  StudyReportTabParamList,
+} from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
 
-type SingInScreenNavigationProps = StackScreenProps<
-  AuthTabParamList,
+type StudyReportNavigationProps = StackScreenProps<
+  StudyReportTabParamList,
   "SignInScreen"
 >;
 
-const SignInScreen: React.FC<SingInScreenNavigationProps> = ({
-  navigation,
-}) => {
+type SeatBookingNavigationProps = StackScreenProps<
+  SeatBookingTabParamList,
+  "SignInScreen"
+>;
+
+const SignInScreen: React.FC<
+  StudyReportNavigationProps | SeatBookingNavigationProps
+> = ({ navigation, route }) => {
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -108,7 +116,7 @@ const SignInScreen: React.FC<SingInScreenNavigationProps> = ({
     }
   };
   const handlePressLogin = async () => {
-    await login(data.email, data.password, navigation);
+    await login(data.email, data.password, navigation, route.params?.stackName);
     setData({
       ...data,
       successLogin: false,
@@ -214,7 +222,9 @@ const SignInScreen: React.FC<SingInScreenNavigationProps> = ({
       <View style={styles.buttonArea}>
         <View style={styles.button}>
           <TouchableOpacity onPress={handlePressLogin} style={styles.signIn}>
-            <Text style={[styles.textSign, { color: "#EAC799" }]}>Sign In</Text>
+            <Text style={[styles.textSign, { color: color.BASE_COLOR }]}>
+              Sign In
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

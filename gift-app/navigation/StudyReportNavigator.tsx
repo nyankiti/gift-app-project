@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
   createStackNavigator,
@@ -7,8 +7,14 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 /* screen */
 import StudyReportScreen from "../screens/StudyReport/StudyReportScreen";
+import SignInScreen from "../screens/Auth/SignInScreen";
+import SignUpScreen from "../screens/Auth/SignUpScreen";
+/* components */
+import BarsIcon from "../components/Navigation/BarsIcon";
 /* types */
 import { StudyReportTabParamList } from "../types/navigationType";
+/* context */
+import { AuthContext } from "../context/AuthProvider";
 
 import color from "../constants/color";
 import { DrawerActions } from "@react-navigation/native";
@@ -20,8 +26,13 @@ const StudyReportStack = createStackNavigator<StudyReportTabParamList>();
 const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
   navigation,
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <StudyReportStack.Navigator
+      initialRouteName={
+        user?.uid === "00000" ? "SignInScreen" : "StudyReportScreen"
+      }
       screenOptions={{
         headerStyle: {
           backgroundColor: color.BASE_COLOR,
@@ -41,6 +52,16 @@ const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
         // component={QuestionnaireScreen}
         options={{
           headerTitle: "Study Report",
+          headerLeft: () => <BarsIcon navigation={navigation} />,
+          headerRight: () => <></>,
+        }}
+      />
+      <StudyReportStack.Screen
+        name="SignInScreen"
+        component={SignInScreen}
+        initialParams={{ stackName: "StudyReport" }}
+        options={{
+          headerTitle: "ログイン",
           headerLeft: () => (
             <View style={{ paddingLeft: 10 }}>
               <FontAwesome
@@ -52,6 +73,15 @@ const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
               ></FontAwesome>
             </View>
           ),
+          headerRight: () => <></>,
+        }}
+      />
+      <StudyReportStack.Screen
+        name="SignUpScreen"
+        component={SignUpScreen}
+        initialParams={{ stackName: "StudyReport" }}
+        options={{
+          headerTitle: "アカウント登録",
           headerRight: () => <></>,
         }}
       />

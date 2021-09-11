@@ -8,6 +8,8 @@ import {
 /* screen */
 import NewsScreen from "../screens/News/NewsScreen";
 import ArticleScreen from "../screens/News/ArticlesScreen";
+/* components */
+import BarsIcon from "../components/Navigation/BarsIcon";
 /* types */
 import { NewsTabParamList } from "../types/navigationType";
 
@@ -39,17 +41,7 @@ const NewsNavigator: React.FC<NewsNavigationProps> = ({ navigation }) => {
         component={NewsScreen}
         options={{
           headerTitle: "Gift News",
-          headerLeft: () => (
-            <View style={{ paddingLeft: 10 }}>
-              <FontAwesome
-                name="bars"
-                size={25}
-                backgroundColor={color.BASE_COLOR}
-                color="#fff"
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              ></FontAwesome>
-            </View>
-          ),
+          headerLeft: () => <BarsIcon navigation={navigation} />,
           headerRight: () => <></>,
         }}
       />

@@ -10,12 +10,18 @@ import { User } from "../types/user";
 type AuthContextValue = {
   user: User | undefined;
   setUser: (user: User | undefined) => void;
-  login: (email: string, password: string, navigation: any) => void;
+  login: (
+    email: string,
+    password: string,
+    navigation: any,
+    stackName: string
+  ) => void;
   register: (
     email: string,
     password: string,
     name: string,
-    navigation: any
+    navigation: any,
+    stackName: string
   ) => void;
   logout: (navigation: any) => void;
 };
@@ -40,7 +46,7 @@ export const AuthProvider = ({ children }: any) => {
       value={{
         user: user,
         setUser: setUser,
-        login: async (email, password, navigation) => {
+        login: async (email, password, navigation, stackName) => {
           console.log(email);
           try {
             await auth
@@ -55,7 +61,13 @@ export const AuthProvider = ({ children }: any) => {
                   } catch (e) {
                     console.log(e);
                   }
-                  navigation.navigate("SeatBookingScreen");
+
+                  // ログインを実行したbottom tabによって遷移先のscreenを変える
+                  if (stackName === "SeatBooking") {
+                    navigation.navigate("SeatBookingScreen");
+                  } else {
+                    navigation.navigate("StudyReportScreen");
+                  }
                 }
               });
           } catch (e) {
@@ -63,7 +75,7 @@ export const AuthProvider = ({ children }: any) => {
             return false;
           }
         },
-        register: async (email, password, userName, navigation) => {
+        register: async (email, password, userName, navigation, stackName) => {
           try {
             await auth
               .createUserWithEmailAndPassword(email.trim(), password.trim())
@@ -104,7 +116,12 @@ export const AuthProvider = ({ children }: any) => {
                   .doc(auth.currentUser?.uid)
                   .set(userInitialData);
 
-                navigation.navigate("SeatBookingScreen");
+                // ログインを実行したbottom tabによって遷移先のscreenを変える
+                if (stackName === "SeatBooking") {
+                  navigation.navigate("SeatBookingScreen");
+                } else {
+                  navigation.navigate("StudyReportScreen");
+                }
               })
               .catch((error) => {
                 console.log(

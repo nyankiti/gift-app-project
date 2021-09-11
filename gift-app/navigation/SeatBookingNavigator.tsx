@@ -1,16 +1,19 @@
 import React, { useContext } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ColorPropType } from "react-native";
 import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 /* context */
 import { AuthContext } from "../context/AuthProvider";
 /* screen */
 import SeatBookingScreen from "../screens/SeatBooking/SeatBookingScreen";
+import SeatUnBookingScreen from "../screens/SeatBooking/SeatUnBookingScreen";
 import SignInScreen from "../screens/Auth/SignInScreen";
 import SignUpScreen from "../screens/Auth/SignUpScreen";
+/* components */
+import BarsIcon from "../components/Navigation/BarsIcon";
 /* types */
 import { SeatBookingTabParamList } from "../types/navigationType";
 
@@ -49,23 +52,41 @@ const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
         component={SeatBookingScreen}
         options={{
           headerTitle: "Gift 座席管理",
-          headerLeft: () => (
-            <View style={{ paddingLeft: 10 }}>
-              <FontAwesome
-                name="bars"
-                size={25}
-                backgroundColor={color.BASE_COLOR}
-                color="#fff"
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              ></FontAwesome>
-            </View>
+          headerLeft: () => <BarsIcon navigation={navigation} />,
+          headerRight: () => (
+            <>
+              <Text
+                style={{
+                  fontFamily: "Anzumozi",
+                  marginBottom: 4,
+                  color: "white",
+                  fontSize: 20,
+                }}
+              >
+                退室
+                <FontAwesome5.Button
+                  name="external-link-square-alt"
+                  size={25}
+                  backgroundColor={color.BASE_COLOR}
+                  onPress={() => navigation.navigate("SeatUnBookingScreen")}
+                />
+              </Text>
+            </>
           ),
+        }}
+      />
+      <SeatBookingStack.Screen
+        name="SeatUnBookingScreen"
+        component={SeatUnBookingScreen}
+        options={{
+          headerTitle: "Gift 座席管理(退出)",
           headerRight: () => <></>,
         }}
       />
       <SeatBookingStack.Screen
         name="SignInScreen"
         component={SignInScreen}
+        initialParams={{ stackName: "SeatBooking" }}
         options={{
           headerTitle: "ログイン",
           headerLeft: () => (
@@ -85,6 +106,7 @@ const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
       <SeatBookingStack.Screen
         name="SignUpScreen"
         component={SignUpScreen}
+        initialParams={{ stackName: "SeatBooking" }}
         options={{
           headerTitle: "アカウント登録",
           headerRight: () => <></>,

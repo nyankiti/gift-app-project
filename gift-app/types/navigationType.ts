@@ -36,6 +36,12 @@ export type StudyReportTabParamList = {
     selectedDate: any;
     dateString: string;
   };
+  SignInScreen: {
+    stackName: string;
+  };
+  SignUpScreen: {
+    stackName: string;
+  };
 };
 
 export type AuthTabParamList = {
@@ -45,8 +51,13 @@ export type AuthTabParamList = {
 
 export type SeatBookingTabParamList = {
   SeatBookingScreen: undefined;
-  SignInScreen: undefined;
-  SignUpScreen: undefined;
+  SeatUnBookingScreen: undefined;
+  SignInScreen: {
+    stackName: string;
+  };
+  SignUpScreen: {
+    stackName: string;
+  };
 };
 
 export type AudioTabParamList = {

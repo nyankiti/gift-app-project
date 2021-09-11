@@ -88,7 +88,7 @@ export const fetchTargetByDate = async (
       const selectedDateTarget = doc.data()?.target;
       setTarget(selectedDateTarget);
     } else {
-      setTarget("目標なし");
+      setTarget("                ");
     }
   });
 };

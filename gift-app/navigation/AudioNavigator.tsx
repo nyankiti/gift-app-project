@@ -8,6 +8,8 @@ import { FontAwesome } from "@expo/vector-icons";
 /* screen */
 import PlayerScreen from "../screens/Audio/PlayerScreen";
 import AudioListScreen from "../screens/Audio/AudioListScreen";
+/* components */
+import BarsIcon from "../components/Navigation/BarsIcon";
 /* types */
 import { AudioTabParamList } from "../types/navigationType";
 
@@ -39,17 +41,7 @@ const AudioNavigator: React.FC<AudioNavigationProps> = ({ navigation }) => {
         component={PlayerScreen}
         options={{
           headerTitle: "Gift Radio",
-          headerLeft: () => (
-            <View style={{ paddingLeft: 10 }}>
-              <FontAwesome
-                name="bars"
-                size={25}
-                backgroundColor={color.BASE_COLOR}
-                color="#fff"
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              ></FontAwesome>
-            </View>
-          ),
+          headerLeft: () => <BarsIcon navigation={navigation} />,
           headerRight: () => <></>,
         }}
       />

@@ -60,17 +60,6 @@ const BottomTabNavigator = () => {
         }}
       />
       <BottomTab.Screen
-        name="StudyReport"
-        component={StudyReportNavigator}
-        options={{
-          tabBarLabel: "Report",
-          tabBarColor: color.BASE_COLOR,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="bar-chart-outline" size={26} color="black" />
-          ),
-        }}
-      />
-      <BottomTab.Screen
         name="Audio"
         component={AudioNavigator}
         options={{
@@ -78,6 +67,17 @@ const BottomTabNavigator = () => {
           tabBarColor: color.BASE_COLOR,
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="audiotrack" size={26} color="black" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="StudyReport"
+        component={StudyReportNavigator}
+        options={{
+          tabBarLabel: "Report",
+          tabBarColor: color.BASE_COLOR,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="bar-chart-outline" size={26} color="black" />
           ),
         }}
       />
