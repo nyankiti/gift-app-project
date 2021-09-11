@@ -116,7 +116,7 @@ const SignInScreen: React.FC<
     }
   };
   const handlePressLogin = async () => {
-    await login(data.email, data.password, navigation, route.params?.stackName);
+    await login(data.email, data.password);
     setData({
       ...data,
       successLogin: false,
@@ -133,7 +133,8 @@ const SignInScreen: React.FC<
           Welcome to Gift Account,
         </Text>
         <Text style={[styles.center_text, { fontFamily: "Anzumozi" }]}>
-          座席管理は自習室ユーザー専用の機能です
+          {route.params?.stackName === "SeatBooking" ? "座席管理" : "勉強管理"}
+          は自習室ユーザー専用の機能です
         </Text>
       </View>
       <View style={styles.formArea}>

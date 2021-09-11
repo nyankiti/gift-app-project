@@ -10,20 +10,9 @@ import { User } from "../types/user";
 type AuthContextType = {
   user: User | undefined;
   setUser: (user: User | undefined) => void;
-  login: (
-    email: string,
-    password: string,
-    navigation: any,
-    stackName: string
-  ) => void;
-  register: (
-    email: string,
-    password: string,
-    name: string,
-    navigation: any,
-    stackName: string
-  ) => void;
-  logout: (navigation: any) => void;
+  login: (email: string, password: string) => void;
+  register: (email: string, password: string, name: string) => void;
+  logout: () => void;
 };
 
 if (!firebase.apps.length) {
@@ -46,7 +35,7 @@ export const AuthProvider = ({ children }: any) => {
       value={{
         user: user,
         setUser: setUser,
-        login: async (email, password, navigation, stackName) => {
+        login: async (email, password) => {
           console.log(email);
           try {
             await auth
@@ -61,13 +50,6 @@ export const AuthProvider = ({ children }: any) => {
                   } catch (e) {
                     console.log(e);
                   }
-
-                  // ログインを実行したbottom tabによって遷移先のscreenを変える
-                  if (stackName === "SeatBooking") {
-                    navigation.navigate("SeatBookingScreen");
-                  } else {
-                    navigation.navigate("StudyReportScreen");
-                  }
                 }
               });
           } catch (e) {
@@ -75,7 +57,7 @@ export const AuthProvider = ({ children }: any) => {
             return false;
           }
         },
-        register: async (email, password, userName, navigation, stackName) => {
+        register: async (email, password, userName) => {
           try {
             await auth
               .createUserWithEmailAndPassword(email.trim(), password.trim())
@@ -115,13 +97,6 @@ export const AuthProvider = ({ children }: any) => {
                 db.collection("users")
                   .doc(auth.currentUser?.uid)
                   .set(userInitialData);
-
-                // ログインを実行したbottom tabによって遷移先のscreenを変える
-                if (stackName === "SeatBooking") {
-                  navigation.navigate("SeatBookingScreen");
-                } else {
-                  navigation.navigate("StudyReportScreen");
-                }
               })
               .catch((error) => {
                 console.log(
@@ -133,13 +108,12 @@ export const AuthProvider = ({ children }: any) => {
             console.log(e);
           }
         },
-        logout: async (navigation) => {
+        logout: async () => {
           try {
             await auth.signOut();
             // local storageからのuidの消去
             await AsyncStorage.removeItem("uid");
             setUser({ uid: "00000", displayName: "ゲストユーザー" });
-            navigation.navigate("SignInScreen");
           } catch (e) {
             console.log(e);
           }

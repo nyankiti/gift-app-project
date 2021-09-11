@@ -231,15 +231,7 @@ const SignUpScreen: React.FC<
       <View style={styles.buttonArea}>
         <View style={styles.button}>
           <TouchableOpacity
-            onPress={() =>
-              register(
-                data.email,
-                data.password,
-                data.name,
-                navigation,
-                route.params?.stackName
-              )
-            }
+            onPress={() => register(data.email, data.password, data.name)}
             style={styles.signIn}
           >
             <Text style={[styles.textSign, { color: color.BASE_COLOR }]}>

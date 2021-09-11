@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 import {
   createStackNavigator,
   StackScreenProps,
@@ -30,9 +30,6 @@ const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
 
   return (
     <StudyReportStack.Navigator
-      initialRouteName={
-        user?.uid === "00000" ? "SignInScreen" : "StudyReportScreen"
-      }
       screenOptions={{
         headerStyle: {
           backgroundColor: color.BASE_COLOR,
@@ -46,49 +43,54 @@ const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
         },
       }}
     >
-      <StudyReportStack.Screen
-        name="StudyReportScreen"
-        component={StudyReportScreen}
-        // component={QuestionnaireScreen}
-        options={{
-          headerTitle: "Study Report",
-          headerLeft: () => <BarsIcon navigation={navigation} />,
-          headerRight: () => <></>,
-        }}
-      />
-      <StudyReportStack.Screen
-        name="SignInScreen"
-        component={SignInScreen}
-        initialParams={{ stackName: "StudyReport" }}
-        options={{
-          headerTitle: "ログイン",
-          headerLeft: () => (
-            <View style={{ paddingLeft: 10 }}>
-              <FontAwesome
-                name="bars"
-                size={25}
-                backgroundColor={color.BASE_COLOR}
-                color="#fff"
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              ></FontAwesome>
-            </View>
-          ),
-          headerRight: () => <></>,
-        }}
-      />
-      <StudyReportStack.Screen
-        name="SignUpScreen"
-        component={SignUpScreen}
-        initialParams={{ stackName: "StudyReport" }}
-        options={{
-          headerTitle: "アカウント登録",
-          headerRight: () => <></>,
-        }}
-      />
+      {user?.uid === "00000" ? (
+        <>
+          <StudyReportStack.Screen
+            name="SignInScreen"
+            component={SignInScreen}
+            initialParams={{ stackName: "StudyReport" }}
+            options={{
+              headerTitle: "ログイン",
+              headerLeft: () => (
+                <View style={{ paddingLeft: 10 }}>
+                  <FontAwesome
+                    name="bars"
+                    size={25}
+                    backgroundColor={color.BASE_COLOR}
+                    color="#fff"
+                    onPress={() =>
+                      navigation.dispatch(DrawerActions.openDrawer())
+                    }
+                  ></FontAwesome>
+                </View>
+              ),
+              headerRight: () => <></>,
+            }}
+          />
+          <StudyReportStack.Screen
+            name="SignUpScreen"
+            component={SignUpScreen}
+            initialParams={{ stackName: "StudyReport" }}
+            options={{
+              headerTitle: "アカウント登録",
+              headerRight: () => <></>,
+            }}
+          />
+        </>
+      ) : (
+        <StudyReportStack.Screen
+          name="StudyReportScreen"
+          component={StudyReportScreen}
+          // component={QuestionnaireScreen}
+          options={{
+            headerTitle: "Study Report",
+            headerLeft: () => <BarsIcon navigation={navigation} />,
+            headerRight: () => <></>,
+          }}
+        />
+      )}
     </StudyReportStack.Navigator>
   );
 };
 
 export default StudyReportNavigator;
-
-const styles = StyleSheet.create({});

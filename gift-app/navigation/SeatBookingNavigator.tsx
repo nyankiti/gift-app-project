@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, ColorPropType } from "react-native";
+import { View, Text } from "react-native";
 import {
   createStackNavigator,
   StackScreenProps,
@@ -31,9 +31,6 @@ const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
 
   return (
     <SeatBookingStack.Navigator
-      initialRouteName={
-        user?.uid === "00000" ? "SignInScreen" : "SeatBookingScreen"
-      }
       screenOptions={{
         headerStyle: {
           backgroundColor: color.BASE_COLOR,
@@ -47,71 +44,80 @@ const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
         },
       }}
     >
-      <SeatBookingStack.Screen
-        name="SeatBookingScreen"
-        component={SeatBookingScreen}
-        options={{
-          headerTitle: "Gift 座席管理",
-          headerLeft: () => <BarsIcon navigation={navigation} />,
-          headerRight: () => (
-            <>
-              <Text
-                style={{
-                  fontFamily: "Anzumozi",
-                  marginBottom: 4,
-                  color: "white",
-                  fontSize: 20,
-                }}
-              >
-                退室
-                <FontAwesome5.Button
-                  name="external-link-square-alt"
-                  size={25}
-                  backgroundColor={color.BASE_COLOR}
-                  onPress={() => navigation.navigate("SeatUnBookingScreen")}
-                />
-              </Text>
-            </>
-          ),
-        }}
-      />
-      <SeatBookingStack.Screen
-        name="SeatUnBookingScreen"
-        component={SeatUnBookingScreen}
-        options={{
-          headerTitle: "Gift 座席管理(退出)",
-          headerRight: () => <></>,
-        }}
-      />
-      <SeatBookingStack.Screen
-        name="SignInScreen"
-        component={SignInScreen}
-        initialParams={{ stackName: "SeatBooking" }}
-        options={{
-          headerTitle: "ログイン",
-          headerLeft: () => (
-            <View style={{ paddingLeft: 10 }}>
-              <FontAwesome
-                name="bars"
-                size={25}
-                backgroundColor={color.BASE_COLOR}
-                color="#fff"
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              ></FontAwesome>
-            </View>
-          ),
-          headerRight: () => <></>,
-        }}
-      />
-      <SeatBookingStack.Screen
-        name="SignUpScreen"
-        component={SignUpScreen}
-        initialParams={{ stackName: "SeatBooking" }}
-        options={{
-          headerTitle: "アカウント登録",
-          headerRight: () => <></>,
-        }}
-      />
+      {user?.uid === "00000" ? (
+        <>
+          <SeatBookingStack.Screen
+            name="SignInScreen"
+            component={SignInScreen}
+            initialParams={{ stackName: "SeatBooking" }}
+            options={{
+              headerTitle: "ログイン",
+              headerLeft: () => (
+                <View style={{ paddingLeft: 10 }}>
+                  <FontAwesome
+                    name="bars"
+                    size={25}
+                    backgroundColor={color.BASE_COLOR}
+                    color="#fff"
+                    onPress={() =>
+                      navigation.dispatch(DrawerActions.openDrawer())
+                    }
+                  ></FontAwesome>
+                </View>
+              ),
+              headerRight: () => <></>,
+            }}
+          />
+          <SeatBookingStack.Screen
+            name="SignUpScreen"
+            component={SignUpScreen}
+            initialParams={{ stackName: "SeatBooking" }}
+            options={{
+              headerTitle: "アカウント登録",
+              headerRight: () => <></>,
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <SeatBookingStack.Screen
+            name="SeatBookingScreen"
+            component={SeatBookingScreen}
+            options={{
+              headerTitle: "Gift 座席管理",
+              headerLeft: () => <BarsIcon navigation={navigation} />,
+              headerRight: () => (
+                <>
+                  <Text
+                    style={{
+                      fontFamily: "Anzumozi",
+                      marginBottom: 4,
+                      color: "white",
+                      fontSize: 20,
+                    }}
+                  >
+                    退室
+                    <FontAwesome5.Button
+                      name="external-link-square-alt"
+                      size={25}
+                      backgroundColor={color.BASE_COLOR}
+                      onPress={() => navigation.navigate("SeatUnBookingScreen")}
+                    />
+                  </Text>
+                </>
+              ),
+            }}
+          />
+          <SeatBookingStack.Screen
+            name="SeatUnBookingScreen"
+            component={SeatUnBookingScreen}
+            options={{
+              headerTitle: "Gift 座席管理(退出)",
+              headerRight: () => <></>,
+            }}
+          />
+        </>
+      )}
     </SeatBookingStack.Navigator>
   );
 };
