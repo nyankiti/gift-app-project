@@ -77,12 +77,9 @@ export const AuthProvider = ({ children }: any) => {
                 const userInitialData = {
                   uid: auth.currentUser?.uid,
                   displayName: userName,
-                  fname: "",
-                  lname: "",
                   email: email,
                   createdAt: FirebaseTimestamp.now(),
                   updatedAt: FirebaseTimestamp.now(),
-                  userImg: null,
                 };
 
                 // local storageへのuidの保存
@@ -94,9 +91,13 @@ export const AuthProvider = ({ children }: any) => {
                   }
                 }
                 // firestoreへの登録
-                db.collection("users")
+                await db
+                  .collection("users")
                   .doc(auth.currentUser?.uid)
                   .set(userInitialData);
+
+                // Authcontextの更新
+                setUser(userInitialData);
               })
               .catch((error) => {
                 console.log(

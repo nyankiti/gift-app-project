@@ -1,4 +1,4 @@
-export type User = {
+export type oldUser = {
   uid: any;
   displayName: string | undefined | null;
   fname?: string;
@@ -9,4 +9,24 @@ export type User = {
   userImg?: string;
   createdAt?: any;
   updatedAt?: any;
+  seat?: {
+    position: string;
+    color: string;
+    icon: any;
+  };
+};
+
+export type User = {
+  uid: any;
+  displayName: string | undefined | null;
+  email?: string;
+  userImg?: string;
+  pushToken?: string;
+  createdAt?: any;
+  updatedAt?: any;
+  seat?: {
+    position: string;
+    color: string;
+    icon: any;
+  };
 };

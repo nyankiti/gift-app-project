@@ -6,6 +6,7 @@ import "firebase/functions";
 // import RNFetchBlob from 'react-native-fetch-blob';
 import Constants from "expo-constants";
 import { User } from "../types/user";
+import { getExtension, formatDateUntilMinute } from "./utils/file";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest?.extra?.firebase);
@@ -91,4 +92,49 @@ export const fetchTargetByDate = async (
       setTarget("                ");
     }
   });
+};
+
+export const uploadImageToStorage = async (
+  image: any,
+  user: User,
+  setTransferred: React.Dispatch<React.SetStateAction<number>>,
+  setImage: React.Dispatch<React.SetStateAction<any>>
+) => {
+  if (image == "") {
+    return null;
+  }
+
+  const uploadUri = image;
+  const extension = getExtension(uploadUri);
+  const date_for_filename = formatDateUntilMinute();
+  const filename = date_for_filename + "." + extension;
+  console.log(filename);
+
+  let storagePath = `users/${user.uid}.${extension}`;
+
+  const tempUri = await fetch(uploadUri);
+  const blob = await tempUri.blob();
+
+  const storageRef = storage.ref(storagePath);
+
+  const task = storageRef.put(blob);
+  // const downloadUrl = await uploadImage(imageUri, storagePath);
+  task.on("state_changed", (taskSnapshot) => {
+    setTransferred(
+      Math.round(taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100
+    );
+  });
+
+  try {
+    await task;
+
+    const urlOfFireStorage = storageRef.getDownloadURL();
+
+    setImage(null);
+
+    return urlOfFireStorage;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 };

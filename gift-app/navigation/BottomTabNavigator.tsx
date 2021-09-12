@@ -27,7 +27,6 @@ const BottomTabNavigator = () => {
   const getUidFromStorage = async () => {
     try {
       const uid = await AsyncStorage.getItem("uid");
-      console.log("uid in getUidFromStorage : " + uid);
       return uid;
     } catch (e) {
       console.log("error occured in get async storage: " + e);
@@ -36,7 +35,6 @@ const BottomTabNavigator = () => {
 
   useEffect(() => {
     getUidFromStorage().then((uid) => {
-      console.log("uid in useEffect : " + uid);
       // uid が null undefinedではない場合にそのuidからuser情報を取得する
       if (uid) {
         getUser(uid, setUser);
