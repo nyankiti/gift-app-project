@@ -1,9 +1,17 @@
+export type SeatIconComponents =
+  | "MaterialCommunityIcons"
+  | "FontAwesome5"
+  | "Ionicons"
+  | "Foundation"
+  | "Octicons";
+
 export type Seats = {
   A1:
     | {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   A2:
@@ -11,6 +19,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   A3:
@@ -18,6 +27,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   A4:
@@ -25,6 +35,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   A5:
@@ -32,6 +43,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   A6:
@@ -39,6 +51,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   B1:
@@ -46,6 +59,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   B2:
@@ -53,6 +67,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   B3:
@@ -60,6 +75,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   B4:
@@ -67,6 +83,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   B5:
@@ -74,6 +91,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   B6:
@@ -81,6 +99,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   C1:
@@ -88,6 +107,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   C2:
@@ -95,6 +115,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   C3:
@@ -102,6 +123,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   C4:
@@ -109,6 +131,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   C5:
@@ -116,6 +139,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   C6:
@@ -123,6 +147,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   D1:
@@ -130,6 +155,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   D2:
@@ -137,6 +163,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   D3:
@@ -144,6 +171,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   D4:
@@ -151,6 +179,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   D5:
@@ -158,6 +187,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   D6:
@@ -165,6 +195,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   E1:
@@ -172,6 +203,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   E2:
@@ -179,6 +211,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   E3:
@@ -186,6 +219,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   E4:
@@ -193,6 +227,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
   E5:
@@ -200,6 +235,7 @@ export type Seats = {
         uid: string;
         icon: any;
         color: string;
+        position: string;
       }
     | false;
 };

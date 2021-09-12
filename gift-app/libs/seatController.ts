@@ -5,6 +5,8 @@ import { Seats } from "../types/seat";
 import { width } from "./utils/Dimension";
 /* types */
 import { User } from "../types/user";
+/* types */
+import { SeatIconComponents } from "../types/seat";
 
 export const seatWidth = width * 0.1;
 
@@ -39,18 +41,56 @@ const setInitialSeatData = async () => {
   }
 };
 
-const handleSubmit = async (user: User, setUser: any) => {
+export const handleSeatSubmit = async (
+  user: User,
+  setUser: any,
+  position: string,
+  color: string,
+  icon: [SeatIconComponents, any],
+  setSeats: React.Dispatch<React.SetStateAction<Seats>>
+) => {
   const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
+  const tempSeatObj: any = {};
+  tempSeatObj[position] = {
+    uid: user.uid,
+    icon: icon,
+    color: "red",
+  };
+  await seatDocRef.set(tempSeatObj, { merge: true });
 
   // user情報(context)の更新
   setUser({
     ...user,
     seat: {
-      position: "",
-      color: "",
+      position: position,
+      color: color,
       icon: "",
     },
   });
+
+  // SeatBookingScreenを更新するため、再度データを取り直す
+  fetchSeatsState(setSeats);
+};
+
+export const handleSeatUnBooking = async (
+  user: User,
+  setUser: any,
+  position: string,
+  setSeats: React.Dispatch<React.SetStateAction<Seats>>
+) => {
+  const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
+  const tempSeatObj: any = {};
+  tempSeatObj[position] = false;
+  await seatDocRef.set(tempSeatObj, { merge: true });
+
+  // user情報(context)に退席を反映
+  setUser({
+    ...user,
+    seat: undefined,
+  });
+
+  // SeatBookingScreenを更新するため、再度データを取り直す
+  fetchSeatsState(setSeats);
 };
 
 export const initialSeatsObject: Seats = {
