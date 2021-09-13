@@ -9,7 +9,7 @@ import { NewsTabParamList } from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
 
 // config fonts for render-html
-const systemFonts = [...defaultSystemFonts, "Anzumozi"];
+const systemFonts = [...defaultSystemFonts, "KiwiMaru"];
 
 type ArticleScreenNavigationProps = StackScreenProps<
   NewsTabParamList,
@@ -26,7 +26,7 @@ const ArticleScreen: React.FC<ArticleScreenNavigationProps> = ({ route }) => {
           systemFonts={systemFonts}
           baseStyle={{
             fontSize: 24,
-            fontFamily: "Anzumozi",
+            fontFamily: "KiwiMaru",
             // lineHeight: 22,
             textAlign: "center",
           }}

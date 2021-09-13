@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  Image,
+} from "react-native";
 import color from "../../constants/color";
 import { Entypo } from "@expo/vector-icons";
 import { width } from "../../libs/utils/Dimension";
@@ -8,12 +14,15 @@ import { convertTime } from "../../libs/audio/helper";
 const renderPlayPauseIcon = (isPlaying: boolean) => {
   if (isPlaying)
     return (
-      <Entypo name="controller-paus" size={24} color={color.ACTIVE_FONT} />
+      <Entypo name="controller-paus" size={40} color={color.ACTIVE_FONT} />
     );
-  return <Entypo name="controller-play" size={24} color={color.ACTIVE_FONT} />;
+  return <Entypo name="controller-play" size={40} color={color.ACTIVE_FONT} />;
 };
 
 type Props = {
+  description: string;
+  imageUrl: string;
+  published: string;
   title: string;
   duration: number;
   onAudioPress: any;
@@ -22,40 +31,67 @@ type Props = {
 };
 
 const AudioListItem = ({
+  description,
+  imageUrl,
+  published,
   title,
   duration,
   onAudioPress,
   isPlaying,
   activeListItem,
 }: Props) => {
+  const day = new Date(published);
+
   return (
     <>
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={onAudioPress}>
-          <View style={styles.leftContainer}>
-            <View
-              style={[
-                styles.thumbnail,
-                {
-                  backgroundColor: activeListItem
-                    ? color.ACTIVE_BG
-                    : color.FONT_LIGHT,
-                },
-              ]}
-            >
-              <Text style={styles.thumbnailText}>
-                {activeListItem ? renderPlayPauseIcon(isPlaying) : "A"}
-              </Text>
-            </View>
-            <View style={styles.titleContainer}>
-              <Text numberOfLines={1} style={styles.title}>
-                {title}
-              </Text>
-              <Text style={styles.timeText}>{convertTime(duration)}</Text>
-            </View>
+        <View style={styles.topContainer}>
+          <Image source={{ uri: imageUrl }} style={styles.thumbnail} />
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              <Entypo name="dot-single" size={40} color="skyblue" />
+              {title}
+            </Text>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
+
+        <View style={styles.bottomContainer}>
+          <View>
+            <Text style={styles.description}>{description}</Text>
+            <Text style={styles.timeText}>
+              {day.getMonth()}月{day.getDate()}日 {convertTime(duration)}
+            </Text>
+          </View>
+
+          <View style={styles.leftContainer}>
+            <TouchableWithoutFeedback onPress={onAudioPress}>
+              <View
+                style={[
+                  styles.playButton,
+                  {
+                    backgroundColor: activeListItem
+                      ? color.ACTIVE_BG
+                      : color.FONT_LIGHT,
+                  },
+                ]}
+              >
+                <Text style={styles.thumbnailText}>
+                  {activeListItem ? (
+                    renderPlayPauseIcon(isPlaying)
+                  ) : (
+                    <Entypo
+                      name="controller-play"
+                      size={40}
+                      color={color.ACTIVE_FONT}
+                    />
+                  )}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
       </View>
+
       <View style={styles.separator} />
     </>
   );
@@ -65,35 +101,68 @@ export default AudioListItem;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flex: 1,
+    justifyContent: "center",
     alignSelf: "center",
-    width: width - 80,
+    width: width - 40,
+  },
+  topContainer: {
+    flexDirection: "row",
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   leftContainer: {
+    justifyContent: "flex-end",
     flexDirection: "row",
     alignItems: "center",
+    marginRight: 10,
+    marginBottom: 10,
     flex: 1,
   },
-
   thumbnail: {
-    height: 50,
-    flexBasis: 50,
+    width: 100,
+    height: 100,
+    borderRadius: 20,
+  },
+  description: {
+    fontSize: 20,
+    fontFamily: "KiwiMaru",
+    padding: 4,
+    color: color.FONT,
+    marginLeft: 16,
+  },
+  timeText: {
+    fontSize: 20,
+    fontFamily: "KiwiMaru",
+    padding: 4,
+    color: color.FONT,
+    marginLeft: 24,
+  },
+
+  playButton: {
+    height: 70,
+    flexBasis: 70,
     backgroundColor: color.FONT_LIGHT,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 25,
+    borderRadius: 35,
   },
   thumbnailText: {
-    fontSize: 22,
+    fontSize: 32,
     fontWeight: "bold",
     color: color.FONT,
   },
   titleContainer: {
-    width: width - 180,
+    // width: width - 180,
+    marginTop: 25,
     paddingLeft: 10,
   },
   title: {
-    fontSize: 16,
+    fontSize: 32,
+    fontFamily: "KiwiMaru",
+    padding: 10,
     color: color.FONT,
   },
   separator: {
@@ -103,9 +172,5 @@ const styles = StyleSheet.create({
     height: 0.5,
     alignSelf: "center",
     marginTop: 10,
-  },
-  timeText: {
-    fontSize: 14,
-    color: color.FONT_LIGHT,
   },
 });

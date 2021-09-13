@@ -11,13 +11,14 @@ import { width, height } from "../../libs/utils/Dimension";
 
 type Props = {
   SVGWidth: number;
-  calcClockRotation: any;
+  // calcClockRotation: any;
+  totalStudyTime: number;
   text_in_clock: string;
 };
 
 const StudyClock: React.FC<Props> = ({
   SVGWidth,
-  calcClockRotation,
+  totalStudyTime,
   text_in_clock,
 }) => {
   return (
@@ -35,10 +36,12 @@ const StudyClock: React.FC<Props> = ({
 
       <G
         id="arrow"
-        // transform={`rotate(${calcClockRotation()}, ${SVGWidth / 2}, ${
+        transform={`rotate(${totalStudyTime / 2}, ${SVGWidth / 2}, ${
+          SVGWidth / 2
+        })`}
+        // transform={`rotate(${totalStudyTime / 2}, ${SVGWidth / 2}, ${
         //   SVGWidth / 2
         // })`}
-        transform={`rotate(90, ${SVGWidth / 2}, ${SVGWidth / 2})`}
       >
         <Line
           id="secondHandLine"
@@ -89,9 +92,6 @@ const StudyClock: React.FC<Props> = ({
         r={SVGWidth * 0.26}
         fill="white"
       />
-      {/* <SVGText x={SVGWidth/2} y={windowWidth*0.13} textAnchor="middle" fontWeight="bold" fontSize="15" >
-        {selectedDate.day ? selectedDate.day : formatDate()}
-      </SVGText> */}
       <View style={styles.clock_text_space}>
         <Text style={styles.text_in_clock}>{text_in_clock}</Text>
       </View>

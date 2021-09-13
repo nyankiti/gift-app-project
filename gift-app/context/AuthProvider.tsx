@@ -9,7 +9,7 @@ import { User } from "../types/user";
 
 type AuthContextType = {
   user: User | undefined;
-  setUser: (user: User | undefined) => void;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
   login: (email: string, password: string) => void;
   register: (email: string, password: string, name: string) => void;
   logout: () => void;
@@ -28,7 +28,10 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>({
+    uid: "00000",
+    displayName: "ゲストユーザー",
+  });
 
   return (
     <AuthContext.Provider

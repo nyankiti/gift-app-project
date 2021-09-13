@@ -1,3 +1,5 @@
+import { SeatIconComponents } from "./seat";
+
 export type oldUser = {
   uid: any;
   displayName: string | undefined | null;
@@ -24,9 +26,16 @@ export type User = {
   pushToken?: string;
   createdAt?: any;
   updatedAt?: any;
-  seat?: {
+  currentSeat?: {
     position: string;
     color: string;
-    icon: any;
-  };
+    icon: [SeatIconComponents, any];
+  } | null;
+};
+
+export type UserSeat = {
+  startTime?: any;
+  endTime?: any;
+  // totalTimeは分単位で扱う
+  totalTime?: number;
 };

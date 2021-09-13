@@ -132,7 +132,7 @@ const SignInScreen: React.FC<
         <Text style={[styles.center_text, { fontFamily: "ComicSnas_bd" }]}>
           Welcome to Gift Account,
         </Text>
-        <Text style={[styles.center_text, { fontFamily: "Anzumozi" }]}>
+        <Text style={[styles.center_text, { fontFamily: "KiwiMaru" }]}>
           {route.params?.stackName === "SeatBooking" ? "座席管理" : "勉強管理"}
           は自習室ユーザー専用の機能です
         </Text>

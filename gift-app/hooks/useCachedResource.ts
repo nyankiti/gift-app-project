@@ -18,6 +18,7 @@ export default function useCachedResources() {
           Anzumozi: require("../assets/fonts/Anzumozi.ttf"),
           ComicSnas: require("../assets/fonts/comicsansms3.ttf"),
           ComicSnas_bd: require("../assets/fonts/comicbd.ttf"),
+          KiwiMaru: require("../assets/fonts/KiwiMaru-Regular.ttf"),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service

@@ -48,11 +48,11 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
   },
   subText: {
     fontSize: 16,
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
     color: "gray",
   },
   image: {

@@ -6,7 +6,11 @@ import "firebase/functions";
 // import RNFetchBlob from 'react-native-fetch-blob';
 import Constants from "expo-constants";
 import { User } from "../types/user";
-import { getExtension, formatDateUntilMinute } from "./utils/file";
+import {
+  getExtension,
+  formatDateUntilMinute,
+  formatDateUntilDay,
+} from "./utils/file";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest?.extra?.firebase);
@@ -17,6 +21,9 @@ export const db = firebase.firestore();
 export const storage = firebase.storage();
 export const functions = firebase.functions();
 export const FirebaseTimestamp = firebase.firestore.Timestamp;
+
+/* docRefrences  user情報を含むdocrefはここでは定義できない.... */
+export const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
 
 // export const getUser = async (
 //   user: User,
@@ -39,57 +46,10 @@ export const getUser = async (
   setUser: any
   // setUser: React.Dispatch<React.SetStateAction<User>>
 ) => {
-  await db
-    .collection("users")
-    .doc(uid)
-    .get()
-    .then(async (documentSnapshot: any) => {
-      if (documentSnapshot.exists) {
-        setUser(documentSnapshot.data());
-      }
-    });
-};
-
-export const fetchDream = async (
-  uid: string,
-  setDreamStack: React.Dispatch<React.SetStateAction<string[]>>,
-  setDream: React.Dispatch<React.SetStateAction<string>>
-) => {
-  const dreamDocRef = db
-    .collection("users")
-    .doc(uid)
-    .collection("dream")
-    .doc(uid);
-
-  await dreamDocRef.get().then((doc) => {
-    if (doc.exists) {
-      // console.log("fetched dream:");
-      // console.log(doc.data());
-      const fetchedDream = doc.data()?.dream;
-
-      setDreamStack(fetchedDream);
-      setDream(fetchedDream[fetchedDream.length - 1]);
-    }
-  });
-};
-
-export const fetchTargetByDate = async (
-  uid: string,
-  dateString: string,
-  setTarget: React.Dispatch<React.SetStateAction<string>>
-) => {
-  const targetRef = db
-    .collection("users")
-    .doc(uid)
-    .collection("target")
-    .doc(dateString);
-  await targetRef.get().then((doc) => {
-    if (doc.exists) {
-      console.log(doc.data()?.target);
-      const selectedDateTarget = doc.data()?.target;
-      setTarget(selectedDateTarget);
-    } else {
-      setTarget("                ");
+  const userDocRef = db.collection("users").doc(uid);
+  await userDocRef.get().then(async (documentSnapshot: any) => {
+    if (documentSnapshot.exists) {
+      setUser(documentSnapshot.data());
     }
   });
 };

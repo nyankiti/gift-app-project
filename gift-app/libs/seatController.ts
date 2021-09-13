@@ -1,11 +1,11 @@
 import React from "react";
-import { db } from "./firebae";
+import { db, seatDocRef } from "./firebae";
 import { formatDateUntilDay } from "./utils/file";
-import { Seats } from "../types/seat";
 import { width } from "./utils/Dimension";
+import { setStartTime, setEndTime } from "./studyReportController";
 /* types */
+import { Seats } from "../types/seat";
 import { User } from "../types/user";
-/* types */
 import { SeatIconComponents } from "../types/seat";
 
 export const seatWidth = width * 0.1;
@@ -14,11 +14,9 @@ export const seatWidth = width * 0.1;
 export const fetchSeatsState = async (
   setSeat: React.Dispatch<React.SetStateAction<Seats>>
 ) => {
-  const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
   try {
     await seatDocRef.get().then((doc) => {
       if (doc.exists) {
-        console.log(doc.data());
         const temp = (doc.data() as Seats) ?? initialSeatsObject;
         setSeat(temp);
       } else {
@@ -33,7 +31,6 @@ export const fetchSeatsState = async (
 
 // firestoreにデータがなかった場合に全てfalseを登録するメソッド
 const setInitialSeatData = async () => {
-  const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
   try {
     await seatDocRef.set(initialSeatsObject);
   } catch (e) {
@@ -43,13 +40,12 @@ const setInitialSeatData = async () => {
 
 export const handleSeatSubmit = async (
   user: User,
-  setUser: any,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
   position: string,
   color: string,
   icon: [SeatIconComponents, any],
   setSeats: React.Dispatch<React.SetStateAction<Seats>>
 ) => {
-  const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
   const tempSeatObj: any = {};
   tempSeatObj[position] = {
     uid: user.uid,
@@ -58,15 +54,11 @@ export const handleSeatSubmit = async (
   };
   await seatDocRef.set(tempSeatObj, { merge: true });
 
-  // user情報(context)の更新
-  setUser({
-    ...user,
-    seat: {
-      position: position,
-      color: color,
-      icon: "",
-    },
-  });
+  // user情報の更新(contextとfirestoreどちらも更新)
+  await setCurrentSeatInfoToUserInfo(user, setUser, position, color, icon);
+
+  //studyReport用の時間を登録
+  await setStartTime(user.uid);
 
   // SeatBookingScreenを更新するため、再度データを取り直す
   fetchSeatsState(setSeats);
@@ -74,23 +66,75 @@ export const handleSeatSubmit = async (
 
 export const handleSeatUnBooking = async (
   user: User,
-  setUser: any,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
   position: string,
   setSeats: React.Dispatch<React.SetStateAction<Seats>>
 ) => {
-  const seatDocRef = db.collection("seat").doc(formatDateUntilDay());
   const tempSeatObj: any = {};
   tempSeatObj[position] = false;
   await seatDocRef.set(tempSeatObj, { merge: true });
 
-  // user情報(context)に退席を反映
-  setUser({
-    ...user,
-    seat: undefined,
-  });
+  // user情報の更新(contextとfirestoreどちらも更新)
+  await setUnBookingInfoToUserInfo(user, setUser);
+
+  //studyReport用の時間を登録
+  await setEndTime(user.uid);
 
   // SeatBookingScreenを更新するため、再度データを取り直す
   fetchSeatsState(setSeats);
+};
+
+const setCurrentSeatInfoToUserInfo = async (
+  user: User,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
+  position: string,
+  color: string,
+  icon: [SeatIconComponents, any]
+) => {
+  const userDocRef = db.collection("users").doc(user.uid);
+  await userDocRef.set(
+    {
+      currentSeat: {
+        position: position,
+        color: color,
+        icon: icon,
+      },
+    },
+    { merge: true }
+  );
+
+  // user情報(context)の更新
+  setUser({
+    ...user,
+    currentSeat: {
+      position: position,
+      color: color,
+      icon: icon,
+    },
+  });
+};
+
+const setUnBookingInfoToUserInfo = async (
+  user: User,
+  setUser: React.Dispatch<React.SetStateAction<User>>
+) => {
+  const userDocRef = db.collection("users").doc(user.uid);
+  try {
+    await userDocRef.set(
+      {
+        currentSeat: null,
+      },
+      { merge: true }
+    );
+  } catch (e) {
+    console.log("something went wrong in setting user info : " + e);
+  }
+
+  // user情報(context)の更新
+  setUser({
+    ...user,
+    currentSeat: null,
+  });
 };
 
 export const initialSeatsObject: Seats = {

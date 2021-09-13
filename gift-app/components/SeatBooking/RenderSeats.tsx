@@ -144,9 +144,9 @@ const SeatsWithoutUser = ({
           />
 
           <OneSeat
-            seat={seats.B5}
+            seat={seats.B6}
             uid={user?.uid}
-            position="B5"
+            position="B6"
             handleSeatPress={handleSeatPress}
             handleMySeatPress={handleMySeatPress}
           />

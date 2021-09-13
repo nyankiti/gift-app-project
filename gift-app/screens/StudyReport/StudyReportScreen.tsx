@@ -12,7 +12,11 @@ import { width, height } from "../../libs/utils/Dimension";
 import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 // const Calendar = require('react-native-calendars')
-import { db, fetchDream, fetchTargetByDate } from "../../libs/firebae";
+import {
+  fetchDream,
+  fetchTargetByDate,
+  fetchTotalStudyTime,
+} from "../../libs/studyReportController";
 import { formatDateUntilDay } from "../../libs/utils/file";
 /* components */
 import Screen from "../Screen";
@@ -40,15 +44,23 @@ const StudyReportScreen = () => {
     formatDateUntilDay()
   );
 
+  const [totalStudyTime, setTotalStudyTime] = useState<number>(0);
+
   const handleCalendarDayPress = async (response: any) => {
     console.log(response);
     setSelectedDateString(response.dateString);
     await fetchTargetByDate(user?.uid, response.dateString, setTarget);
+    await fetchTotalStudyTime(
+      user?.uid,
+      response.dateString,
+      setTotalStudyTime
+    );
   };
 
   useEffect(() => {
     fetchDream(user?.uid, setDreamStack, setDream);
     fetchTargetByDate(user?.uid, selectedDateString, setTarget);
+    fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
   }, []);
 
   return (
@@ -113,7 +125,7 @@ const StudyReportScreen = () => {
                 <Text style={styles.second_text}>今日の{"\n"}勉強時間</Text>
                 <StudyClock
                   SVGWidth={SVGWidth}
-                  calcClockRotation={90}
+                  totalStudyTime={totalStudyTime}
                   text_in_clock={selectedDateString.slice(-2)}
                 />
               </View>
@@ -228,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   dream_text: {
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
     fontSize: 28,
     textAlign: "center",
     padding: 10,
@@ -249,7 +261,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
   },
   second_text: {
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
     fontSize: 20,
     textAlign: "center",
   },
@@ -257,7 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     // fontFamily: "ComicSnas_bd",
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
     fontSize: 28,
     paddingHorizontal: 4,
   },

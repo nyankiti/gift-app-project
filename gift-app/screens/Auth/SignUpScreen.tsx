@@ -339,12 +339,12 @@ const styles = StyleSheet.create({
   },
   header_text: {
     fontSize: 36,
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
     marginTop: height * 0.02,
   },
   header_subtext: {
     fontSize: 20,
-    fontFamily: "Anzumozi",
+    fontFamily: "KiwiMaru",
     marginTop: height * 0.02,
   },
 });

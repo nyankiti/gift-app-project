@@ -58,7 +58,7 @@ const OneSeat = ({
       // 他の人がその席を既に登録している場合
       return (
         <TouchableOpacity style={styles.menuBox}>
-          <SeatIcon icon={seat.icon} color={seat.color} />
+          <SeatIcon icon={seat.icon} color="black" />
         </TouchableOpacity>
       );
     }

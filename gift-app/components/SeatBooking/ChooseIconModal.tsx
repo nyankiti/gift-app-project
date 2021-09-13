@@ -36,6 +36,10 @@ const ChooseIconModal = ({
   const [selectedIcon, setSelectedIcon] = useState<[SeatIconComponents, any]>();
 
   const handleSubmit = async () => {
+    if (checkDoubleBooking()) {
+      Alert.alert("一人一席でお願いします");
+      return;
+    }
     if (user !== undefined && selectedIcon !== undefined) {
       await handleSeatSubmit(
         user,
@@ -53,6 +57,14 @@ const ChooseIconModal = ({
 
   const handleIconPress = (icon: [SeatIconComponents, any]) => {
     setSelectedIcon(icon);
+  };
+
+  const checkDoubleBooking = () => {
+    if (user?.currentSeat) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   return (

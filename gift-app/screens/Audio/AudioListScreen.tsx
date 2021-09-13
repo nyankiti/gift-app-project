@@ -41,7 +41,7 @@ export class AudioListScreen extends Component<
       switch (type) {
         case "audio":
           dim.width = width;
-          dim.height = 70;
+          dim.height = 200;
           break;
         default:
           dim.width = 0;
@@ -63,6 +63,9 @@ export class AudioListScreen extends Component<
   ) => {
     return (
       <AudioListItem
+        description={item.description}
+        imageUrl={item.itunes.image}
+        published={item.published}
         title={item.title}
         isPlaying={extendedState?.isPlaying}
         activeListItem={this.context.currentAudioIndex === index}
