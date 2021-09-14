@@ -15,7 +15,6 @@ export default function useCachedResources() {
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,
-          Anzumozi: require("../assets/fonts/Anzumozi.ttf"),
           ComicSnas: require("../assets/fonts/comicsansms3.ttf"),
           ComicSnas_bd: require("../assets/fonts/comicbd.ttf"),
           KiwiMaru: require("../assets/fonts/KiwiMaru-Regular.ttf"),

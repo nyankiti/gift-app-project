@@ -1,15 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import {
   changeAudio,
   moveAudio,
   pause,
+  playFromMiddle,
+  playFromMiddleByPosition,
 } from "../../libs/audio/audioController";
 import { width } from "../../libs/utils/Dimension";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { selectAudio } from "../../libs/audio/audioController";
-import { convertTime } from "../../libs/audio/helper";
+import { convertTimeToPlaybak, convertTime } from "../../libs/audio/helper";
 import color from "../../constants/color";
 /* components */
 import AudioBaseScreen from "./AudioBaseScreen";
@@ -18,7 +20,9 @@ import PlayerButton from "../../components/Audio/PlayerButton";
 import { AudioContext } from "../../context/AudioProvider";
 
 const PlayerScreen = () => {
-  const [currentPosition, setCurrentPosition] = useState(0);
+  const [currentPosition, setCurrentPosition] = useState<
+    string | number | null
+  >();
   const context = useContext(AudioContext);
   const { playbackPosition, playbackDuration, currentAudio } = context;
 
@@ -26,11 +30,6 @@ const PlayerScreen = () => {
     if (playbackPosition !== null && playbackDuration !== null) {
       return playbackPosition / playbackDuration;
     }
-
-    if (currentAudio?.lastPosition) {
-      return currentAudio?.lastPosition / (currentAudio.duration * 1000);
-    }
-
     return 0;
   };
 
@@ -48,15 +47,6 @@ const PlayerScreen = () => {
     await changeAudio(context, "previous");
   };
 
-  const renderCurrentTime = () => {
-    if (!context.soundObj && currentAudio?.lastPosition) {
-      return convertTime(currentAudio.lastPosition / 1000);
-    }
-    return convertTime(context.playbackPosition / 1000);
-  };
-
-  if (!context.currentAudio) return null;
-
   return (
     <AudioBaseScreen>
       <View style={styles.container}>
@@ -66,15 +56,22 @@ const PlayerScreen = () => {
           } / ${context.totalAudioCount}`}</Text>
         </View>
         <View style={styles.midBannerContainer}>
-          <MaterialCommunityIcons
-            name="music-circle"
-            size={300}
-            color={context.isPlaying ? color.ACTIVE_BG : color.FONT_MEDIUM}
-          />
+          {currentAudio?.itunes && currentAudio?.itunes.image ? (
+            <Image
+              source={{ uri: currentAudio?.itunes.image }}
+              style={{ width: 300, height: 300, borderRadius: 150 }}
+            />
+          ) : (
+            <MaterialCommunityIcons
+              name="music-circle"
+              size={300}
+              color={context.isPlaying ? color.ACTIVE_BG : color.FONT_MEDIUM}
+            />
+          )}
         </View>
         <View style={{}}>
           <Text numberOfLines={1} style={styles.audioTitle}>
-            {context.currentAudio.title}
+            {currentAudio?.title}
           </Text>
           <View
             style={{
@@ -83,35 +80,51 @@ const PlayerScreen = () => {
               paddingHorizontal: 15,
             }}
           >
-            <Text>{convertTime(context.currentAudio.duration)}</Text>
             <Text>
-              {currentPosition ? currentPosition : renderCurrentTime()}
+              {currentAudio?.itunes && currentAudio?.itunes.duration
+                ? convertTimeToPlaybak(Number(currentAudio?.itunes.duration))
+                : null}
+            </Text>
+            <Text>
+              {currentPosition
+                ? currentPosition
+                : convertTime(Math.floor(context.playbackPosition / 1000))}
             </Text>
           </View>
           <Slider
             style={{ width: width, height: 40 }}
             minimumValue={0}
             maximumValue={1}
+            step={0.01}
             value={calculateSeebBar()}
             minimumTrackTintColor={color.FONT_MEDIUM}
             maximumTrackTintColor={color.ACTIVE_BG}
             onValueChange={(value) => {
-              setCurrentPosition(
-                convertTime(value * context.currentAudio.duration)
-              );
+              currentAudio?.itunes && currentAudio.itunes.duration
+                ? setCurrentPosition(
+                    convertTimeToPlaybak(
+                      value * Number(currentAudio?.itunes.duration)
+                    )
+                  )
+                : null;
             }}
             onSlidingStart={async () => {
               if (!context.isPlaying) return;
 
               try {
-                await pause(context.playbackObj);
+                if (context.playbackObj) {
+                  await pause(context.playbackObj);
+                }
               } catch (error) {
                 console.log("error inside onSlidingStart callback", error);
               }
             }}
+            // slideのvalueによらずユーザーがslideをreleaseしたときに発火する
             onSlidingComplete={async (value) => {
-              await moveAudio(context, value);
-              setCurrentPosition(0);
+              const position =
+                value * Number(currentAudio?.itunes.duration) * 1000;
+              await playFromMiddleByPosition(context, position);
+              setCurrentPosition(null);
             }}
           />
           <View style={styles.audioControllers}>

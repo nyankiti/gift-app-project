@@ -16,6 +16,10 @@ typescriptに変えたことで考えられる影響
 ladAsyncの第三引数はtrueでいいのか？？
 
 lastPostionをうまく指定できていない気がする
+
+https://d3ctxlq1ktw2nl.cloudfront.net/staging/2021-08-18/525f560b7a51f06d5c4465e46f60272a.m4a#t=30
+途中から再生する場合は上記のように#t=開始時間のクエリパラメータを渡す
+audioObjectがlastPositionプロパティを持たないので、途中からの再生は上のように対応するしかない？
 */
 
 // play audio
@@ -40,6 +44,52 @@ export const play = async (
     );
 
     return await playbackObj.playFromPositionAsync(lastPosition);
+  } catch (error: any) {
+    console.log("error inside play helper method", error.message);
+  }
+};
+
+// 早田オリジナル
+// urlから再生時間を指定する方法は、アプリでは動かなかったので不採用（webアプリのみ動作）
+export const playFromMiddle = async (
+  playbackObj: Playback,
+  uri: string,
+  lastTime: number
+) => {
+  console.log(lastTime);
+  const uriForMiddlePlay = uri + "#t=" + lastTime;
+  console.log(uriForMiddlePlay);
+  try {
+    await playbackObj.stopAsync();
+    await playbackObj.unloadAsync();
+    // shouldPlayにtrueを指定すると、playbackObj.playAsync()を呼ば出さなくとも自動的に再生してくれる
+    return await playbackObj.loadAsync(
+      { uri: uriForMiddlePlay },
+      { shouldPlay: true, progressUpdateIntervalMillis: 1000 },
+      true
+    );
+  } catch (error: any) {
+    console.log("error inside play helper method", error.message);
+  }
+};
+
+// 早田オリジナル
+export const playFromMiddleByPosition = async (
+  context: AudioContextType,
+  position: number
+) => {
+  try {
+    if (context.playbackObj !== null) {
+      const status = await context.playbackObj.setPositionAsync(position);
+
+      context.updateState({
+        soundObj: status,
+        playbackPosition: position,
+      });
+
+      await resume(context.playbackObj);
+    }
+    // shouldPlayにtrueを指定すると、playbackObj.playAsync()を呼ば出さなくとも自動的に再生してくれる
   } catch (error: any) {
     console.log("error inside play helper method", error.message);
   }
@@ -92,11 +142,7 @@ export const selectAudio = async (
   try {
     // playing audio for the first time.
     if (soundObj === null && playbackObj !== null) {
-      const status = await play(
-        playbackObj,
-        audio.enclosures[0].url,
-        audio.lastPosition
-      );
+      const status = await play(playbackObj, audio.enclosures[0].url);
       const index = audioFiles.findIndex(({ id }) => id === audio.id);
       updateState(context, {
         currentAudio: audio,
@@ -249,15 +295,20 @@ export const changeAudio = async (
 };
 
 export const moveAudio = async (context: AudioContextType, value: number) => {
+  console.log(value);
+
   const { soundObj, isPlaying, playbackObj, updateState } = context;
+  console.log(soundObj);
   if (soundObj === null || !isPlaying) return;
 
+  console.log("start");
   try {
     if (playbackObj !== null && "durationMillis" in soundObj) {
       const status = await playbackObj.setPositionAsync(
         // null合体演算子 ?? によってsoundObj.durationMillisがundefined null のときは0を返す
         Math.floor(soundObj.durationMillis ?? 0 * value)
       );
+      console.log(status);
       if ("positionMillis" in status) {
         updateState(context, {
           soundObj: status,

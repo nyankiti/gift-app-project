@@ -47,7 +47,7 @@ const AudioListItem = ({
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <Image source={{ uri: imageUrl }} style={styles.thumbnail} />
-          <View style={styles.titleContainer}>
+          <View>
             <Text style={styles.title}>
               <Entypo name="dot-single" size={40} color="skyblue" />
               {title}
@@ -59,7 +59,8 @@ const AudioListItem = ({
           <View>
             <Text style={styles.description}>{description}</Text>
             <Text style={styles.timeText}>
-              {day.getMonth()}月{day.getDate()}日 {convertTime(duration)}
+              {day.getMonth()}月{day.getDate()}日{"     "}
+              {convertTime(duration)}
             </Text>
           </View>
 
@@ -117,56 +118,52 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 10,
-    marginBottom: 10,
+    marginRight: 16,
     flex: 1,
   },
   thumbnail: {
-    width: 100,
-    height: 100,
-    borderRadius: 20,
+    width: 65,
+    height: 65,
+    borderRadius: 12,
   },
   description: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: "KiwiMaru",
-    padding: 4,
+    marginTop: 10,
     color: color.FONT,
     marginLeft: 16,
   },
   timeText: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: "KiwiMaru",
-    padding: 4,
+    paddingBottom: 4,
+    marginTop: -10,
     color: color.FONT,
-    marginLeft: 24,
+    marginLeft: 30,
   },
 
   playButton: {
-    height: 70,
-    flexBasis: 70,
+    height: 50,
+    flexBasis: 50,
     backgroundColor: color.FONT_LIGHT,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 35,
+    borderRadius: 25,
   },
   thumbnailText: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
     color: color.FONT,
   },
-  titleContainer: {
-    // width: width - 180,
-    marginTop: 25,
-    paddingLeft: 10,
-  },
   title: {
-    fontSize: 32,
+    fontSize: 24,
     fontFamily: "KiwiMaru",
     padding: 10,
+    marginLeft: -10,
     color: color.FONT,
   },
   separator: {
-    width: width - 80,
+    width: width - 40,
     backgroundColor: "#333",
     opacity: 0.3,
     height: 0.5,

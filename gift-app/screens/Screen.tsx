@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.APP_BG,
     // 以下のようにStatuBarの高さを全体から変更することもできる
     // paddingTop: StatusBar.currentHeight,
+    paddingTop: 10,
   },
 });
 

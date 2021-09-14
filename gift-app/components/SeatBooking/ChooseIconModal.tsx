@@ -220,13 +220,14 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
     backgroundColor: color.BASE_COLOR,
+    fontFamily: "KiwiMaru",
   },
   icon: {
     padding: 10,
   },
   buttomContainer: {},
   buttomText: {
-    fontFamily: "ComicSnas",
+    fontFamily: "KiwiMaru",
     padding: 10,
     fontSize: 16,
   },

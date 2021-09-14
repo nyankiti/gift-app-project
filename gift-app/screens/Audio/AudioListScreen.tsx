@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { RecyclerListView, LayoutProvider } from "recyclerlistview";
 import { width } from "../../libs/utils/Dimension";
+import color from "../../constants/color";
 /*components */
 import AudioBaseScreen from "./AudioBaseScreen";
 import AudioListItem from "../../components/Audio/AudioListItem";
+import AudioHeader, {
+  ExtendedScrollView,
+} from "../../components/Audio/AudioHeader";
 /* context */
 import { AudioContext } from "../../context/AudioProvider";
 /* types */
@@ -11,6 +15,7 @@ import { AnchorAudioObj } from "../../types/audio";
 import { selectAudio } from "../../libs/audio/audioController";
 import { AudioTabParamList } from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
+import { View } from "react-native-animatable";
 
 type AudioListScreenNavigationProps = StackScreenProps<
   AudioTabParamList,
@@ -41,7 +46,7 @@ export class AudioListScreen extends Component<
       switch (type) {
         case "audio":
           dim.width = width;
-          dim.height = 200;
+          dim.height = 140;
           break;
         default:
           dim.width = 0;
@@ -76,9 +81,6 @@ export class AudioListScreen extends Component<
   };
 
   navigateToPlaylist = () => {
-    this.context.updateState(this.context, {
-      addToPlayList: this.currentItem,
-    });
     this.props.navigation.navigate("PlayerScreen");
   };
 
@@ -86,16 +88,22 @@ export class AudioListScreen extends Component<
     return (
       <AudioContext.Consumer>
         {({ dataProvider, isPlaying }) => {
-          if (!dataProvider._data.length) return null;
+          if (!dataProvider._data.length) return <AudioHeader />;
           return (
-            <AudioBaseScreen>
+            <View
+              style={{
+                backgroundColor: color.APP_BG,
+                flex: 1,
+              }}
+            >
               <RecyclerListView
+                externalScrollView={ExtendedScrollView}
                 dataProvider={dataProvider}
                 layoutProvider={this.layoutProvider}
                 rowRenderer={this.rowRenderer}
                 extendedState={{ isPlaying }}
               />
-            </AudioBaseScreen>
+            </View>
           );
         }}
       </AudioContext.Consumer>

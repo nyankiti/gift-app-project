@@ -39,12 +39,6 @@ const UnBookingModal = ({ visible, setVisible, position, setSeats }: Props) => {
           <Text style={styles.buttomText}>座席の位置: </Text>
           <Text style={styles.buttomText}>{position}</Text>
         </View>
-        {/* {selectedIcon ? (
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.buttomText}>使用するアイコン: </Text>
-            <SeatIcon icon={selectedIcon} color="blue" />
-          </View>
-        ) : null} */}
       </View>
 
       <Button
@@ -72,7 +66,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   text: {
-    fontFamily: "ComicSnas",
+    fontFamily: "KiwiMaru",
     padding: 10,
     fontSize: 24,
   },
@@ -82,7 +76,7 @@ const styles = StyleSheet.create({
   },
   buttomContainer: {},
   buttomText: {
-    fontFamily: "ComicSnas",
+    fontFamily: "KiwiMaru",
     padding: 10,
     fontSize: 16,
   },

@@ -44,7 +44,6 @@ export const AudioContext = createContext<AudioContextType>({
 type State = {
   audioFiles: any;
   playList: any;
-  addToPlayList: null;
   permissionError: false;
   dataProvider: any;
   playbackObj: Playback | null;
@@ -65,7 +64,6 @@ export class AudioProvider extends Component<Props, State> {
     this.state = {
       audioFiles: [],
       playList: [],
-      addToPlayList: null,
       permissionError: false,
       dataProvider: new DataProvider((r1, r2) => r1 !== r2),
       playbackObj: null,
