@@ -46,7 +46,7 @@ const BottomTabNavigator = () => {
   }, []);
 
   return (
-    <BottomTab.Navigator initialRouteName="Audio" activeColor="#fff">
+    <BottomTab.Navigator initialRouteName="News" activeColor="#fff">
       <BottomTab.Screen
         name="News"
         component={NewsNavigator}

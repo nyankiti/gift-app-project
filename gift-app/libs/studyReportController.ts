@@ -89,6 +89,8 @@ export const setEndTime = async (uid: string) => {
         let newTotalTime = 0;
         if (data.totalTime) {
           newTotalTime = data.totalTime + diffMinutes;
+        } else {
+          newTotalTime = diffMinutes;
         }
 
         await userSeatDocRef.set(

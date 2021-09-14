@@ -193,7 +193,7 @@ const ChooseIconModal = ({
         onPress={() => handleSubmit()}
         style={styles.button}
       >
-        更新する
+        登録する
       </Button>
     </Modal>
   );
