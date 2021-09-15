@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { seatWidth } from "../../libs/seatController";
 import color from "../../constants/color";
@@ -21,49 +21,38 @@ type Props = {
   handleMySeatPress: (position: string) => void;
 };
 
-const OneSeat = ({
-  seat,
-  uid,
-  position,
-  handleSeatPress,
-  handleMySeatPress,
-}: Props) => {
-  // const handleSeatPress = (s: string) => {
-  //   setVisible(!visible);
-  //   setSelectedPostion(position);
-  // };
-
-  // const handleMySeatPress = () => {};
-
-  // 座席を登録した人がいない場合
-  if (seat === false) {
-    return (
-      <TouchableOpacity
-        style={styles.menuBox}
-        onPress={() => handleSeatPress(position)}
-      ></TouchableOpacity>
-    );
-  } else {
-    // その席が自分が登録したものである場合
-    if (seat.uid === uid) {
+const OneSeat = memo(
+  ({ seat, uid, position, handleSeatPress, handleMySeatPress }: Props) => {
+    // 座席を登録した人がいない場合
+    if (seat === false) {
       return (
         <TouchableOpacity
           style={styles.menuBox}
-          onPress={() => handleMySeatPress(position)}
-        >
-          <SeatIcon icon={seat.icon} color={seat.color} />
-        </TouchableOpacity>
+          onPress={() => handleSeatPress(position)}
+        ></TouchableOpacity>
       );
     } else {
-      // 他の人がその席を既に登録している場合
-      return (
-        <TouchableOpacity style={styles.menuBox}>
-          <SeatIcon icon={seat.icon} color="dimgray" />
-        </TouchableOpacity>
-      );
+      // その席が自分が登録したものである場合
+      if (seat.uid === uid) {
+        return (
+          <TouchableOpacity
+            style={styles.menuBox}
+            onPress={() => handleMySeatPress(position)}
+          >
+            <SeatIcon icon={seat.icon} color={seat.color} />
+          </TouchableOpacity>
+        );
+      } else {
+        // 他の人がその席を既に登録している場合
+        return (
+          <TouchableOpacity style={styles.menuBox}>
+            <SeatIcon icon={seat.icon} color="dimgray" />
+          </TouchableOpacity>
+        );
+      }
     }
   }
-};
+);
 
 export default OneSeat;
 

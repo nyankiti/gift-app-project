@@ -7,15 +7,18 @@ import {
   seatWidth,
   initialSeatsObject,
 } from "../../libs/seatController";
+import { Ionicons } from "@expo/vector-icons";
 /* components */
 import Screen from "../Screen";
 import ChooseIconModal from "../../components/SeatBooking/ChooseIconModal";
 import UnBookingModal from "../../components/SeatBooking/UnBookingModal";
 import RenderSeats from "../../components/SeatBooking/RenderSeats";
-import { Seats } from "../../types/seat";
+import Loading from "../../components/Loading";
 /* types */
+import { Seats } from "../../types/seat";
 import { SeatBookingTabParamList } from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type SeatBookingScreenNavigationProps = StackScreenProps<
   SeatBookingTabParamList,
@@ -23,6 +26,7 @@ type SeatBookingScreenNavigationProps = StackScreenProps<
 >;
 
 const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [unBookinModalVisible, setUnBookingModalVisible] =
     useState<boolean>(false);
@@ -32,6 +36,14 @@ const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = () => {
   useEffect(() => {
     fetchSeatsState(setSeats);
   }, []);
+
+  const handleReloadPress = async () => {
+    setLoading(true);
+    await fetchSeatsState(setSeats);
+    setLoading(false);
+  };
+
+  if (loading) return <Loading />;
 
   return (
     <Screen>
@@ -51,6 +63,26 @@ const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = () => {
               setSeats={setSeats}
             />
           </Portal>
+
+          <TouchableOpacity
+            style={{ flexDirection: "row-reverse", marginLeft: 16 }}
+            onPress={handleReloadPress}
+          >
+            <View>
+              <Text
+                style={{ fontFamily: "KiwiMaru", fontSize: 16, marginTop: 4 }}
+              >
+                リロード
+              </Text>
+              <Ionicons
+                name="reload"
+                size={28}
+                color="gray"
+                style={{ marginLeft: "auto", marginRight: 4 }}
+              />
+            </View>
+          </TouchableOpacity>
+
           <View style={styles.classRoomContainer}>
             <View style={styles.whiteboard}>
               <Text style={{ fontFamily: "ComicSnas" }}>White Board</Text>

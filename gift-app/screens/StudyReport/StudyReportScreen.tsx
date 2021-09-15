@@ -1,3 +1,5 @@
+// studyReportScreen の値は頻繁に更新されるので、値の変更する回数が少ないDream部分とmodalは切り出してメモ化
+
 import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
@@ -8,7 +10,12 @@ import {
   StatusBar,
 } from "react-native";
 import { Provider, Portal } from "react-native-paper";
-import { width, height } from "../../libs/utils/Dimension";
+import {
+  width,
+  height,
+  calendar_width,
+  SVGClockWidth,
+} from "../../libs/utils/Dimension";
 import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 // const Calendar = require('react-native-calendars')
@@ -20,13 +27,13 @@ import {
 import { formatDateUntilDay } from "../../libs/utils/file";
 /* components */
 import Screen from "../Screen";
+import Dream from "../../components/StudyReport/Dream";
 import TargetModal from "../../components/StudyReport/TargetModal";
 import DreamModal from "../../components/StudyReport/DreamModal";
 import StudyClock from "../../components/StudyReport/StudyClock";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
 
-const SVGWidth = width * 0.24;
 const backgroundImage = require("../../assets/images/notebook.jpg");
 
 const StudyReportScreen = () => {
@@ -55,6 +62,12 @@ const StudyReportScreen = () => {
       response.dateString,
       setTotalStudyTime
     );
+  };
+
+  const renderDate = (): string => {
+    // 今日を選択中の場合
+    if (selectedDateString == formatDateUntilDay()) return "今日";
+    return selectedDateString.substr(5).replace("-", "/");
   };
 
   useEffect(() => {
@@ -88,43 +101,25 @@ const StudyReportScreen = () => {
           </Portal>
 
           <ImageBackground source={backgroundImage} style={styles.container}>
-            <View style={styles.dream_container}>
-              <View style={{ justifyContent: "center", flex: 1 }}>
-                <Text
-                  style={{
-                    fontFamily: "ComicSnas",
-                    fontSize: 24,
-                    textAlign: "center",
-                  }}
-                >
-                  Dream:
-                </Text>
-              </View>
-              <View style={{ flex: 2 }}>
-                <Text style={styles.dream_text}>{dream}</Text>
-              </View>
-              <View style={{ justifyContent: "center" }}>
-                <FontAwesome5.Button
-                  name="pencil-alt"
-                  size={22}
-                  backgroundColor="rgba(0, 0, 0, 0)"
-                  color="#2e64e5"
-                  onPress={() => setDreamModalVisible(!dreamModalVisible)}
-                />
-              </View>
-            </View>
+            <Dream
+              dream={dream}
+              dreamModalVisible={dreamModalVisible}
+              setDreamModalVisible={setDreamModalVisible}
+            />
 
             <View style={styles.purpose_container}>
               <View
                 style={{
                   flexDirection: "column",
-                  width: SVGWidth,
+                  width: SVGClockWidth,
                   alignItems: "center",
                 }}
               >
-                <Text style={styles.second_text}>今日の{"\n"}勉強時間</Text>
+                <Text style={styles.second_text}>
+                  {renderDate() + "の\n"}勉強時間
+                </Text>
                 <StudyClock
-                  SVGWidth={SVGWidth}
+                  SVGWidth={SVGClockWidth}
                   totalStudyTime={totalStudyTime}
                   text_in_clock={selectedDateString.slice(-2)}
                 />
@@ -141,13 +136,11 @@ const StudyReportScreen = () => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    marginTop: 12,
                   }}
                 >
                   <View>
-                    <Text style={styles.second_text}>
-                      今日の目標{"\n"}
-                      {selectedDateString}
-                    </Text>
+                    <Text style={styles.second_text}>{renderDate()}の目標</Text>
                   </View>
                   <View style={{}}>
                     <FontAwesome5.Button
@@ -188,7 +181,7 @@ const StudyReportScreen = () => {
                 // current={formatDateUntilDay()}
                 renderArrow={(direction: any) => (
                   <FontAwesome
-                    name={`arrow-${direction}`}
+                    name={`arrow-${direction}` as "arrow-right" | "arrow-left"}
                     color="#05375a"
                     size={15}
                   />
@@ -223,8 +216,6 @@ const StudyReportScreen = () => {
 
 export default StudyReportScreen;
 
-const calendar_width = width * 0.9;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -233,20 +224,6 @@ const styles = StyleSheet.create({
     height: height * 0.9,
     alignItems: "center",
     width: width,
-  },
-  dream_container: {
-    flexDirection: "row",
-    width: calendar_width,
-    justifyContent: "space-around",
-  },
-  dream_text: {
-    fontFamily: "KiwiMaru",
-    fontSize: 28,
-    textAlign: "center",
-    padding: 10,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 10,
   },
   purpose_container: {
     // flex: 2,
@@ -268,7 +245,6 @@ const styles = StyleSheet.create({
   target_text: {
     justifyContent: "center",
     textAlign: "center",
-    // fontFamily: "ComicSnas_bd",
     fontFamily: "KiwiMaru",
     fontSize: 28,
     paddingHorizontal: 4,
@@ -278,7 +254,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "gray",
-    height: SVGWidth * 0.9,
+    height: SVGClockWidth * 0.9,
     justifyContent: "center",
   },
   modal_container: {
