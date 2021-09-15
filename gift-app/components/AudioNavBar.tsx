@@ -1,18 +1,11 @@
 import React, { RefObject, useContext } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { width, height } from "../libs/utils/Dimension";
 import BottomSheet from "reanimated-bottom-sheet";
 import { selectAudio } from "../libs/audio/audioController";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 /* components */
-import PlayerButton from "../components/Audio/PlayerButton";
+import PlayerButton from "./Audio/PlayerButton";
 /* context */
 import { AudioContext } from "../context/AudioProvider";
 
@@ -20,7 +13,7 @@ type Props = {
   sheetRef: RefObject<BottomSheet>;
 };
 
-const BottomPlayerBar = ({ sheetRef }: Props) => {
+const AudioNavBar = ({ sheetRef }: Props) => {
   const context = useContext(AudioContext);
   const { isPlaying, currentAudio, bottomPlayerBarShown } = context;
 
@@ -40,7 +33,7 @@ const BottomPlayerBar = ({ sheetRef }: Props) => {
     <View
       style={{
         position: "absolute",
-        top: height - 16,
+        bottom: 50,
         height: 70,
         backgroundColor: "lavender",
         width: width,
@@ -94,6 +87,6 @@ const BottomPlayerBar = ({ sheetRef }: Props) => {
   );
 };
 
-export default BottomPlayerBar;
+export default AudioNavBar;
 
 const styles = StyleSheet.create({});

@@ -117,6 +117,8 @@ export default DrawerContent;
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
+    zIndex: 99,
+    elevation: 2,
   },
   userInfoSection: {
     paddingLeft: 20,

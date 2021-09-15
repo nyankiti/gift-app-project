@@ -50,7 +50,7 @@ export const handleSeatSubmit = async (
   tempSeatObj[position] = {
     uid: user.uid,
     icon: icon,
-    color: "red",
+    color: "dodgerblue",
   };
   await seatDocRef.set(tempSeatObj, { merge: true });
 

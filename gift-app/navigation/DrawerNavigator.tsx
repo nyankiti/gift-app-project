@@ -19,7 +19,7 @@ import BottomSheet from "reanimated-bottom-sheet";
 import { height, width } from "../libs/utils/Dimension";
 /* components */
 import BottomUpPlayer from "../components/BottomUpPlayer";
-import BottomPlayerBar from "../components/BottomPlayerBar";
+import AudioNavBar from "../components/AudioNavBar";
 
 // type DrawerNaviProps = DrawerContentComponentProps<DrawerParamList>;
 
@@ -78,7 +78,7 @@ const DrawerNavigator: React.FC<DrawerContentComponentProps> = ({
         renderContent={renderContent}
         enabledContentTapInteraction={false}
       />
-      <BottomPlayerBar sheetRef={sheetRef} />
+      <AudioNavBar sheetRef={sheetRef} />
     </>
   );
 };
