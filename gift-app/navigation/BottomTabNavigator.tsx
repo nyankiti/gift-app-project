@@ -1,17 +1,16 @@
 import React, { useContext, useEffect } from "react";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { View, Text } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import color from "../constants/color";
 import { getUser } from "../libs/firebae";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 /* navigator */
-import AuthNavigator from "./AuthNavigator";
+// import AuthNavigator from "./AuthNavigator";
 import NewsNavigator from "./NewsNavigator";
 import SeatBookingNavigator from "./SeatBookingNavigator";
 import StudyReportNavigator from "./StudyReportNavigator";
 import AudioNavigator from "./AudioNavigator";
-import AudioTopTabNavigator from "./AudioTopTabNavigator";
+// import AudioTopTabNavigator from "./AudioTopTabNavigator";
 /* context */
 import { AuthContext } from "../context/AuthProvider";
 /* types */
@@ -60,7 +59,7 @@ const BottomTabNavigator = () => {
       />
       <BottomTab.Screen
         name="Audio"
-        component={AudioTopTabNavigator}
+        component={AudioNavigator}
         options={{
           tabBarLabel: "Audio",
           tabBarColor: color.BASE_COLOR,

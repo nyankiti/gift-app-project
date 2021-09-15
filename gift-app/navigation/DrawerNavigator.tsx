@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { Button, View } from "react-native";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
@@ -16,11 +15,11 @@ import GiftInfoScreen from "../screens/Drawer/GiftInfoScreen";
 /* types */
 import { DrawerParamList } from "../types/navigationType";
 
-import Animated from "react-native-reanimated";
 import BottomSheet from "reanimated-bottom-sheet";
 import { height, width } from "../libs/utils/Dimension";
 /* components */
 import BottomUpPlayer from "../components/BottomUpPlayer";
+import BottomPlayerBar from "../components/BottomPlayerBar";
 
 // type DrawerNaviProps = DrawerContentComponentProps<DrawerParamList>;
 
@@ -29,7 +28,7 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 const DrawerNavigator: React.FC<DrawerContentComponentProps> = ({
   navigation,
 }) => {
-  const renderContent = () => <BottomUpPlayer />;
+  const renderContent = () => <BottomUpPlayer sheetRef={sheetRef} />;
 
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -74,25 +73,12 @@ const DrawerNavigator: React.FC<DrawerContentComponentProps> = ({
 
       <BottomSheet
         ref={sheetRef}
-        snapPoints={[0, 300, height - 20]}
+        snapPoints={[0, 200, height - 20]}
         borderRadius={10}
         renderContent={renderContent}
+        enabledContentTapInteraction={false}
       />
-      <View
-        style={{
-          position: "absolute",
-          top: height + 20,
-          width: width,
-          zIndex: 1,
-        }}
-      >
-        <Button
-          title="Open Bottom Sheet"
-          onPress={() => {
-            sheetRef.current?.snapTo(height - 20);
-          }}
-        />
-      </View>
+      <BottomPlayerBar sheetRef={sheetRef} />
     </>
   );
 };

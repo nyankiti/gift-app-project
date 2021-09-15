@@ -151,6 +151,7 @@ export const selectAudio = async (
         currentAudioIndex: index,
         isPlayListRunning: false,
         activePlayList: [],
+        bottomPlayerBarShown: true,
         ...playListInfo,
       });
       return playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
@@ -181,7 +182,11 @@ export const selectAudio = async (
       playbackObj !== null
     ) {
       const status = await resume(playbackObj);
-      return updateState(context, { soundObj: status, isPlaying: true });
+      return updateState(context, {
+        soundObj: status,
+        isPlaying: true,
+        bottomPlayerBarShown: true,
+      });
     }
 
     // select another audio
@@ -199,6 +204,7 @@ export const selectAudio = async (
         currentAudioIndex: index,
         isPlayListRunning: false,
         activePlayList: [],
+        bottomPlayerBarShown: true,
         ...playListInfo,
       });
     }

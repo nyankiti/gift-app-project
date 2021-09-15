@@ -22,6 +22,7 @@ export type AudioContextType = {
   playbackDuration: any;
   updateState: any;
   onPlaybackStatusUpdate: any;
+  bottomPlayerBarShown: boolean;
 };
 
 type Props = {};
@@ -39,6 +40,7 @@ export const AudioContext = createContext<AudioContextType>({
   playbackDuration: undefined,
   updateState: () => {},
   onPlaybackStatusUpdate: () => {},
+  bottomPlayerBarShown: false,
 });
 
 type State = {
@@ -53,6 +55,7 @@ type State = {
   currentAudioIndex: number;
   playbackPosition: null;
   playbackDuration: null;
+  bottomPlayerBarShown: boolean;
 };
 
 export class AudioProvider extends Component<Props, State> {
@@ -73,6 +76,7 @@ export class AudioProvider extends Component<Props, State> {
       currentAudioIndex: 0,
       playbackPosition: null,
       playbackDuration: null,
+      bottomPlayerBarShown: false,
     };
     this.totalAudioCount = 0;
     this.updateState = (prevState: any, newState: any) => {
@@ -155,6 +159,7 @@ export class AudioProvider extends Component<Props, State> {
       currentAudioIndex,
       playbackPosition,
       playbackDuration,
+      bottomPlayerBarShown,
     } = this.state;
 
     return (
@@ -170,6 +175,7 @@ export class AudioProvider extends Component<Props, State> {
           totalAudioCount: this.totalAudioCount,
           playbackPosition,
           playbackDuration,
+          bottomPlayerBarShown,
           updateState: this.updateState,
           onPlaybackStatusUpdate: this.onPlaybackStatusUpdate,
         }}
