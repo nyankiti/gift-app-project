@@ -2,11 +2,12 @@ import React, { useContext, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import color from "../../constants/color";
 import { seatWidth } from "../../libs/seatController";
-import { Seats } from "../../types/seat";
 /* components */
 import OneSeat from "./OneSeat";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
+/* types */
+import { Seats, Position } from "../../types/seat";
 
 type Props = {
   modalVisible: boolean;
@@ -14,7 +15,7 @@ type Props = {
   unBookingModalVisible: boolean;
   setUnBookingModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   seats: Seats;
-  setSelectedPostion: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedPostion: React.Dispatch<React.SetStateAction<Position>>;
 };
 
 const SeatsWithoutUser = ({
@@ -28,12 +29,12 @@ const SeatsWithoutUser = ({
   const { user, setUser } = useContext(AuthContext);
 
   // memo化するコンポーネント(OneSeat.tsx)に渡すコールバック関数はuseCallbackを用いてメモ化しておく
-  const handleSeatPress = useCallback((position: string) => {
+  const handleSeatPress = useCallback((position: Position) => {
     setModalVisible(!modalVisible);
     setSelectedPostion(position);
   }, []);
 
-  const handleMySeatPress = useCallback((position: string) => {
+  const handleMySeatPress = useCallback((position: Position) => {
     setUnBookingModalVisible(!unBookingModalVisible);
     setSelectedPostion(position);
   }, []);

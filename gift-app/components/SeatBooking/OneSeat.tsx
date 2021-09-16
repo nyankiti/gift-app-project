@@ -5,7 +5,7 @@ import color from "../../constants/color";
 /* components */
 import SeatIcon from "./SeatIcon";
 /* types */
-import { SeatIconComponents } from "../../types/seat";
+import { SeatIconComponents, Position } from "../../types/seat";
 
 type Props = {
   seat:
@@ -16,9 +16,9 @@ type Props = {
       }
     | false;
   uid: string;
-  position: string;
-  handleSeatPress: (position: string) => void;
-  handleMySeatPress: (position: string) => void;
+  position: Position;
+  handleSeatPress: (position: Position) => void;
+  handleMySeatPress: (position: Position) => void;
 };
 
 const OneSeat = memo(
@@ -46,7 +46,8 @@ const OneSeat = memo(
         // 他の人がその席を既に登録している場合
         return (
           <TouchableOpacity style={styles.menuBox}>
-            <SeatIcon icon={seat.icon} color="dimgray" />
+            <SeatIcon icon={seat.icon} color={seat.color} />
+            {/* <SeatIcon icon={seat.icon} color="dimgray" /> */}
           </TouchableOpacity>
         );
       }

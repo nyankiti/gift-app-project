@@ -33,11 +33,18 @@ import DreamModal from "../../components/StudyReport/DreamModal";
 import StudyClock from "../../components/StudyReport/StudyClock";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
+import { OthersContext } from "../../context/OthersProvider";
 
 const backgroundImage = require("../../assets/images/notebook.jpg");
 
 const StudyReportScreen = () => {
   const { user } = useContext(AuthContext);
+  const {
+    totalStudyTime,
+    setTotalStudyTime,
+    selectedDateString,
+    setSelectedDateString,
+  } = useContext(OthersContext);
   // dreamは配列をstackのように扱うことで最新の夢から順番に参照できるようにする
   const [dreamStack, setDreamStack] = useState<string[]>([]);
   const [dream, setDream] = useState<string>("夢を記入しよう！");
@@ -46,12 +53,6 @@ const StudyReportScreen = () => {
 
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
-
-  const [selectedDateString, setSelectedDateString] = useState<string>(
-    formatDateUntilDay()
-  );
-
-  const [totalStudyTime, setTotalStudyTime] = useState<number>(0);
 
   const handleCalendarDayPress = async (response: any) => {
     console.log(response);
@@ -68,6 +69,14 @@ const StudyReportScreen = () => {
     // 今日を選択中の場合
     if (selectedDateString == formatDateUntilDay()) return "今日";
     return selectedDateString.substr(5).replace("-", "/");
+  };
+
+  const renderStudyHours = (): string => {
+    if (totalStudyTime === 0) {
+      return "";
+    }
+    const res = Math.floor((totalStudyTime / 60) * 10) / 10;
+    return `${res}時間`;
   };
 
   useEffect(() => {
@@ -123,6 +132,7 @@ const StudyReportScreen = () => {
                   totalStudyTime={totalStudyTime}
                   text_in_clock={selectedDateString.slice(-2)}
                 />
+                <Text style={styles.second_text}>{renderStudyHours()}</Text>
               </View>
               <View
                 style={{

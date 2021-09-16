@@ -50,18 +50,22 @@ export const handleSeatSubmit = async (
   tempSeatObj[position] = {
     uid: user.uid,
     icon: icon,
-    color: "dodgerblue",
+    color: color,
   };
-  await seatDocRef.set(tempSeatObj, { merge: true });
+  try {
+    await seatDocRef.set(tempSeatObj, { merge: true });
 
-  // user情報の更新(contextとfirestoreどちらも更新)
-  await setCurrentSeatInfoToUserInfo(user, setUser, position, color, icon);
+    // user情報の更新(contextとfirestoreどちらも更新)
+    await setCurrentSeatInfoToUserInfo(user, setUser, position, color, icon);
 
-  //studyReport用の時間を登録
-  await setStartTime(user.uid);
+    //studyReport用の時間を登録
+    await setStartTime(user.uid);
 
-  // SeatBookingScreenを更新するため、再度データを取り直す
-  fetchSeatsState(setSeats);
+    // SeatBookingScreenを更新するため、再度データを取り直す
+    fetchSeatsState(setSeats);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const handleSeatUnBooking = async (
@@ -176,3 +180,35 @@ export const seatsArray = [
   ["D1", "D2", "D3", "D4", "D5", "D6"],
   ["E1", "E2", "E3", "E4", "E5"],
 ];
+
+export const JapaneseSeats = {
+  A1: "左列1段目",
+  A2: "左列1段目",
+  B1: "左列2段目",
+  B2: "左列2段目",
+  C1: "左列3段目",
+  C2: "左列3段目",
+  D1: "左列4段目",
+  D2: "左列4段目",
+  E1: "左列5段目",
+  E2: "左列5段目",
+  A3: "中央列1段目",
+  A4: "中央列1段目",
+  B3: "中央列2段目",
+  B4: "中央列2段目",
+  C3: "中央列3段目",
+  C4: "中央列3段目",
+  D3: "中央列4段目",
+  D4: "中央列4段目",
+  E3: "中央列5段目",
+  E4: "中央列5段目",
+  A5: "右列1段目",
+  A6: "右列1段目",
+  B5: "右列2段目",
+  B6: "右列2段目",
+  C5: "右列3段目",
+  C6: "右列3段目",
+  D5: "右列4段目",
+  D6: "右列4段目",
+  E5: "右列5段目",
+};

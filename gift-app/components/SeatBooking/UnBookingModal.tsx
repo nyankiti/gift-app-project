@@ -4,8 +4,11 @@ import { width, height } from "../../libs/utils/Dimension";
 import { Modal, Button } from "react-native-paper";
 import color from "../../constants/color";
 import { handleSeatUnBooking } from "../../libs/seatController";
+import { fetchTotalStudyTime } from "../../libs/studyReportController";
+import { formatDateUntilDay } from "../../libs/utils/file";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
+import { OthersContext } from "../../context/OthersProvider";
 /* types */
 import { Seats } from "../../types/seat";
 
@@ -18,13 +21,24 @@ type Props = {
 
 const UnBookingModal = ({ visible, setVisible, position, setSeats }: Props) => {
   const { user, setUser } = useContext(AuthContext);
+  const { setTotalStudyTime, selectedDateString } = useContext(OthersContext);
 
   const handleUnBookingSubmit = async () => {
     if (user !== undefined) {
       await handleSeatUnBooking(user, setUser, position, setSeats);
       setVisible(false);
+
+      // studyReport画面で選択中の日付が今日の場合は、totalStudyTimeを更新する
+      if (selectedDateString == formatDateUntilDay()) {
+        await fetchTotalStudyTime(
+          user?.uid,
+          formatDateUntilDay(),
+          setTotalStudyTime
+        );
+      }
     }
   };
+
   return (
     <Modal
       visible={visible}

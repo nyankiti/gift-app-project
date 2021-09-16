@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import color from "../constants/color";
 import { getUser } from "../libs/firebae";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -68,7 +68,7 @@ const BottomTabNavigator = () => {
           tabBarLabel: "Audio",
           tabBarColor: color.BASE_COLOR,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="audiotrack" size={26} color="black" />
+            <FontAwesome name="microphone" size={26} color="black" />
           ),
         }}
       />
@@ -90,7 +90,7 @@ const BottomTabNavigator = () => {
           tabBarLabel: "Report",
           tabBarColor: color.BASE_COLOR,
           tabBarIcon: ({ color }) => (
-            <Ionicons name="bookmarks-outline" size={26} color="black" />
+            <FontAwesome5 name="chair" size={26} color="black" />
           ),
         }}
       />

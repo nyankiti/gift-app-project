@@ -3,28 +3,46 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { width, height } from "../../libs/utils/Dimension";
 import { Modal, Button } from "react-native-paper";
 import color from "../../constants/color";
-import { handleSeatSubmit } from "../../libs/seatController";
+import { handleSeatSubmit, JapaneseSeats } from "../../libs/seatController";
 import { db } from "../../libs/firebae";
 import {
   MaterialCommunityIcons,
   Ionicons,
   Octicons,
   FontAwesome5,
-  Foundation,
+  MaterialIcons,
+  Entypo,
 } from "@expo/vector-icons";
 /* components */
 import SeatIcon from "./SeatIcon";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
 /* types */
-import { SeatIconComponents, Seats } from "../../types/seat";
+import { SeatIconComponents, Seats, Position } from "../../types/seat";
 
 type Props = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  position: string;
+  position: Position;
   setSeats: React.Dispatch<React.SetStateAction<Seats>>;
 };
+
+/*
+<MaterialIcons name="face-retouching-natural" size={40} color="black" style={styles.icon}/>
+<FontAwesome5 name="robot" size={40} color="black" style={styles.icon}/>
+<MaterialCommunityIcons name="penguin" size={40} color="black" style={styles.icon}/>
+<MaterialCommunityIcons name="panda" size={40} color="black" style={styles.icon}/>
+<Ionicons name="ios-paw" size={40} color="black" style={styles.icon}/>
+<Entypo name="man" size={40} color="black" style={styles.icon}/>
+<FontAwesome name="user" size={40} color="black" style={styles.icon}/>
+<FontAwesome name="linux" size={40} color="black" style={styles.icon}/>
+<FontAwesome5 name="linux" size={40} color="black" style={styles.icon}/>
+<FontAwesome5 name="docker" size={40} color="black" style={styles.icon}/>
+<Ionicons name="rocket" size={40} color="black" style={styles.icon}/>
+<Ionicons name="ios-logo-snapchat" size={40} color="black" style={styles.icon}/>
+<Ionicons name="md-barbell" size={40} color="black" style={styles.icon}/>
+<FontAwesome5 name="github" size={40} color="black" style={styles.icon}/>
+*/
 
 const ChooseIconModal = ({
   visible,
@@ -34,6 +52,7 @@ const ChooseIconModal = ({
 }: Props) => {
   const { user, setUser } = useContext(AuthContext);
   const [selectedIcon, setSelectedIcon] = useState<[SeatIconComponents, any]>();
+  const [selectedColor, setSelectedColor] = useState<string>("black");
 
   const handleSubmit = async () => {
     if (checkDoubleBooking()) {
@@ -45,7 +64,7 @@ const ChooseIconModal = ({
         user,
         setUser,
         position,
-        "red",
+        selectedColor,
         selectedIcon,
         setSeats
       );
@@ -59,6 +78,10 @@ const ChooseIconModal = ({
     setSelectedIcon(icon);
   };
 
+  const handleColorPress = (color: string) => {
+    setSelectedColor(color);
+  };
+
   const checkDoubleBooking = () => {
     if (user?.currentSeat) {
       return true;
@@ -66,6 +89,8 @@ const ChooseIconModal = ({
       return false;
     }
   };
+
+  const renderPositionInfo = () => {};
 
   return (
     <Modal
@@ -98,76 +123,77 @@ const ChooseIconModal = ({
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleIconPress(["Ionicons", "alarm"])}
+          onPress={() =>
+            handleIconPress(["MaterialIcons", "face-retouching-natural"])
+          }
         >
-          <Ionicons name="alarm" size={40} color="black" style={styles.icon} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleIconPress(["Ionicons", "alarm-outline"])}
-        >
-          <Ionicons
-            name="alarm-outline"
+          <MaterialIcons
+            name="face-retouching-natural"
             size={40}
             color="black"
             style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleIconPress(["Octicons", "watch"])}
+          onPress={() => handleIconPress(["FontAwesome5", "robot"])}
         >
-          <Octicons name="watch" size={40} color="black" style={styles.icon} />
+          <FontAwesome5
+            name="robot"
+            size={32}
+            color="black"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleIconPress(["Entypo", "man"])}>
+          <Entypo name="man" size={40} color="black" style={styles.icon} />
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
-          onPress={() => handleIconPress(["FontAwesome5", "hourglass-half"])}
-        >
-          <FontAwesome5
-            name="hourglass-half"
-            size={40}
-            color="black"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleIconPress(["Foundation", "clipboard-notes"])}
-        >
-          <Foundation
-            name="clipboard-notes"
-            size={40}
-            color="black"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleIconPress(["Ionicons", "md-book-sharp"])}
+          onPress={() => handleIconPress(["Ionicons", "ios-paw"])}
         >
           <Ionicons
-            name="md-book-sharp"
+            name="ios-paw"
             size={40}
             color="black"
             style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>
-            handleIconPress(["MaterialCommunityIcons", "sunglasses"])
-          }
+          onPress={() => handleIconPress(["Ionicons", "ios-logo-snapchat"])}
         >
-          <MaterialCommunityIcons
-            name="sunglasses"
+          <Ionicons
+            name="ios-logo-snapchat"
             size={40}
             color="black"
             style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>
-            handleIconPress(["MaterialCommunityIcons", "math-compass"])
-          }
+          onPress={() => handleIconPress(["FontAwesome5", "linux"])}
         >
-          <MaterialCommunityIcons
-            name="math-compass"
+          <FontAwesome5
+            name="linux"
+            size={40}
+            color="black"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleIconPress(["FontAwesome5", "docker"])}
+        >
+          <FontAwesome5
+            name="docker"
+            size={40}
+            color="black"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleIconPress(["FontAwesome5", "github"])}
+        >
+          <FontAwesome5
+            name="github"
             size={40}
             color="black"
             style={styles.icon}
@@ -175,15 +201,44 @@ const ChooseIconModal = ({
         </TouchableOpacity>
       </View>
 
+      <Text style={styles.text}>Select Your color</Text>
+
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity onPress={() => handleColorPress("tomato")}>
+          <MaterialIcons name="stop-circle" size={40} color="tomato" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("orange")}>
+          <MaterialIcons name="stop-circle" size={40} color="orange" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("lime")}>
+          <MaterialIcons name="stop-circle" size={40} color="lime" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("yellow")}>
+          <MaterialIcons name="stop-circle" size={40} color="yellow" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("lavender")}>
+          <MaterialIcons name="stop-circle" size={40} color="lavender" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("dodgerblue")}>
+          <MaterialIcons name="stop-circle" size={40} color="dodgerblue" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("blueviolet")}>
+          <MaterialIcons name="stop-circle" size={40} color="blueviolet" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleColorPress("dimgray")}>
+          <MaterialIcons name="stop-circle" size={40} color="dimgray" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.buttomContainer}>
         <View style={{ flexDirection: "row" }}>
           <Text style={styles.buttomText}>座席の位置: </Text>
-          <Text style={styles.buttomText}>{position}</Text>
+          <Text style={styles.buttomText}>{JapaneseSeats[position]}</Text>
         </View>
         {selectedIcon ? (
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.buttomText}>使用するアイコン: </Text>
-            <SeatIcon icon={selectedIcon} color="blue" />
+            <SeatIcon icon={selectedIcon} color={selectedColor} />
           </View>
         ) : null}
       </View>

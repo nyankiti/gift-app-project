@@ -82,7 +82,7 @@ const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
           name="SeatBookingScreen"
           component={SeatBookingScreen}
           options={{
-            headerTitle: "Gift 座席管理",
+            headerTitle: "Gift王寺駅前自習室 座席選び",
             headerLeft: () => <BarsIcon navigation={navigation} />,
           }}
         />

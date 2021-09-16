@@ -40,7 +40,7 @@ const NewsNavigator: React.FC<NewsNavigationProps> = ({ navigation }) => {
         name="NewsScreen"
         component={NewsScreen}
         options={{
-          headerTitle: "Gift News",
+          headerTitle: "Topics",
           headerLeft: () => <BarsIcon navigation={navigation} />,
           headerRight: () => <></>,
         }}

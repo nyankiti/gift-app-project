@@ -5,12 +5,13 @@ import DrawerNavigator from "./DrawerNavigator";
 /* context */
 import { AuthContext, AuthProvider } from "../context/AuthProvider";
 import { AudioProvider } from "../context/AudioProvider";
+import { OthersProvider } from "../context/OthersProvider";
 
 /* firebae */
 import { auth } from "../libs/firebae";
 
 const Navigation = () => {
-  const { user, setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
 
   const onAuthStateChanged = (user: any) => {
@@ -26,9 +27,11 @@ const Navigation = () => {
   return (
     <AuthProvider>
       <AudioProvider>
-        <NavigationContainer>
-          <DrawerNavigator navigation />
-        </NavigationContainer>
+        <OthersProvider>
+          <NavigationContainer>
+            <DrawerNavigator navigation />
+          </NavigationContainer>
+        </OthersProvider>
       </AudioProvider>
     </AuthProvider>
   );

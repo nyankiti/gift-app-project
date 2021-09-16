@@ -15,7 +15,7 @@ import UnBookingModal from "../../components/SeatBooking/UnBookingModal";
 import RenderSeats from "../../components/SeatBooking/RenderSeats";
 import Loading from "../../components/Loading";
 /* types */
-import { Seats } from "../../types/seat";
+import { Seats, Position } from "../../types/seat";
 import { SeatBookingTabParamList } from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -31,7 +31,7 @@ const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = () => {
   const [unBookinModalVisible, setUnBookingModalVisible] =
     useState<boolean>(false);
   const [seats, setSeats] = useState<Seats>(initialSeatsObject);
-  const [selectedPostion, setSelectedPosition] = useState<string>("");
+  const [selectedPostion, setSelectedPosition] = useState<Position>("A1");
 
   useEffect(() => {
     fetchSeatsState(setSeats);
