@@ -110,9 +110,9 @@ const styles = StyleSheet.create({
   container: {
     // justifyContent: "center",
     alignItems: "center",
-    height: height * 0.4,
+    height: height * 0.7,
     backgroundColor: "white",
-    marginBottom: 200,
+    marginBottom: 100,
     borderRadius: 30,
     width: width * 0.9,
     alignSelf: "center",

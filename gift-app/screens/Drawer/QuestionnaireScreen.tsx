@@ -280,7 +280,6 @@ const QuestionnaireScreen: React.FC<DrawerContentComponentProps> = ({
             style={pickerSelectStyles}
             items={[
               { label: "LIEN(奨励)", value: "Line" },
-              { label: "アプリ内チャット", value: "アプリ内チャット" },
               { label: "メール", value: "メール" },
             ]}
             // style={pickerSelectStyles}

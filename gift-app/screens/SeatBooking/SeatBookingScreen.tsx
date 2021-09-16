@@ -25,7 +25,9 @@ type SeatBookingScreenNavigationProps = StackScreenProps<
   "SeatBookingScreen"
 >;
 
-const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = () => {
+const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = ({
+  navigation,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [unBookinModalVisible, setUnBookingModalVisible] =
@@ -55,6 +57,7 @@ const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = () => {
               setVisible={setModalVisible}
               position={selectedPostion}
               setSeats={setSeats}
+              navigation={navigation}
             />
             <UnBookingModal
               visible={unBookinModalVisible}

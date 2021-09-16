@@ -5,7 +5,7 @@ import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Avatar, Title, Caption, Drawer } from "react-native-paper";
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Icon from "react-native-vector-icons/Ionicons";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
@@ -55,14 +55,28 @@ const DrawerContent = (props: any) => {
               }}
             />
             <Drawer.Item
-              icon={() => (
-                <Ionicons name="bookmarks-outline" size={26} color="black" />
-              )}
-              label="座席登録"
+              icon={() => <FontAwesome5 name="chair" size={26} color="black" />}
+              label={"自習室 座席選び"}
               onPress={() => props.navigation.navigate("SeatBooking")}
             />
           </Drawer.Section>
-          {user?.uid === "00000" ? null : (
+          {user?.uid === "00000" ? (
+            <Drawer.Section title="MENU" style={styles.drawerSection}>
+              <Drawer.Item
+                icon={() => (
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={26}
+                    color="black"
+                  />
+                )}
+                label="Poster"
+                onPress={() => {
+                  props.navigation.navigate("Poster");
+                }}
+              />
+            </Drawer.Section>
+          ) : (
             <Drawer.Section title="MENU" style={styles.drawerSection}>
               <Drawer.Item
                 icon={() => (
@@ -73,17 +87,7 @@ const DrawerContent = (props: any) => {
                   props.navigation.navigate("EditProfileScreen");
                 }}
               />
-              <Drawer.Item
-                icon={() => (
-                  <Ionicons
-                    name="information-circle-outline"
-                    size={26}
-                    color="black"
-                  />
-                )}
-                label="Infomation"
-                onPress={() => props.navigation.navigate("GiftInfoScreen")}
-              />
+
               <Drawer.Item
                 icon={() => (
                   <Ionicons
@@ -95,6 +99,30 @@ const DrawerContent = (props: any) => {
                 label="勉強の質問・相談"
                 onPress={() => props.navigation.navigate("QuestionnaireScreen")}
               />
+              {/* <Drawer.Item
+                icon={() => (
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={26}
+                    color="black"
+                  />
+                )}
+                label="Infomation"
+                onPress={() => props.navigation.navigate("GiftInfoScreen")}
+              /> */}
+              <Drawer.Item
+                icon={() => (
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={26}
+                    color="black"
+                  />
+                )}
+                label="Poster"
+                onPress={() => {
+                  props.navigation.navigate("Poster");
+                }}
+              />
             </Drawer.Section>
           )}
         </View>
@@ -102,7 +130,9 @@ const DrawerContent = (props: any) => {
       {user?.uid === "00000" ? null : (
         <Drawer.Section style={styles.bottomDrawerSection}>
           <Drawer.Item
-            icon={() => <AntDesign name="team" size={26} color="black" />}
+            icon={() => (
+              <FontAwesome5 name="sign-out-alt" size={26} color="black" />
+            )}
             label="Sign Out"
             onPress={() => logout(props.navigation)}
           />

@@ -42,9 +42,18 @@ const SeatBookingNavigator: React.FC<SeatBookingNavigationProps> = ({
           alignItems: "center",
         },
       }}
+      initialRouteName="SeatBookingScreen"
     >
       {user?.uid === "00000" ? (
         <>
+          <SeatBookingStack.Screen
+            name="SeatBookingScreen"
+            component={SeatBookingScreen}
+            options={{
+              headerTitle: "Gift王寺駅前自習室 座席選び",
+              headerLeft: () => <BarsIcon navigation={navigation} />,
+            }}
+          />
           <SeatBookingStack.Screen
             name="SignInScreen"
             component={SignInScreen}

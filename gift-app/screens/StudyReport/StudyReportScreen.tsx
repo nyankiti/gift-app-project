@@ -54,7 +54,7 @@ const StudyReportScreen = () => {
   const [dream, setDream] = useState<string>("夢を記入しよう！");
   // targetはカレンダーと紐付く１日ごとの目標
   const [target, setTarget] = useState<Target>({
-    "1": "             ",
+    "1": "",
   });
 
   // 以下2つはtargetModalで用いられるstate.  modalがvisibleになった時点でこれらのstateを更新する必要があるため、ここで定義している
@@ -100,13 +100,17 @@ const StudyReportScreen = () => {
   };
 
   const renderTargets = () => {
-    return Object.values(target)
-      .filter((v) => v !== "")
-      .map((v, i) => (
-        <Text key={i.toString()} style={styles.target_text}>
-          ・ {v}
-        </Text>
-      ));
+    const temp = Object.values(target).filter((v) => v !== "");
+
+    if (temp.length === 0) {
+      return <Text style={styles.target_text}>目標を{"\n"}記入しよう！</Text>;
+    }
+
+    return temp.map((v, i) => (
+      <Text key={i.toString()} style={styles.target_list_text}>
+        ・ {v}
+      </Text>
+    ));
   };
 
   useEffect(() => {
@@ -264,6 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 10,
+    paddingTop: 80,
     height: height * 0.9,
     alignItems: "center",
     width: width,
@@ -289,8 +294,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     fontFamily: "KiwiMaru",
-    fontSize: 28,
+    fontSize: 16,
     paddingHorizontal: 4,
+  },
+  target_list_text: {
+    justifyContent: "center",
+    textAlign: "center",
+    fontFamily: "KiwiMaru",
+    fontSize: 20,
+    paddingHorizontal: 2,
   },
   target_text_container: {
     marginLeft: 4,
@@ -298,7 +310,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "gray",
     // height: SVGClockWidth * 0.9,
-    padding: 50,
+    padding: 24,
     justifyContent: "center",
   },
   modal_container: {

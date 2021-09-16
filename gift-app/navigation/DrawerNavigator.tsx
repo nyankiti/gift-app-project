@@ -12,6 +12,7 @@ import DrawerContent from "../screens/Drawer/DrawerContent";
 import QuestionnaireScreen from "../screens/Drawer/QuestionnaireScreen";
 import EditProfileScreen from "../screens/Drawer/EditProfileScreen";
 import GiftInfoScreen from "../screens/Drawer/GiftInfoScreen";
+import Poster from "../screens/Drawer/Poster";
 /* types */
 import { DrawerParamList } from "../types/navigationType";
 
@@ -65,6 +66,7 @@ const DrawerNavigator: React.FC<DrawerContentComponentProps> = ({
           }}
         />
         <Drawer.Screen name="GiftInfoScreen" component={GiftInfoScreen} />
+        <Drawer.Screen name="Poster" component={Poster} />
         <Drawer.Screen
           name="QuestionnaireScreen"
           component={QuestionnaireScreen}

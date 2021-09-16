@@ -20,6 +20,7 @@ export type DrawerParamList = {
   EditProfileScreen: undefined;
   GiftInfoScreen: undefined;
   QuestionnaireScreen: undefined;
+  Poster: undefined;
 };
 
 export type NewsTabParamList = {
@@ -50,8 +51,9 @@ export type AuthTabParamList = {
 };
 
 export type SeatBookingTabParamList = {
-  SeatBookingScreen: undefined;
-  SeatUnBookingScreen: undefined;
+  SeatBookingScreen: {
+    isLogin: boolean;
+  };
   SignInScreen: {
     stackName: string;
   };

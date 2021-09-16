@@ -25,6 +25,7 @@ type Props = {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   position: Position;
   setSeats: React.Dispatch<React.SetStateAction<Seats>>;
+  navigation: any;
 };
 
 /*
@@ -49,12 +50,17 @@ const ChooseIconModal = ({
   setVisible,
   position,
   setSeats,
+  navigation,
 }: Props) => {
   const { user, setUser } = useContext(AuthContext);
   const [selectedIcon, setSelectedIcon] = useState<[SeatIconComponents, any]>();
   const [selectedColor, setSelectedColor] = useState<string>("black");
 
   const handleSubmit = async () => {
+    if (user?.uid === "00000") {
+      Alert.alert("座席登録にはログインが必要です");
+      return navigation.navigate("SignInScreen");
+    }
     if (checkDoubleBooking()) {
       Alert.alert("一人一席でお願いします");
       return;
@@ -89,8 +95,6 @@ const ChooseIconModal = ({
       return false;
     }
   };
-
-  const renderPositionInfo = () => {};
 
   return (
     <Modal

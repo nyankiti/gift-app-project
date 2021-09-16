@@ -36,7 +36,12 @@ const BottomTabNavigator = () => {
     getUidFromStorage().then((uid) => {
       // uid が null undefinedではない場合にそのuidからuser情報を取得する
       if (uid) {
-        getUser(uid, setUser);
+        try {
+          getUser(uid, setUser);
+        } catch (e) {
+          console.log("something went wrong in fetcing user info: " + e);
+          setUser({ uid: "00000", displayName: "ゲストユーザー" });
+        }
       } else {
         // ゲストユーザー用の情報を登録
         setUser({ uid: "00000", displayName: "ゲストユーザー" });
