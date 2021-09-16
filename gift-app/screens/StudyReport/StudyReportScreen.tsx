@@ -57,18 +57,10 @@ const StudyReportScreen = () => {
     "1": "",
   });
 
-  // 以下2つはtargetModalで用いられるstate.  modalがvisibleになった時点でこれらのstateを更新する必要があるため、ここで定義している
-  const [targetInputValue, setTargetInputValue] = useState<Target>({
-    "1": "",
-  });
-  const [inputCount, setInputCount] = useState<number>(0);
-  // ----------------------------------------------------------------
-
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
 
   const handleCalendarDayPress = async (response: any) => {
-    console.log(response);
     setSelectedDateString(response.dateString);
     await fetchTargetByDate(user?.uid, response.dateString, setTarget);
     await fetchTotalStudyTime(
@@ -76,13 +68,6 @@ const StudyReportScreen = () => {
       response.dateString,
       setTotalStudyTime
     );
-  };
-
-  const handleTargetEditPress = () => {
-    // modalが見える瞬間にinput用のvalueを更新する
-    setTargetInputValue(target);
-    setInputCount(Object.values(target).filter((v) => v !== "").length);
-    setTargetModalVisible(!targetModalVisible);
   };
 
   const renderDate = (): string => {
@@ -136,19 +121,17 @@ const StudyReportScreen = () => {
             <TargetModal
               visible={targetModalVisible}
               setVisible={setTargetModalVisible}
+              target={target}
               setTarget={setTarget}
               uid={user?.uid}
-              inputCount={inputCount}
-              setInputCount={setInputCount}
               dateString={selectedDateString}
-              targetInputValue={targetInputValue}
-              setTargetInputValue={setTargetInputValue}
             />
           </Portal>
 
           <ImageBackground source={backgroundImage} style={styles.container}>
             <Dream
               dream={dream}
+              dreamStack={dreamStack}
               dreamModalVisible={dreamModalVisible}
               setDreamModalVisible={setDreamModalVisible}
             />
@@ -195,7 +178,7 @@ const StudyReportScreen = () => {
                       size={22}
                       backgroundColor="rgba(0, 0, 0, 0)"
                       color="#2e64e5"
-                      onPress={() => handleTargetEditPress()}
+                      onPress={() => setTargetModalVisible(!targetModalVisible)}
                     />
                   </View>
                 </View>
@@ -336,6 +319,7 @@ const styles = StyleSheet.create({
   calendar_container: {
     // flex: 5,
     marginTop: height * 0.04,
+    paddingBottom: 20,
     width: calendar_width,
     borderBottomWidth: 1,
     // borderTopWidth:1,

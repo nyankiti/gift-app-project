@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { width, height } from "../../libs/utils/Dimension";
 import { Modal, TextInput, Button } from "react-native-paper";
@@ -12,46 +12,23 @@ import { Target } from "../../types/studyReport";
 type Props = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  target: Target;
   setTarget: React.Dispatch<React.SetStateAction<Target>>;
-  targetInputValue: Target;
-  setTargetInputValue: React.Dispatch<React.SetStateAction<Target>>;
-  inputCount: number;
-  setInputCount: React.Dispatch<React.SetStateAction<number>>;
   uid: string;
   dateString: string;
 };
 
 const TargetModal = memo(
-  ({
-    visible,
-    setVisible,
-    setTarget,
-    inputCount,
-    setInputCount,
-    targetInputValue,
-    setTargetInputValue,
-    uid,
-    dateString,
-  }: Props) => {
-    const renderAdditionalTextInput = () => {
-      const inputs = [...Array(inputCount)].map((_, i) => {
-        const index = (i + 1).toString() as "1" | "2" | "3" | "4" | "5";
-        return (
-          <TextInput
-            key={index}
-            mode="outlined"
-            // ユーザーに表示するindex番号は1スタート
-            label={"目標" + index}
-            value={targetInputValue[index]}
-            onChangeText={(v) =>
-              setTargetInputValue({ ...targetInputValue, [index]: v })
-            }
-            style={styles.input}
-          />
-        );
-      });
-      return inputs;
-    };
+  ({ visible, setVisible, target, setTarget, uid, dateString }: Props) => {
+    const [targetInputValue, setTargetInputValue] = useState<Target>({
+      "1": "",
+    });
+    const [inputCount, setInputCount] = useState(0);
+
+    useEffect(() => {
+      setTargetInputValue(target);
+      setInputCount(Object.values(target).filter((v) => v !== "").length);
+    }, [visible]);
 
     const submitTarget = async () => {
       const dreamDocRef = db
@@ -77,7 +54,64 @@ const TargetModal = memo(
       >
         <Text style={styles.text}>Enter Today's target</Text>
         <View style={styles.inputContainer}>
-          {renderAdditionalTextInput()}
+          {inputCount >= 1 ? (
+            <TextInput
+              mode="outlined"
+              label={"目標1"}
+              value={targetInputValue[1]}
+              onChangeText={(v) =>
+                setTargetInputValue({ ...targetInputValue, "1": v })
+              }
+              style={styles.input}
+            />
+          ) : null}
+
+          {inputCount >= 2 ? (
+            <TextInput
+              mode="outlined"
+              label={"目標2"}
+              value={targetInputValue[2]}
+              onChangeText={(v) =>
+                setTargetInputValue({ ...targetInputValue, "2": v })
+              }
+              style={styles.input}
+            />
+          ) : null}
+
+          {inputCount >= 3 ? (
+            <TextInput
+              mode="outlined"
+              label={"目標3"}
+              value={targetInputValue[3]}
+              onChangeText={(v) =>
+                setTargetInputValue({ ...targetInputValue, "3": v })
+              }
+              style={styles.input}
+            />
+          ) : null}
+          {inputCount >= 4 ? (
+            <TextInput
+              mode="outlined"
+              label={"目標4"}
+              value={targetInputValue[4]}
+              onChangeText={(v) =>
+                setTargetInputValue({ ...targetInputValue, "4": v })
+              }
+              style={styles.input}
+            />
+          ) : null}
+
+          {inputCount >= 5 ? (
+            <TextInput
+              mode="outlined"
+              label={"目標5"}
+              value={targetInputValue[5]}
+              onChangeText={(v) =>
+                setTargetInputValue({ ...targetInputValue, "5": v })
+              }
+              style={styles.input}
+            />
+          ) : null}
 
           {inputCount < 5 ? (
             <Button

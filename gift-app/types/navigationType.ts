@@ -32,11 +32,7 @@ export type NewsTabParamList = {
 
 export type StudyReportTabParamList = {
   StudyReportScreen: undefined;
-  EditGoalScreen: {
-    post: object;
-    selectedDate: any;
-    dateString: string;
-  };
+  ClockScreen: undefined;
   SignInScreen: {
     stackName: string;
   };

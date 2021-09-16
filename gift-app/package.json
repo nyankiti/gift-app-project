@@ -43,6 +43,7 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-svg": "12.1.1",
+    "react-native-swipe-picker": "0.1.4",
     "react-native-tab-view": "3.1.1",
     "react-native-web": "~0.13.12",
     "reanimated-bottom-sheet": "1.0.0-alpha.22",

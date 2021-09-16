@@ -148,8 +148,15 @@ const ChooseIconModal = ({
             style={styles.icon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleIconPress(["Entypo", "man"])}>
-          <Entypo name="man" size={40} color="black" style={styles.icon} />
+        <TouchableOpacity
+          onPress={() => handleIconPress(["FontAwesome5", "hourglass-half"])}
+        >
+          <FontAwesome5
+            name="hourglass-half"
+            size={32}
+            color="black"
+            style={styles.icon}
+          />
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -174,6 +181,16 @@ const ChooseIconModal = ({
           />
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => handleIconPress(["MaterialCommunityIcons", "panda"])}
+        >
+          <MaterialCommunityIcons
+            name="panda"
+            size={40}
+            color="black"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => handleIconPress(["FontAwesome5", "linux"])}
         >
           <FontAwesome5
@@ -188,16 +205,6 @@ const ChooseIconModal = ({
         >
           <FontAwesome5
             name="docker"
-            size={40}
-            color="black"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleIconPress(["FontAwesome5", "github"])}
-        >
-          <FontAwesome5
-            name="github"
             size={40}
             color="black"
             style={styles.icon}
