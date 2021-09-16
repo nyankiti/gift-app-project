@@ -34,6 +34,10 @@ import StudyClock from "../../components/StudyReport/StudyClock";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
 import { OthersContext } from "../../context/OthersProvider";
+/* types */
+import { Target } from "../../types/studyReport";
+import { FlatList } from "react-native-gesture-handler";
+import { Item } from "react-native-paper/lib/typescript/components/List/List";
 
 const backgroundImage = require("../../assets/images/notebook.jpg");
 
@@ -49,7 +53,16 @@ const StudyReportScreen = () => {
   const [dreamStack, setDreamStack] = useState<string[]>([]);
   const [dream, setDream] = useState<string>("夢を記入しよう！");
   // targetはカレンダーと紐付く１日ごとの目標
-  const [target, setTarget] = useState<string>("                ");
+  const [target, setTarget] = useState<Target>({
+    "1": "             ",
+  });
+
+  // 以下2つはtargetModalで用いられるstate.  modalがvisibleになった時点でこれらのstateを更新する必要があるため、ここで定義している
+  const [targetInputValue, setTargetInputValue] = useState<Target>({
+    "1": "",
+  });
+  const [inputCount, setInputCount] = useState<number>(0);
+  // ----------------------------------------------------------------
 
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
@@ -65,6 +78,13 @@ const StudyReportScreen = () => {
     );
   };
 
+  const handleTargetEditPress = () => {
+    // modalが見える瞬間にinput用のvalueを更新する
+    setTargetInputValue(target);
+    setInputCount(Object.values(target).filter((v) => v !== "").length);
+    setTargetModalVisible(!targetModalVisible);
+  };
+
   const renderDate = (): string => {
     // 今日を選択中の場合
     if (selectedDateString == formatDateUntilDay()) return "今日";
@@ -77,6 +97,16 @@ const StudyReportScreen = () => {
     }
     const res = Math.floor((totalStudyTime / 60) * 10) / 10;
     return `${res}時間`;
+  };
+
+  const renderTargets = () => {
+    return Object.values(target)
+      .filter((v) => v !== "")
+      .map((v, i) => (
+        <Text key={i.toString()} style={styles.target_text}>
+          ・ {v}
+        </Text>
+      ));
   };
 
   useEffect(() => {
@@ -102,10 +132,13 @@ const StudyReportScreen = () => {
             <TargetModal
               visible={targetModalVisible}
               setVisible={setTargetModalVisible}
-              target={target}
               setTarget={setTarget}
               uid={user?.uid}
+              inputCount={inputCount}
+              setInputCount={setInputCount}
               dateString={selectedDateString}
+              targetInputValue={targetInputValue}
+              setTargetInputValue={setTargetInputValue}
             />
           </Portal>
 
@@ -158,12 +191,12 @@ const StudyReportScreen = () => {
                       size={22}
                       backgroundColor="rgba(0, 0, 0, 0)"
                       color="#2e64e5"
-                      onPress={() => setTargetModalVisible(!targetModalVisible)}
+                      onPress={() => handleTargetEditPress()}
                     />
                   </View>
                 </View>
                 <View style={styles.target_text_container}>
-                  <Text style={styles.target_text}>{target}</Text>
+                  {renderTargets()}
                 </View>
               </View>
             </View>
@@ -264,7 +297,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "gray",
-    height: SVGClockWidth * 0.9,
+    // height: SVGClockWidth * 0.9,
+    padding: 50,
     justifyContent: "center",
   },
   modal_container: {

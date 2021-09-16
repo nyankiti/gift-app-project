@@ -46,14 +46,18 @@ export const handleSeatSubmit = async (
   icon: [SeatIconComponents, any],
   setSeats: React.Dispatch<React.SetStateAction<Seats>>
 ) => {
-  const tempSeatObj: any = {};
-  tempSeatObj[position] = {
-    uid: user.uid,
-    icon: icon,
-    color: color,
-  };
   try {
-    await seatDocRef.set(tempSeatObj, { merge: true });
+    // 変数をobjectのkeyに用いるときは以下のようにする
+    await seatDocRef.set(
+      {
+        [position]: {
+          uid: user.uid,
+          icon: icon,
+          color: color,
+        },
+      },
+      { merge: true }
+    );
 
     // user情報の更新(contextとfirestoreどちらも更新)
     await setCurrentSeatInfoToUserInfo(user, setUser, position, color, icon);
@@ -74,9 +78,7 @@ export const handleSeatUnBooking = async (
   position: string,
   setSeats: React.Dispatch<React.SetStateAction<Seats>>
 ) => {
-  const tempSeatObj: any = {};
-  tempSeatObj[position] = false;
-  await seatDocRef.set(tempSeatObj, { merge: true });
+  await seatDocRef.set({ [position]: false }, { merge: true });
 
   // user情報の更新(contextとfirestoreどちらも更新)
   await setUnBookingInfoToUserInfo(user, setUser);

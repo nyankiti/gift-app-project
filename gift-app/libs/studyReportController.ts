@@ -3,6 +3,7 @@ import { db, FirebaseTimestamp } from "./firebae";
 import { formatDateUntilDay } from "./utils/file";
 /* types */
 import { User, UserSeat } from "../types/user";
+import { Target } from "../types/studyReport";
 
 export const fetchDream = async (
   uid: string,
@@ -30,7 +31,7 @@ export const fetchDream = async (
 export const fetchTargetByDate = async (
   uid: string,
   dateString: string,
-  setTarget: React.Dispatch<React.SetStateAction<string>>
+  setTarget: React.Dispatch<React.SetStateAction<Target>>
 ) => {
   const targetRef = db
     .collection("users")
@@ -39,11 +40,16 @@ export const fetchTargetByDate = async (
     .doc(dateString);
   await targetRef.get().then((doc) => {
     if (doc.exists) {
-      console.log(doc.data()?.target);
       const selectedDateTarget = doc.data()?.target;
       setTarget(selectedDateTarget);
     } else {
-      setTarget("                ");
+      setTarget({
+        "1": "                ",
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": "",
+      });
     }
   });
 };
