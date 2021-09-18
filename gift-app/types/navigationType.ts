@@ -32,7 +32,10 @@ export type NewsTabParamList = {
 
 export type StudyReportTabParamList = {
   StudyReportScreen: undefined;
-  ClockScreen: undefined;
+  ClockScreen: {
+    uid: string;
+    dateString: string;
+  };
   SignInScreen: {
     stackName: string;
   };

@@ -7,7 +7,7 @@ import {
   View,
   ScrollView,
   ImageBackground,
-  StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { Provider, Portal } from "react-native-paper";
 import {
@@ -17,6 +17,7 @@ import {
   SVGClockWidth,
 } from "../../libs/utils/Dimension";
 import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 import { Calendar } from "react-native-calendars";
 // const Calendar = require('react-native-calendars')
 import {
@@ -36,12 +37,20 @@ import { AuthContext } from "../../context/AuthProvider";
 import { OthersContext } from "../../context/OthersProvider";
 /* types */
 import { Target } from "../../types/studyReport";
-import { FlatList } from "react-native-gesture-handler";
-import { Item } from "react-native-paper/lib/typescript/components/List/List";
+/* types */
+import { StudyReportTabParamList } from "../../types/navigationType";
+import { StackScreenProps } from "@react-navigation/stack";
+
+type StudyReportNavigationProps = StackScreenProps<
+  StudyReportTabParamList,
+  "StudyReportScreen"
+>;
 
 const backgroundImage = require("../../assets/images/notebook.jpg");
 
-const StudyReportScreen = () => {
+const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
+  navigation,
+}) => {
   const { user } = useContext(AuthContext);
   const {
     totalStudyTime,
@@ -59,6 +68,9 @@ const StudyReportScreen = () => {
 
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
+
+  // 画面遷移時（EditGoalScreenから戻ってきた時）にstateを更新するためにはreact-navigationが用意するisFocusedステートを使うと便利
+  const isFocused = useIsFocused();
 
   const handleCalendarDayPress = async (response: any) => {
     setSelectedDateString(response.dateString);
@@ -104,6 +116,11 @@ const StudyReportScreen = () => {
     fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
   }, []);
 
+  useEffect(() => {
+    console.log("return from clock screen");
+    fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
+  }, [isFocused]);
+
   return (
     <Screen>
       <ScrollView>
@@ -137,12 +154,18 @@ const StudyReportScreen = () => {
             />
 
             <View style={styles.purpose_container}>
-              <View
+              <TouchableOpacity
                 style={{
                   flexDirection: "column",
                   width: SVGClockWidth,
                   alignItems: "center",
                 }}
+                onPress={() =>
+                  navigation.navigate("ClockScreen", {
+                    uid: user?.uid,
+                    dateString: selectedDateString,
+                  })
+                }
               >
                 <Text style={styles.second_text}>
                   {renderDate() + "の\n"}勉強時間
@@ -153,7 +176,7 @@ const StudyReportScreen = () => {
                   text_in_clock={selectedDateString.slice(-2)}
                 />
                 <Text style={styles.second_text}>{renderStudyHours()}</Text>
-              </View>
+              </TouchableOpacity>
               <View
                 style={{
                   flexDirection: "column",
