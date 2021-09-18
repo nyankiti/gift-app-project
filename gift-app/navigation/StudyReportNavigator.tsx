@@ -7,6 +7,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 /* screen */
 import StudyReportScreen from "../screens/StudyReport/StudyReportScreen";
+import ClockScreen from "../screens/StudyReport/ClockScreen";
 import SignInScreen from "../screens/Auth/SignInScreen";
 import SignUpScreen from "../screens/Auth/SignUpScreen";
 /* components */
@@ -78,16 +79,25 @@ const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
           />
         </>
       ) : (
-        <StudyReportStack.Screen
-          name="StudyReportScreen"
-          component={StudyReportScreen}
-          // component={QuestionnaireScreen}
-          options={{
-            headerTitle: "Study Report",
-            headerLeft: () => <BarsIcon navigation={navigation} />,
-            headerRight: () => <></>,
-          }}
-        />
+        <>
+          <StudyReportStack.Screen
+            name="StudyReportScreen"
+            component={StudyReportScreen}
+            // component={QuestionnaireScreen}
+            options={{
+              headerTitle: "Study Report",
+              headerLeft: () => <BarsIcon navigation={navigation} />,
+              headerRight: () => <></>,
+            }}
+          />
+          <StudyReportStack.Screen
+            name="ClockScreen"
+            component={ClockScreen}
+            options={{
+              headerTitle: "Target hour",
+            }}
+          />
+        </>
       )}
     </StudyReportStack.Navigator>
   );

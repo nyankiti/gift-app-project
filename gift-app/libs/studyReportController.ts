@@ -44,7 +44,7 @@ export const fetchTargetByDate = async (
       setTarget(selectedDateTarget);
     } else {
       setTarget({
-        "1": "                ",
+        "1": "   ",
         "2": "",
         "3": "",
         "4": "",
@@ -126,6 +126,27 @@ export const calcTotalTime = (startTime: any, endTime: any) => {
   return Math.floor(diffSeconds / 60);
 };
 
+export const setTotalStudyTimeViaClockGesture = async (
+  uid: string,
+  totalTime: number,
+  dateString: string
+) => {
+  const userSeatDocRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("seat")
+    .doc(dateString);
+
+  try {
+    await userSeatDocRef.set(
+      {
+        totalTimeViaClockGesture: totalTime,
+      },
+      { merge: true }
+    );
+  } catch (e) {}
+};
+
 export const fetchTotalStudyTime = async (
   uid: string,
   selectedDateString: string,
@@ -140,7 +161,9 @@ export const fetchTotalStudyTime = async (
   await userSeatDocRef.get().then((doc) => {
     if (doc.exists) {
       const data = doc.data() as UserSeat;
-      if (data.totalTime) {
+      if (data.totalTimeViaClockGesture) {
+        setTotalStudyTime(data.totalTimeViaClockGesture);
+      } else if (data.totalTime) {
         setTotalStudyTime(data.totalTime);
       } else {
         setTotalStudyTime(0);

@@ -38,4 +38,5 @@ export type UserSeat = {
   endTime?: any;
   // totalTimeは分単位で扱う
   totalTime?: number;
+  totalTimeViaClockGesture?: number;
 };

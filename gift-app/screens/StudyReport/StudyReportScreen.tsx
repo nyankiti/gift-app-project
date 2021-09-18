@@ -7,7 +7,7 @@ import {
   View,
   ScrollView,
   ImageBackground,
-  StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { Provider, Portal } from "react-native-paper";
 import {
@@ -17,6 +17,7 @@ import {
   SVGClockWidth,
 } from "../../libs/utils/Dimension";
 import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 import { Calendar } from "react-native-calendars";
 // const Calendar = require('react-native-calendars')
 import {
@@ -36,12 +37,20 @@ import { AuthContext } from "../../context/AuthProvider";
 import { OthersContext } from "../../context/OthersProvider";
 /* types */
 import { Target } from "../../types/studyReport";
-import { FlatList } from "react-native-gesture-handler";
-import { Item } from "react-native-paper/lib/typescript/components/List/List";
+/* types */
+import { StudyReportTabParamList } from "../../types/navigationType";
+import { StackScreenProps } from "@react-navigation/stack";
+
+type StudyReportNavigationProps = StackScreenProps<
+  StudyReportTabParamList,
+  "StudyReportScreen"
+>;
 
 const backgroundImage = require("../../assets/images/notebook.jpg");
 
-const StudyReportScreen = () => {
+const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
+  navigation,
+}) => {
   const { user } = useContext(AuthContext);
   const {
     totalStudyTime,
@@ -57,18 +66,13 @@ const StudyReportScreen = () => {
     "1": "",
   });
 
-  // 以下2つはtargetModalで用いられるstate.  modalがvisibleになった時点でこれらのstateを更新する必要があるため、ここで定義している
-  const [targetInputValue, setTargetInputValue] = useState<Target>({
-    "1": "",
-  });
-  const [inputCount, setInputCount] = useState<number>(0);
-  // ----------------------------------------------------------------
-
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
 
+  // 画面遷移時（EditGoalScreenから戻ってきた時）にstateを更新するためにはreact-navigationが用意するisFocusedステートを使うと便利
+  const isFocused = useIsFocused();
+
   const handleCalendarDayPress = async (response: any) => {
-    console.log(response);
     setSelectedDateString(response.dateString);
     await fetchTargetByDate(user?.uid, response.dateString, setTarget);
     await fetchTotalStudyTime(
@@ -76,13 +80,6 @@ const StudyReportScreen = () => {
       response.dateString,
       setTotalStudyTime
     );
-  };
-
-  const handleTargetEditPress = () => {
-    // modalが見える瞬間にinput用のvalueを更新する
-    setTargetInputValue(target);
-    setInputCount(Object.values(target).filter((v) => v !== "").length);
-    setTargetModalVisible(!targetModalVisible);
   };
 
   const renderDate = (): string => {
@@ -119,6 +116,11 @@ const StudyReportScreen = () => {
     fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
   }, []);
 
+  useEffect(() => {
+    console.log("return from clock screen");
+    fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
+  }, [isFocused]);
+
   return (
     <Screen>
       <ScrollView>
@@ -136,30 +138,34 @@ const StudyReportScreen = () => {
             <TargetModal
               visible={targetModalVisible}
               setVisible={setTargetModalVisible}
+              target={target}
               setTarget={setTarget}
               uid={user?.uid}
-              inputCount={inputCount}
-              setInputCount={setInputCount}
               dateString={selectedDateString}
-              targetInputValue={targetInputValue}
-              setTargetInputValue={setTargetInputValue}
             />
           </Portal>
 
           <ImageBackground source={backgroundImage} style={styles.container}>
             <Dream
               dream={dream}
+              dreamStack={dreamStack}
               dreamModalVisible={dreamModalVisible}
               setDreamModalVisible={setDreamModalVisible}
             />
 
             <View style={styles.purpose_container}>
-              <View
+              <TouchableOpacity
                 style={{
                   flexDirection: "column",
                   width: SVGClockWidth,
                   alignItems: "center",
                 }}
+                onPress={() =>
+                  navigation.navigate("ClockScreen", {
+                    uid: user?.uid,
+                    dateString: selectedDateString,
+                  })
+                }
               >
                 <Text style={styles.second_text}>
                   {renderDate() + "の\n"}勉強時間
@@ -170,7 +176,7 @@ const StudyReportScreen = () => {
                   text_in_clock={selectedDateString.slice(-2)}
                 />
                 <Text style={styles.second_text}>{renderStudyHours()}</Text>
-              </View>
+              </TouchableOpacity>
               <View
                 style={{
                   flexDirection: "column",
@@ -195,7 +201,7 @@ const StudyReportScreen = () => {
                       size={22}
                       backgroundColor="rgba(0, 0, 0, 0)"
                       color="#2e64e5"
-                      onPress={() => handleTargetEditPress()}
+                      onPress={() => setTargetModalVisible(!targetModalVisible)}
                     />
                   </View>
                 </View>
@@ -268,13 +274,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 10,
-    paddingTop: 80,
-    height: height * 0.9,
+    paddingTop: 20,
     alignItems: "center",
     width: width,
   },
   purpose_container: {
-    // flex: 2,
     flexDirection: "row",
     justifyContent: "space-around",
     width: calendar_width,
@@ -283,7 +287,6 @@ const styles = StyleSheet.create({
     marginTop: height * 0.005,
     paddingBottom: 10,
     paddingTop: 10,
-    // alignSelf: 'center',
   },
   second_text: {
     fontFamily: "KiwiMaru",
@@ -309,13 +312,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "gray",
-    // height: SVGClockWidth * 0.9,
     padding: 24,
     justifyContent: "center",
   },
   modal_container: {
     backgroundColor: "#f5f5f5",
-    // padding: 20,
     height: "100%",
     width: "100%",
   },
@@ -334,13 +335,11 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   calendar_container: {
-    // flex: 5,
     marginTop: height * 0.04,
+    paddingBottom: 40,
     width: calendar_width,
     borderBottomWidth: 1,
-    // borderTopWidth:1,
     borderBottomColor: "#f0f8ff",
-    // borderTopColor: '#f0f8ff',
     position: "relative",
   },
 });

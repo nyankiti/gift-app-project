@@ -51,7 +51,8 @@ const AudioHeader = () => {
           fontFamily: "KiwiMaru",
         }}
       >
-        本番ラジオ開設に向けて、楽しく練習しています
+        Gift の社会人のひとや、素敵なお店を営まれている方とのコラボ配信から、
+        {"\n"}ひとりひとりに寄り添った有益なラジオを届けていきます☺︎
       </Text>
     </LinearGradient>
   );

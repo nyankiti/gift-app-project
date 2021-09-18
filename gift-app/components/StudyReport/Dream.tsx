@@ -2,15 +2,17 @@ import React, { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { calendar_width } from "../../libs/utils/Dimension";
+import Carousel from "react-native-snap-carousel";
 
 type Props = {
   dream: string;
+  dreamStack: string[];
   dreamModalVisible: boolean;
   setDreamModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Dream = memo(
-  ({ dream, dreamModalVisible, setDreamModalVisible }: Props) => {
+  ({ dream, dreamStack, dreamModalVisible, setDreamModalVisible }: Props) => {
     return (
       <View style={styles.dream_container}>
         <View style={{ justifyContent: "center", flex: 1 }}>
