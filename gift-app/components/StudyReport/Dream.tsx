@@ -2,8 +2,7 @@ import React, { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { calendar_width } from "../../libs/utils/Dimension";
-// import SwipePicker from "react-native-swipe-picker";
-// const SwipePicker = require('react-native-swipe-picker')
+import Carousel from "react-native-snap-carousel";
 
 type Props = {
   dream: string;
@@ -14,9 +13,6 @@ type Props = {
 
 const Dream = memo(
   ({ dream, dreamStack, dreamModalVisible, setDreamModalVisible }: Props) => {
-    const render = () => {
-      dreamStack.map(() => {});
-    };
     return (
       <View style={styles.dream_container}>
         <View style={{ justifyContent: "center", flex: 1 }}>
@@ -29,14 +25,6 @@ const Dream = memo(
           >
             Dream:
           </Text>
-          {/* <SwipePicker
-            items={[
-              {
-                value: 1,
-                label: global,
-              },
-            ]}
-          /> */}
         </View>
         <View style={{ flex: 2 }}>
           <Text style={styles.dream_text}>{dream}</Text>

@@ -94,7 +94,7 @@ const StudyReportNavigator: React.FC<StudyReportNavigationProps> = ({
             name="ClockScreen"
             component={ClockScreen}
             options={{
-              headerTitle: "Clock",
+              headerTitle: "Target hour",
             }}
           />
         </>

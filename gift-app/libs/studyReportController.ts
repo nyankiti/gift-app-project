@@ -44,7 +44,7 @@ export const fetchTargetByDate = async (
       setTarget(selectedDateTarget);
     } else {
       setTarget({
-        "1": "                ",
+        "1": "   ",
         "2": "",
         "3": "",
         "4": "",

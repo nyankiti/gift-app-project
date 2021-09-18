@@ -23,11 +23,16 @@ const TargetModal = memo(
     const [targetInputValue, setTargetInputValue] = useState<Target>({
       "1": "",
     });
-    const [inputCount, setInputCount] = useState(0);
+    const [inputCount, setInputCount] = useState(1);
 
     useEffect(() => {
       setTargetInputValue(target);
-      setInputCount(Object.values(target).filter((v) => v !== "").length);
+      const count = Object.values(target).filter((v) => v !== "").length;
+      if (count == 0) {
+        setInputCount(1);
+      } else {
+        setInputCount(count);
+      }
     }, [visible]);
 
     const submitTarget = async () => {
