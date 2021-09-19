@@ -59,7 +59,7 @@ const ChooseIconModal = ({
   const handleSubmit = async () => {
     if (user?.uid === "00000") {
       Alert.alert("座席登録にはログインが必要です");
-      return navigation.navigate("SignInScreen");
+      return navigation.navigate("SignInScreen", {stackName: "SeatBooking"});
     }
     if (checkDoubleBooking()) {
       Alert.alert("一人一席でお願いします");

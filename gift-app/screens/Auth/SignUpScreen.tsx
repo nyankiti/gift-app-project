@@ -13,6 +13,7 @@ import { FontAwesome, Feather } from "@expo/vector-icons";
 import { width, height } from "../../libs/utils/Dimension";
 /* components */
 import Screen from "../Screen";
+import Loading from "../../components/Loading";
 /* context */
 import { AuthContext } from "../../context/AuthProvider";
 /* types */
@@ -47,6 +48,8 @@ const SignUpScreen: React.FC<
     isValidUser: true,
     isValidPassword: true,
   });
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { register } = useContext(AuthContext);
 
@@ -137,6 +140,9 @@ const SignUpScreen: React.FC<
       });
     }
   };
+
+  if(loading) return <Loading />
+
   return (
     <KeyboardAwareScrollView style={styles.container}>
       <View style={styles.header}>
@@ -231,7 +237,7 @@ const SignUpScreen: React.FC<
       <View style={styles.buttonArea}>
         <View style={styles.button}>
           <TouchableOpacity
-            onPress={() => register(data.email, data.password, data.name)}
+            onPress={() => register(data.email, data.password, data.name, setLoading)}
             style={styles.signIn}
           >
             <Text style={[styles.textSign, { color: color.BASE_COLOR }]}>
@@ -243,7 +249,7 @@ const SignUpScreen: React.FC<
 
       <View style={styles.footer}>
         <Text style={styles.footer_text}>Go to Sign in Screen</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("SignInScreen")}>
+        <TouchableOpacity onPress={() => navigation.navigate("SignInScreen", {stackName: route.params.stackName})}>
           <Text style={styles.footer_button_text}>Sign in</Text>
         </TouchableOpacity>
       </View>

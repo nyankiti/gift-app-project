@@ -14,6 +14,7 @@ import { width, height } from "../../libs/utils/Dimension";
 import color from "../../constants/color";
 /* components */
 import Screen from "../Screen";
+import Loading from "../../components/Loading";
 /*context */
 import { AuthContext } from "../../context/AuthProvider";
 /* types */
@@ -45,6 +46,7 @@ const SignInScreen: React.FC<
     isValidPassword: true,
     successLogin: true,
   });
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { login } = useContext(AuthContext);
 
@@ -116,12 +118,14 @@ const SignInScreen: React.FC<
     }
   };
   const handlePressLogin = async () => {
-    await login(data.email, data.password);
+    await login(data.email, data.password, setLoading);
     setData({
       ...data,
       successLogin: false,
     });
   };
+
+  if(loading)return <Loading />
 
   return (
     <KeyboardAwareScrollView style={styles.container}>
@@ -232,7 +236,7 @@ const SignInScreen: React.FC<
 
       <View style={styles.footer}>
         <Text style={styles.footer_text}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUpScreen")}>
+        <TouchableOpacity onPress={() => navigation.navigate("SignUpScreen", {stacName: route.params.stackName})}>
           <Text style={styles.footer_button_text}>Sign up</Text>
         </TouchableOpacity>
       </View>

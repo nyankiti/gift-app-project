@@ -75,7 +75,7 @@ const DrawerNavigator: React.FC<DrawerContentComponentProps> = ({
 
       <BottomSheet
         ref={sheetRef}
-        snapPoints={[0, 200, height - 20]}
+        snapPoints={[0, 1, height - 20]}
         borderRadius={10}
         renderContent={renderContent}
         enabledContentTapInteraction={false}

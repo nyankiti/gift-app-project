@@ -10,8 +10,8 @@ import { User } from "../types/user";
 type AuthContextType = {
   user: User | undefined;
   setUser: React.Dispatch<React.SetStateAction<User>>;
-  login: (email: string, password: string) => void;
-  register: (email: string, password: string, name: string) => void;
+  login: (email: string, password: string, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void;
+  register: (email: string, password: string, name: string, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void;
   logout: () => void;
 };
 
@@ -37,8 +37,10 @@ export const AuthProvider = ({ children }: Props) => {
     displayName: "ゲストユーザー",
   });
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
+    setLoading(true)
     try {
+
       await auth
         .signInWithEmailAndPassword(email.trim(), password.trim())
         .then(async (user) => {
@@ -55,15 +57,19 @@ export const AuthProvider = ({ children }: Props) => {
         });
     } catch (e) {
       console.log("something went wrong in login precess :" + e);
+      setLoading(false)
       return false;
     }
+    setLoading(false)
   };
 
   const register = async (
     email: string,
     password: string,
-    userName: string
+    userName: string,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
+    setLoading(true)
     try {
       await auth
         .createUserWithEmailAndPassword(email.trim(), password.trim())
@@ -114,6 +120,7 @@ export const AuthProvider = ({ children }: Props) => {
     } catch (e) {
       console.log(e);
     }
+    setLoading(false)
   };
 
   const logout = async () => {

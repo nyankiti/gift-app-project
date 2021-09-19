@@ -43,7 +43,7 @@ const AudioNavBar = ({ sheetRef }: Props) => {
     >
       <TouchableOpacity
         onPress={() => {
-          sheetRef.current?.snapTo(height - 20);
+          sheetRef.current?.snapTo(2);
         }}
         style={{
           flexDirection: "row",
