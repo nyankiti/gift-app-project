@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button } from "react-native-paper";
 import { useDerivedValue } from "react-native-reanimated";
@@ -16,6 +16,8 @@ import {
 } from "../../constants/clock";
 
 import CircularSlider from "../../components/StudyReport/ClockGesture/CircularSlider";
+/* context */
+import { OthersContext } from "../../context/OthersProvider";
 /* types */
 import { StudyReportTabParamList } from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -26,6 +28,8 @@ type ClockNavigationProps = StackScreenProps<
 >;
 
 const ClockScreen: React.FC<ClockNavigationProps> = ({ route, navigation }) => {
+  const { setTotalStudyTime } = useContext(OthersContext);
+
   const hand = useSharedValue(0.5 * Math.PI);
   const top = useSharedValue(0.5 * Math.PI);
 
@@ -46,6 +50,7 @@ const ClockScreen: React.FC<ClockNavigationProps> = ({ route, navigation }) => {
       ab_duration.value,
       route.params.dateString
     );
+    setTotalStudyTime(ab_duration.value);
     navigation.navigate("StudyReportScreen");
   };
 
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
   values: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingTop: 20,
   },
   duration: {
     fontSize: 24,

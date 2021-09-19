@@ -17,7 +17,6 @@ import {
   SVGClockWidth,
 } from "../../libs/utils/Dimension";
 import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
 import { Calendar } from "react-native-calendars";
 // const Calendar = require('react-native-calendars')
 import {
@@ -40,6 +39,7 @@ import { Target } from "../../types/studyReport";
 /* types */
 import { StudyReportTabParamList } from "../../types/navigationType";
 import { StackScreenProps } from "@react-navigation/stack";
+import { CarouselItemProps } from "../../types/studyReport";
 
 type StudyReportNavigationProps = StackScreenProps<
   StudyReportTabParamList,
@@ -59,8 +59,8 @@ const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
     setSelectedDateString,
   } = useContext(OthersContext);
   // dreamは配列をstackのように扱うことで最新の夢から順番に参照できるようにする
-  const [dreamStack, setDreamStack] = useState<string[]>([]);
-  const [dream, setDream] = useState<string>("夢を記入しよう！");
+  const [dreamStack, setDreamStack] = useState<string[]>(["夢を記入しよう"]);
+  const [dream, setDream] = useState<string>("夢を記入しよう");
   // targetはカレンダーと紐付く１日ごとの目標
   const [target, setTarget] = useState<Target>({
     "1": "",
@@ -69,8 +69,12 @@ const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);
   const [targetModalVisible, setTargetModalVisible] = useState<boolean>(false);
 
-  // 画面遷移時（EditGoalScreenから戻ってきた時）にstateを更新するためにはreact-navigationが用意するisFocusedステートを使うと便利
-  const isFocused = useIsFocused();
+  const [carouselItems, setCarouselItems] = useState<CarouselItemProps[]>([
+    {
+      text: "夢を記入しよう",
+      index: 0,
+    },
+  ]);
 
   const handleCalendarDayPress = async (response: any) => {
     setSelectedDateString(response.dateString);
@@ -111,15 +115,10 @@ const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
   };
 
   useEffect(() => {
-    fetchDream(user?.uid, setDreamStack, setDream);
+    fetchDream(user?.uid, setDreamStack, setDream, setCarouselItems);
     fetchTargetByDate(user?.uid, selectedDateString, setTarget);
     fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
   }, []);
-
-  useEffect(() => {
-    console.log("return from clock screen");
-    fetchTotalStudyTime(user?.uid, selectedDateString, setTotalStudyTime);
-  }, [isFocused]);
 
   return (
     <Screen>
@@ -134,6 +133,7 @@ const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
               uid={user?.uid}
               dreamStack={dreamStack}
               setDreamStack={setDreamStack}
+              setCarouselItems={setCarouselItems}
             />
             <TargetModal
               visible={targetModalVisible}
@@ -149,8 +149,11 @@ const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
             <Dream
               dream={dream}
               dreamStack={dreamStack}
+              setDreamStack={setDreamStack}
               dreamModalVisible={dreamModalVisible}
               setDreamModalVisible={setDreamModalVisible}
+              carouselItems={carouselItems}
+              setCarouselItems={setCarouselItems}
             />
 
             <View style={styles.purpose_container}>
@@ -314,11 +317,6 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     padding: 24,
     justifyContent: "center",
-  },
-  modal_container: {
-    backgroundColor: "#f5f5f5",
-    height: "100%",
-    width: "100%",
   },
   pin_left: {
     position: "absolute",

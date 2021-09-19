@@ -2,17 +2,30 @@ import React, { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { calendar_width } from "../../libs/utils/Dimension";
-import Carousel from "react-native-snap-carousel";
+import DreamCarousel from "./DreamCarousel";
+/* types */
+import { CarouselItemProps } from "../../types/studyReport";
 
 type Props = {
   dream: string;
   dreamStack: string[];
+  setDreamStack: React.Dispatch<React.SetStateAction<string[]>>;
   dreamModalVisible: boolean;
   setDreamModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  carouselItems: CarouselItemProps[];
+  setCarouselItems: React.Dispatch<React.SetStateAction<CarouselItemProps[]>>;
 };
 
 const Dream = memo(
-  ({ dream, dreamStack, dreamModalVisible, setDreamModalVisible }: Props) => {
+  ({
+    dream,
+    dreamStack,
+    setDreamStack,
+    dreamModalVisible,
+    setDreamModalVisible,
+    carouselItems,
+    setCarouselItems,
+  }: Props) => {
     return (
       <View style={styles.dream_container}>
         <View style={{ justifyContent: "center", flex: 1 }}>
@@ -26,9 +39,19 @@ const Dream = memo(
             Dream:
           </Text>
         </View>
-        <View style={{ flex: 2 }}>
+        {/* <View style={{ flex: 2 }}>
           <Text style={styles.dream_text}>{dream}</Text>
+        </View> */}
+
+        <View style={{ flex: 2, marginLeft: 10 }}>
+          <DreamCarousel
+            dreamStack={dreamStack}
+            setDreamStack={setDreamStack}
+            carouselItems={carouselItems}
+            setCarouselItems={setCarouselItems}
+          />
         </View>
+
         <View style={{ justifyContent: "center" }}>
           <FontAwesome5.Button
             name="pencil-alt"

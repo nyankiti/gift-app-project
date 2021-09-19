@@ -4,11 +4,14 @@ import { formatDateUntilDay } from "./utils/file";
 /* types */
 import { User, UserSeat } from "../types/user";
 import { Target } from "../types/studyReport";
+import { CarouselItemProps } from "../types/studyReport";
+import { diffClamp } from "react-native-reanimated";
 
 export const fetchDream = async (
   uid: string,
   setDreamStack: React.Dispatch<React.SetStateAction<string[]>>,
-  setDream: React.Dispatch<React.SetStateAction<string>>
+  setDream: React.Dispatch<React.SetStateAction<string>>,
+  setCarouselItems: React.Dispatch<React.SetStateAction<CarouselItemProps[]>>
 ) => {
   const dreamDocRef = db
     .collection("users")
@@ -17,13 +20,13 @@ export const fetchDream = async (
     .doc(uid);
 
   await dreamDocRef.get().then((doc) => {
-    if (doc.exists) {
-      // console.log("fetched dream:");
-      // console.log(doc.data());
+    if (doc.exists && doc.data()?.dream) {
       const fetchedDream = doc.data()?.dream;
 
       setDreamStack(fetchedDream);
+      setCarouselItems(renderCarouselItems(fetchedDream));
       setDream(fetchedDream[fetchedDream.length - 1]);
+    } else {
     }
   });
 };
@@ -172,4 +175,47 @@ export const fetchTotalStudyTime = async (
       setTotalStudyTime(0);
     }
   });
+};
+
+const initialItems = [
+  {
+    text: "夢を記入しよう",
+    index: 0,
+  },
+];
+
+export const renderCarouselItems = (arr: string[]) => {
+  if (arr === undefined || arr.length == 0) {
+    return initialItems;
+  }
+  return arr.map((item, index) => {
+    // return arr.reverse().map((item) => {
+    return { text: item, index: index };
+  });
+};
+
+export const deleteDreamSpecifiedByIndex = async (
+  index: number,
+  uid: string,
+  dreamStack: string[],
+  setDreamStack: React.Dispatch<React.SetStateAction<string[]>>,
+  carouselItems: CarouselItemProps[],
+  setCarouselItems: React.Dispatch<React.SetStateAction<CarouselItemProps[]>>
+) => {
+  const dreamDocRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("dream")
+    .doc(uid);
+
+  console.log(dreamStack);
+  console.log("selected index : " + index);
+  const tempStack = dreamStack.filter((dream, i) => i !== index);
+  console.log(tempStack);
+  await dreamDocRef.set({
+    dream: tempStack,
+  });
+
+  setDreamStack(tempStack);
+  setCarouselItems(renderCarouselItems(tempStack));
 };

@@ -5,3 +5,12 @@ export type Target = {
   "4"?: string;
   "5"?: string;
 };
+
+export type CarouselItemProps = {
+  text: string;
+  index: number;
+};
+
+export type RenderCarouselItemProps = {
+  item: CarouselItemProps;
+};

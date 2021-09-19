@@ -1,9 +1,12 @@
-import React, { useState, memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { width, height } from "../../libs/utils/Dimension";
 import { Modal, TextInput, Button } from "react-native-paper";
 import color from "../../constants/color";
 import { db } from "../../libs/firebae";
+import { renderCarouselItems } from "../../libs/studyReportController";
+/* types */
+import { CarouselItemProps } from "../../types/studyReport";
 
 type Props = {
   visible: boolean;
@@ -13,6 +16,7 @@ type Props = {
   dreamStack: string[];
   setDreamStack: React.Dispatch<React.SetStateAction<string[]>>;
   uid: string;
+  setCarouselItems: React.Dispatch<React.SetStateAction<CarouselItemProps[]>>;
 };
 
 const DreamModal = memo(
@@ -24,6 +28,7 @@ const DreamModal = memo(
     dreamStack,
     setDreamStack,
     uid,
+    setCarouselItems,
   }: Props) => {
     const [value, setValue] = useState<string>("");
 
@@ -34,21 +39,28 @@ const DreamModal = memo(
         .collection("dream")
         .doc(uid);
 
-      //stackに新しいdreamを追加する
-      let tempStack = dreamStack;
+      //stackに新しいdreamを追加する 初期値の「夢を記入しよう」は無視する
+      let tempStack: string[];
+
+      dreamStack[0] == "夢を記入しよう"
+        ? (tempStack = [])
+        : (tempStack = dreamStack);
+
       // 元の夢と同じ値を送信している場合や空文字列の場合は取り消す
       if (value === "" || tempStack[tempStack.length - 1] === value) {
         return;
       } else {
-        tempStack.push(value);
-
-        console.log(tempStack);
+        // carouselとの都合上新しい夢は配列の先頭に追加していく(Stackと言いながら逆向きで要素を追加している)
+        tempStack.unshift(value);
 
         await dreamDocRef.set({
           dream: tempStack,
         });
         // 夢欄の値にも反映させる
         setDream(value);
+        setDreamStack(tempStack);
+        setCarouselItems(renderCarouselItems(tempStack));
+        setValue("");
       }
       setVisible(false);
     };
