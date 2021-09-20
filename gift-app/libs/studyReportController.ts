@@ -47,7 +47,7 @@ export const fetchTargetByDate = async (
       setTarget(selectedDateTarget);
     } else {
       setTarget({
-        "1": "   ",
+        "1": "目標を記入しよう",
         "2": "",
         "3": "",
         "4": "",

@@ -12,89 +12,69 @@ exports.deleteUserSeatInfo = functions
   .region("asia-northeast1")
   .pubsub.schedule("0 0 * * *")
   .timeZone("Asia/Tokyo")
-  .onRun((context) => {
-    const userRef = db.collection("users");
-    userRef
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          try {
-            doc.ref.set(
-              {
-                currentSeat: null,
-              },
-              { merge: true }
-            );
-          } catch (e) {
-            console.log(
-              "something went wrong in updating users current seat : " + e
-            );
-          }
-        });
-      })
-      .catch((e) => {
-        console.log(
-          "something went wrong in updating users current seat : " + e
-        );
-      });
+  .onRun(async (context) => {
+    let batch = db.batch();
+
+    const snapshots = await db.collection("users").get();
+
+    snapshots.docs.map((doc, index) => {
+      if ((index + 1) % 500 === 0) {
+        batch.commit();
+        batch = db.batch();
+      }
+
+      batch.set(doc.ref, { currentSeat: null }, { merge: true });
+    });
+
+    batch.commit();
   });
 
 exports.Test = functions
   .region("asia-northeast1")
   .pubsub.schedule("0/5 * * * *")
   .timeZone("Asia/Tokyo")
-  .onRun((context) => {
-    const userRef = db.collection("users");
-    userRef
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          try {
-            doc.ref.set(
-              {
-                currentSeat: null,
-              },
-              { merge: true }
-            );
-          } catch (e) {
-            console.log(
-              "something went wrong in updating users current seat : " + e
-            );
-          }
-        });
-      })
-      .catch((e) => {
-        console.log(
-          "something went wrong in updating users current seat : " + e
-        );
-      });
+  .onRun(async (context) => {
+    let batch = db.batch();
+
+    const snapshots = await db.collection("users").get();
+
+    snapshots.docs.map((doc, index) => {
+      if ((index + 1) % 500 === 0) {
+        batch.commit();
+        batch = db.batch();
+      }
+
+      batch.set(doc.ref, { currentSeat: null }, { merge: true });
+    });
+
+    batch.commit();
   });
 
-exports.getTest = functions
-  .region("asia-northeast1")
-  .pubsub.schedule("0/5 * * * *")
-  .timeZone("Asia/Tokyo")
-  .onRun((context) => {
-    const userRef = db.collection("users");
-    userRef
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          try {
-            console.log(doc.data());
-          } catch (e) {
-            console.log(
-              "something went wrong in updating users current seat : " + e
-            );
-          }
-        });
-      })
-      .catch((e) => {
-        console.log(
-          "something went wrong in updating users current seat : " + e
-        );
-      });
-  });
+// 以下のメソッドで無事currentSeatを更新することができた。
+// exports.Test = functions.https.onRequest(async (req, res) => {
+//   let batch = db.batch();
+
+//   const snapshots = await db.collection("users").get();
+
+//   snapshots.docs.map((doc, index) => {
+//     if ((index + 1) % 500 === 0) {
+//       batch.commit();
+//       batch = db.batch();
+//     }
+
+//     batch.set(doc.ref, { currentSeat: null }, { merge: true });
+//   });
+
+//   console.log(batch);
+//   batch.commit();
+
+//   const docId = db.collection("users").doc().id;
+//   await db.collection("users").doc(docId).set({
+//     newData: "aaa",
+//   });
+
+//   res.send("関数発動したよ！");
+// });
 
 // 後々にmail送信はbackendのlaravelで扱いたい
 exports.sendQuestionMail = functions

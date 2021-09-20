@@ -39,18 +39,18 @@ const Dream = memo(
             Dream:
           </Text>
         </View>
-        {/* <View style={{ flex: 2 }}>
+        <View style={{ flex: 2 }}>
           <Text style={styles.dream_text}>{dream}</Text>
-        </View> */}
+        </View>
 
-        <View style={{ flex: 2, marginLeft: 10 }}>
+        {/* <View style={{ flex: 2, marginLeft: 10 }}>
           <DreamCarousel
             dreamStack={dreamStack}
             setDreamStack={setDreamStack}
             carouselItems={carouselItems}
             setCarouselItems={setCarouselItems}
           />
-        </View>
+        </View> */}
 
         <View style={{ justifyContent: "center" }}>
           <FontAwesome5.Button

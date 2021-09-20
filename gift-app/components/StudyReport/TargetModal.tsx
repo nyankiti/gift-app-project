@@ -26,7 +26,11 @@ const TargetModal = memo(
     const [inputCount, setInputCount] = useState(1);
 
     useEffect(() => {
-      setTargetInputValue(target);
+      if(target["1"] == "目標を記入しよう"){
+        setTargetInputValue({"1": ""})
+      }else{
+        setTargetInputValue(target);
+      }
       const count = Object.values(target).filter((v) => v !== "").length;
       if (count == 0) {
         setInputCount(1);

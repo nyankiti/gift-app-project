@@ -58,8 +58,8 @@ const CircularSlider = ({ hand, top }: CircularProps) => {
           <Mask id="mask">
             {/* 以下のAnimatedPathがスタートとストップの間の線。それぞれのポジションによって長さが変わる。その長さの情報をreanimatedPropsによって受け渡している */}
             <AnimatedPath
-              stroke={color.BASE_COLOR}
               strokeWidth={STROKE}
+              stroke={color.BASE_COLOR}
               animatedProps={animatedProps}
             />
           </Mask>

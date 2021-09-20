@@ -63,7 +63,7 @@ const StudyReportScreen: React.FC<StudyReportNavigationProps> = ({
   const [dream, setDream] = useState<string>("夢を記入しよう");
   // targetはカレンダーと紐付く１日ごとの目標
   const [target, setTarget] = useState<Target>({
-    "1": "",
+    "1": "目標を記入しよう",
   });
 
   const [dreamModalVisible, setDreamModalVisible] = useState<boolean>(false);

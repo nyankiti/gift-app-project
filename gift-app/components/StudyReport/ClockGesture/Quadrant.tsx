@@ -6,7 +6,7 @@ import { View } from "react-native";
 
 const Quadrant = () => {
   return (
-    <View>
+    <>
       {/* 黒い、メーターの下地となる円 strokeで色を出している*/}
       <Circle
         strokeWidth={STROKE}
@@ -20,7 +20,7 @@ const Quadrant = () => {
       <G mask="url(#mask)">
         <Circle fill="teal" cx={SIZE / 2} cy={SIZE / 2} r={R + PADDING} />
       </G>
-    </View>
+    </>
   );
 };
 
