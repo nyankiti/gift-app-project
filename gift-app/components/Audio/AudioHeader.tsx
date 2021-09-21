@@ -49,6 +49,7 @@ const AudioHeader = () => {
           marginTop: -20,
           marginBottom: 20,
           fontFamily: "KiwiMaru",
+          paddingHorizontal: 16
         }}
       >
         Gift の社会人のひとや、素敵なお店を営まれている方とのコラボ配信から、

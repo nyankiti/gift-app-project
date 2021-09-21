@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  RefreshControl
 } from "react-native";
 import { db } from "../../libs/firebae";
 /* conponents */
@@ -61,13 +60,14 @@ const NewsScreen: React.FC<NewsScreenNavigationProps> = ({ navigation }) => {
   const fetchNextArticles = async () => {
     list = articles;
     try {
-      await db
+      return await db
         .collection("news")
         .orderBy("created_at", "desc")
         .startAt(nextSnapshot)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            console.log(doc)
             const { author, html, imageUrl, title, create_at } = doc.data();
             list.push({
               id: doc.id,
@@ -91,9 +91,17 @@ const NewsScreen: React.FC<NewsScreenNavigationProps> = ({ navigation }) => {
   useEffect(() => {
     fetchArticles();
   }, []);
+
+  const handleRefresh = () => {
+    setLoading(true)
+    setTimeout(async() => {
+      await fetchNextArticles()
+      setLoading(false)
+    }, 1000)
+  }
+
   return (
     <Screen>
-      {loading && <Loading />}
       <FlatList
         data={articles}
         showsVerticalScrollIndicator={true}
@@ -114,7 +122,12 @@ const NewsScreen: React.FC<NewsScreenNavigationProps> = ({ navigation }) => {
           }
         }}
         onEndReachedThreshold={0.1}
-        ListFooterComponent={ActivityIndicator}
+        refreshControl={
+          <RefreshControl 
+            refreshing={loading}
+            onRefresh={() => handleRefresh()}
+          />
+        }
       />
       {/* <WebView source={{uri: 'https://nyankiti24.hatenablog.com/edit'}} /> */}
     </Screen>

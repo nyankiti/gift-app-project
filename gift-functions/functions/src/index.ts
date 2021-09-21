@@ -29,26 +29,26 @@ exports.deleteUserSeatInfo = functions
     batch.commit();
   });
 
-exports.Test = functions
-  .region("asia-northeast1")
-  .pubsub.schedule("0/5 * * * *")
-  .timeZone("Asia/Tokyo")
-  .onRun(async (context) => {
-    let batch = db.batch();
+// exports.Test = functions
+//   .region("asia-northeast1")
+//   .pubsub.schedule("0/5 * * * *")
+//   .timeZone("Asia/Tokyo")
+//   .onRun(async (context) => {
+//     let batch = db.batch();
 
-    const snapshots = await db.collection("users").get();
+//     const snapshots = await db.collection("users").get();
 
-    snapshots.docs.map((doc, index) => {
-      if ((index + 1) % 500 === 0) {
-        batch.commit();
-        batch = db.batch();
-      }
+//     snapshots.docs.map((doc, index) => {
+//       if ((index + 1) % 500 === 0) {
+//         batch.commit();
+//         batch = db.batch();
+//       }
 
-      batch.set(doc.ref, { currentSeat: null }, { merge: true });
-    });
+//       batch.set(doc.ref, { currentSeat: null }, { merge: true });
+//     });
 
-    batch.commit();
-  });
+//     batch.commit();
+//   });
 
 // 以下のメソッドで無事currentSeatを更新することができた。
 // exports.Test = functions.https.onRequest(async (req, res) => {

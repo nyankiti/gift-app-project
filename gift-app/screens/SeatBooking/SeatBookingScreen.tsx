@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native";
 import { Provider, Portal } from "react-native-paper";
 import color from "../../constants/color";
 import {
@@ -29,6 +29,7 @@ const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = ({
   navigation,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [unBookinModalVisible, setUnBookingModalVisible] =
     useState<boolean>(false);
@@ -45,12 +46,29 @@ const SeatBookingScreen: React.FC<SeatBookingScreenNavigationProps> = ({
     setLoading(false);
   };
 
+  const handleRefresh = () => {
+    setRefresh(true)
+    setTimeout(async() => {
+      await fetchSeatsState(setSeats)
+      setRefresh(false)
+    }, 1000)
+  }
+
+
   if (loading) return <Loading />;
 
   return (
     <Screen>
       <Provider>
-        <ScrollView style={styles.container}>
+        <ScrollView 
+          style={styles.container}  
+          refreshControl={
+            <RefreshControl 
+              refreshing={refresh}
+              onRefresh={() => handleRefresh()}
+            />
+          }
+        >
           <Portal>
             <ChooseIconModal
               visible={modalVisible}
